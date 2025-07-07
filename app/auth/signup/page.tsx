@@ -7,15 +7,18 @@ import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
-import { Phone } from "lucide-react"
+import { Phone, MapPin, AlertCircle } from "lucide-react"
 import Link from "next/link"
 import { useRouter } from "next/navigation"
+import { authService, ApiError } from "@/lib/api/auth"
+import { useGeolocation } from "@/hooks/useGeolocation"
 
 export default function SignupPage() {
   const [phoneNumber, setPhoneNumber] = useState("")
   const [isLoading, setIsLoading] = useState(false)
   const [error, setError] = useState("")
   const router = useRouter()
+  const { latitude, longitude, error: geoError, loading: geoLoading } = useGeolocation()
 
   const validatePhoneNumber = (phone: string) => {
     // Bangladesh phone number validation (11 digits, starts with 01)
@@ -51,13 +54,27 @@ export default function SignupPage() {
     }
 
     try {
-      // Simulate API call to send OTP
-      await new Promise((resolve) => setTimeout(resolve, 2000))
+      const response = await authService.registerStep1({
+        mobile_number: phoneNumber,
+        role_id: "1", // Default role ID
+        latitude: latitude || 0,
+        longitude: longitude || 0,
+      })
 
-      // Redirect to OTP verification for signup
-      router.push(`/auth/signup-otp?phone=${phoneNumber}`)
+      if (response.statusCode === "200") {
+        // Success - redirect to OTP verification
+        router.push(`/auth/signup-otp?phone=${phoneNumber}`)
+      }
     } catch (error) {
-      setError("Failed to send OTP. Please try again.")
+      if (error instanceof ApiError) {
+        if (error.statusCode === "400" && error.details?.message?.includes("User already exists")) {
+          setError("This phone number is already registered. Please login instead.")
+        } else {
+          setError(error.details?.message || error.statusMessage || "Registration failed")
+        }
+      } else {
+        setError("Network error. Please check your connection and try again.")
+      }
     } finally {
       setIsLoading(false)
     }
@@ -104,12 +121,34 @@ export default function SignupPage() {
                     disabled={isLoading}
                   />
                 </div>
-                {error && <p className="text-sm text-red-600">{error}</p>}
+                {error && (
+                  <div className="flex items-center space-x-2 text-red-600">
+                    <AlertCircle className="w-4 h-4" />
+                    <p className="text-sm">{error}</p>
+                  </div>
+                )}
                 <p className="text-xs text-gray-500">Enter your 11-digit Bangladesh phone number</p>
               </div>
 
+              {/* Location Status */}
+              <div className="space-y-2">
+                <div className="flex items-center space-x-2 text-sm">
+                  <MapPin className="w-4 h-4 text-gray-400" />
+                  <span className="text-gray-600">
+                    {geoLoading ? "Getting location..." : geoError ? "Location unavailable" : "Location detected"}
+                  </span>
+                </div>
+                {geoError && (
+                  <p className="text-xs text-orange-600">Location access denied. Default location will be used.</p>
+                )}
+              </div>
+
               {/* Submit Button */}
-              <Button type="submit" className="w-full bg-green-600 hover:bg-green-700" disabled={isLoading}>
+              <Button
+                type="submit"
+                className="w-full bg-green-600 hover:bg-green-700"
+                disabled={isLoading || geoLoading}
+              >
                 {isLoading ? "Sending OTP..." : "Send OTP"}
               </Button>
             </form>

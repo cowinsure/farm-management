@@ -6,12 +6,13 @@ import { useState, useEffect, useRef } from "react"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
-import { ArrowLeft, Phone, RefreshCw } from "lucide-react"
+import { ArrowLeft, Phone, RefreshCw, AlertCircle } from "lucide-react"
 import Link from "next/link"
 import { useRouter, useSearchParams } from "next/navigation"
+import { authService, ApiError } from "@/lib/api/auth"
 
 export default function SignupOTPPage() {
-  const [otp, setOtp] = useState(["", "", "", "", ""])
+  const [otp, setOtp] = useState(["", "", "", "", "", ""])
   const [isLoading, setIsLoading] = useState(false)
   const [isResending, setIsResending] = useState(false)
   const [timeLeft, setTimeLeft] = useState(120) // 2 minutes
@@ -54,7 +55,7 @@ export default function SignupOTPPage() {
     setError("")
 
     // Auto-focus next input
-    if (value && index < 4) {
+    if (value && index < 5) {
       inputRefs.current[index + 1]?.focus()
     }
   }
@@ -67,10 +68,10 @@ export default function SignupOTPPage() {
 
   const handlePaste = (e: React.ClipboardEvent) => {
     e.preventDefault()
-    const pastedData = e.clipboardData.getData("text").replace(/\D/g, "").slice(0, 5)
+    const pastedData = e.clipboardData.getData("text").replace(/\D/g, "").slice(0, 6)
     const newOtp = [...otp]
 
-    for (let i = 0; i < 5; i++) {
+    for (let i = 0; i < 6; i++) {
       newOtp[i] = pastedData[i] || ""
     }
 
@@ -78,7 +79,7 @@ export default function SignupOTPPage() {
 
     // Focus the next empty input or the last input
     const nextEmptyIndex = newOtp.findIndex((digit) => !digit)
-    const focusIndex = nextEmptyIndex === -1 ? 4 : nextEmptyIndex
+    const focusIndex = nextEmptyIndex === -1 ? 5 : nextEmptyIndex
     inputRefs.current[focusIndex]?.focus()
   }
 
@@ -86,8 +87,8 @@ export default function SignupOTPPage() {
     e.preventDefault()
     const otpString = otp.join("")
 
-    if (otpString.length !== 5) {
-      setError("Please enter the complete 5-digit OTP")
+    if (otpString.length !== 6) {
+      setError("Please enter the complete 6-digit OTP")
       return
     }
 
@@ -95,20 +96,31 @@ export default function SignupOTPPage() {
     setError("")
 
     try {
-      // Simulate API call
-      await new Promise((resolve) => setTimeout(resolve, 2000))
+      const response = await authService.verifyOtp({
+        mobile_number: phoneNumber,
+        otp: otpString,
+      })
 
-      // For demo purposes, accept any 5-digit OTP
-      if (otpString === "12345") {
+      if (response.statusCode === "200") {
         setSuccess("OTP verified successfully!")
         setTimeout(() => {
           router.push(`/auth/set-password?phone=${phoneNumber}`)
         }, 1500)
-      } else {
-        setError("Invalid OTP. Please try again.")
       }
     } catch (error) {
-      setError("Verification failed. Please try again.")
+      if (error instanceof ApiError) {
+        if (error.statusCode === "400") {
+          if (error.details?.details?.non_field_errors) {
+            setError(error.details.details.non_field_errors[0] || "Invalid OTP or mobile number.")
+          } else {
+            setError(error.details?.message || "Invalid OTP. Please try again.")
+          }
+        } else {
+          setError(error.statusMessage || "Verification failed")
+        }
+      } else {
+        setError("Network error. Please check your connection and try again.")
+      }
     } finally {
       setIsLoading(false)
     }
@@ -120,15 +132,25 @@ export default function SignupOTPPage() {
     setSuccess("")
 
     try {
-      // Simulate API call
-      await new Promise((resolve) => setTimeout(resolve, 1000))
+      const response = await authService.registerStep1({
+        mobile_number: phoneNumber,
+        role_id: "1",
+        latitude: 0,
+        longitude: 0,
+      })
 
-      setSuccess("OTP sent successfully!")
-      setTimeLeft(120) // Reset timer
-      setOtp(["", "", "", "", ""]) // Clear OTP inputs
-      inputRefs.current[0]?.focus()
+      if (response.statusCode === "200") {
+        setSuccess("OTP sent successfully!")
+        setTimeLeft(120) // Reset timer
+        setOtp(["", "", "", "", "", ""]) // Clear OTP inputs
+        inputRefs.current[0]?.focus()
+      }
     } catch (error) {
-      setError("Failed to resend OTP. Please try again.")
+      if (error instanceof ApiError) {
+        setError(error.details?.message || "Failed to resend OTP")
+      } else {
+        setError("Network error. Please try again.")
+      }
     } finally {
       setIsResending(false)
     }
@@ -166,7 +188,7 @@ export default function SignupOTPPage() {
             <form onSubmit={handleSubmit} className="space-y-6">
               {/* OTP Input */}
               <div className="space-y-2">
-                <div className="flex justify-center space-x-3">
+                <div className="flex justify-center space-x-2">
                   {otp.map((digit, index) => (
                     <Input
                       key={index}
@@ -183,7 +205,7 @@ export default function SignupOTPPage() {
                     />
                   ))}
                 </div>
-                <p className="text-center text-sm text-gray-500">Enter the 5-digit code sent to your phone</p>
+                <p className="text-center text-sm text-gray-500">Enter the 6-digit code sent to your phone</p>
               </div>
 
               {/* Timer */}
@@ -208,7 +230,10 @@ export default function SignupOTPPage() {
               {/* Error Message */}
               {error && (
                 <div className="p-3 bg-red-50 border border-red-200 rounded-lg">
-                  <p className="text-sm text-red-600 text-center">{error}</p>
+                  <div className="flex items-center space-x-2">
+                    <AlertCircle className="w-4 h-4 text-red-600" />
+                    <p className="text-sm text-red-600">{error}</p>
+                  </div>
                 </div>
               )}
 
@@ -237,12 +262,6 @@ export default function SignupOTPPage() {
             </div>
           </CardContent>
         </Card>
-
-        {/* Demo Info */}
-        <div className="mt-6 p-4 bg-blue-50 rounded-lg">
-          <p className="text-sm text-blue-800 font-medium mb-2">Demo OTP:</p>
-          <p className="text-xs text-blue-600">Use: 12345 for testing</p>
-        </div>
       </div>
     </div>
   )

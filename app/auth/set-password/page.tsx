@@ -7,14 +7,13 @@ import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
-import { Eye, EyeOff, Lock, User, Mail, CheckCircle, ArrowLeft } from "lucide-react"
+import { Eye, EyeOff, Lock, CheckCircle, ArrowLeft, AlertCircle } from "lucide-react"
 import Link from "next/link"
 import { useRouter, useSearchParams } from "next/navigation"
+import { authService, ApiError } from "@/lib/api/auth"
 
 export default function SetPasswordPage() {
   const [formData, setFormData] = useState({
-    fullName: "",
-    email: "",
     password: "",
     confirmPassword: "",
   })
@@ -22,8 +21,6 @@ export default function SetPasswordPage() {
   const [showConfirmPassword, setShowConfirmPassword] = useState(false)
   const [isLoading, setIsLoading] = useState(false)
   const [errors, setErrors] = useState<{
-    fullName?: string
-    email?: string
     password?: string
     confirmPassword?: string
     general?: string
@@ -33,11 +30,6 @@ export default function SetPasswordPage() {
   const searchParams = useSearchParams()
 
   const phoneNumber = searchParams.get("phone") || ""
-
-  const validateEmail = (email: string) => {
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
-    return emailRegex.test(email)
-  }
 
   const handleInputChange = (field: string, value: string) => {
     setFormData({ ...formData, [field]: value })
@@ -65,18 +57,6 @@ export default function SetPasswordPage() {
     // Validation
     const newErrors: any = {}
 
-    if (!formData.fullName.trim()) {
-      newErrors.fullName = "Full name is required"
-    } else if (formData.fullName.trim().length < 2) {
-      newErrors.fullName = "Full name must be at least 2 characters"
-    }
-
-    if (!formData.email) {
-      newErrors.email = "Email is required"
-    } else if (!validateEmail(formData.email)) {
-      newErrors.email = "Please enter a valid email address"
-    }
-
     if (!formData.password) {
       newErrors.password = "Password is required"
     } else if (formData.password.length < 8) {
@@ -96,15 +76,33 @@ export default function SetPasswordPage() {
     }
 
     try {
-      // Simulate API call to create account
-      await new Promise((resolve) => setTimeout(resolve, 2000))
+      const response = await authService.setPassword({
+        mobile_number: phoneNumber,
+        password: formData.password,
+      })
 
-      setSuccess(true)
-      setTimeout(() => {
-        router.push("/auth/login?message=Account created successfully! Please sign in.")
-      }, 2000)
+      if (response.statusCode === "200") {
+        setSuccess(true)
+        setTimeout(() => {
+          router.push("/auth/login?message=Account created successfully! Please sign in.")
+        }, 3000)
+      }
     } catch (error) {
-      setErrors({ general: "Failed to create account. Please try again." })
+      if (error instanceof ApiError) {
+        if (error.statusCode === "400") {
+          if (error.details?.message?.includes("User already exists")) {
+            setErrors({ general: "User already exists. Please login instead." })
+          } else if (error.details?.details?.non_field_errors) {
+            setErrors({ general: error.details.details.non_field_errors[0] || "OTP not verified or user not found." })
+          } else {
+            setErrors({ general: error.details?.message || "Failed to set password" })
+          }
+        } else {
+          setErrors({ general: error.statusMessage || "Failed to create account" })
+        }
+      } else {
+        setErrors({ general: "Network error. Please check your connection and try again." })
+      }
     } finally {
       setIsLoading(false)
     }
@@ -148,7 +146,7 @@ export default function SetPasswordPage() {
             <span className="text-white font-bold text-2xl">14</span>
           </div>
           <h1 className="text-2xl font-bold text-gray-900">LivestockPro ERP</h1>
-          <p className="text-gray-600 mt-2">Complete your profile</p>
+          <p className="text-gray-600 mt-2">Set your password</p>
         </div>
 
         <Card className="shadow-lg">
@@ -163,42 +161,6 @@ export default function SetPasswordPage() {
           </CardHeader>
           <CardContent>
             <form onSubmit={handleSubmit} className="space-y-4">
-              {/* Full Name Input */}
-              <div className="space-y-2">
-                <Label htmlFor="fullName">Full Name</Label>
-                <div className="relative">
-                  <User className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
-                  <Input
-                    id="fullName"
-                    type="text"
-                    placeholder="Enter your full name"
-                    value={formData.fullName}
-                    onChange={(e) => handleInputChange("fullName", e.target.value)}
-                    className={`pl-10 ${errors.fullName ? "border-red-500" : ""}`}
-                    disabled={isLoading}
-                  />
-                </div>
-                {errors.fullName && <p className="text-sm text-red-600">{errors.fullName}</p>}
-              </div>
-
-              {/* Email Input */}
-              <div className="space-y-2">
-                <Label htmlFor="email">Email Address</Label>
-                <div className="relative">
-                  <Mail className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
-                  <Input
-                    id="email"
-                    type="email"
-                    placeholder="Enter your email"
-                    value={formData.email}
-                    onChange={(e) => handleInputChange("email", e.target.value)}
-                    className={`pl-10 ${errors.email ? "border-red-500" : ""}`}
-                    disabled={isLoading}
-                  />
-                </div>
-                {errors.email && <p className="text-sm text-red-600">{errors.email}</p>}
-              </div>
-
               {/* Password Input */}
               <div className="space-y-2">
                 <Label htmlFor="password">Password</Label>
@@ -222,7 +184,12 @@ export default function SetPasswordPage() {
                     {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
                   </button>
                 </div>
-                {errors.password && <p className="text-sm text-red-600">{errors.password}</p>}
+                {errors.password && (
+                  <div className="flex items-center space-x-2 text-red-600">
+                    <AlertCircle className="w-4 h-4" />
+                    <p className="text-sm">{errors.password}</p>
+                  </div>
+                )}
 
                 {/* Password Requirements */}
                 {formData.password && (
@@ -289,13 +256,21 @@ export default function SetPasswordPage() {
                     {showConfirmPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
                   </button>
                 </div>
-                {errors.confirmPassword && <p className="text-sm text-red-600">{errors.confirmPassword}</p>}
+                {errors.confirmPassword && (
+                  <div className="flex items-center space-x-2 text-red-600">
+                    <AlertCircle className="w-4 h-4" />
+                    <p className="text-sm">{errors.confirmPassword}</p>
+                  </div>
+                )}
               </div>
 
               {/* General Error */}
               {errors.general && (
                 <div className="p-3 bg-red-50 border border-red-200 rounded-lg">
-                  <p className="text-sm text-red-600">{errors.general}</p>
+                  <div className="flex items-center space-x-2">
+                    <AlertCircle className="w-4 h-4 text-red-600" />
+                    <p className="text-sm text-red-600">{errors.general}</p>
+                  </div>
                 </div>
               )}
 

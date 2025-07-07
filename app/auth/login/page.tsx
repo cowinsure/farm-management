@@ -10,6 +10,8 @@ import { Label } from "@/components/ui/label"
 import { Eye, EyeOff, Phone, Lock } from "lucide-react"
 import Link from "next/link"
 import { useRouter } from "next/navigation"
+import { authService, ApiError, type LoginRequest } from "@/lib/api/auth"
+import { AuthGuard } from "@/components/auth-guard"
 
 export default function LoginPage() {
   const [phoneNumber, setPhoneNumber] = useState("")
@@ -62,14 +64,30 @@ export default function LoginPage() {
     }
 
     try {
-      // Simulate API call
-      await new Promise((resolve) => setTimeout(resolve, 2000))
+      const loginData: LoginRequest = {
+        mobile_number: phoneNumber,
+        password: password,
+      }
 
-      // For demo purposes, redirect to dashboard
-      // In real app, you would validate credentials with your backend
-      router.push("/")
+      const response = await authService.login(loginData)
+
+      if (response.statusCode === "200" && response.data) {
+        // Save authentication data
+        authService.saveAuthData(response.data)
+
+        // Redirect to dashboard
+        router.push("/")
+      }
     } catch (error) {
-      setErrors({ general: "Login failed. Please check your credentials." })
+      if (error instanceof ApiError) {
+        if (error.statusCode === "500" && error.details?.message?.includes("Invalid mobile number or password")) {
+          setErrors({ general: "Invalid phone number or password. Please try again." })
+        } else {
+          setErrors({ general: error.details?.message || error.statusMessage || "Login failed" })
+        }
+      } else {
+        setErrors({ general: "Network error. Please check your connection and try again." })
+      }
     } finally {
       setIsLoading(false)
     }
@@ -83,112 +101,107 @@ export default function LoginPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-green-50 to-blue-50 flex items-center justify-center p-4">
-      <div className="w-full max-w-md">
-        {/* Logo and Header */}
-        <div className="text-center mb-8">
-          <div className="w-16 h-16 bg-green-600 rounded-xl flex items-center justify-center mx-auto mb-4">
-            <span className="text-white font-bold text-2xl">14</span>
-          </div>
-          <h1 className="text-2xl font-bold text-gray-900">LivestockPro ERP</h1>
-          <p className="text-gray-600 mt-2">Sign in to your account</p>
-        </div>
-
-        <Card className="shadow-lg">
-          <CardHeader>
-            <CardTitle className="text-center">Welcome Back</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <form onSubmit={handleSubmit} className="space-y-4">
-              {/* Phone Number Input */}
-              <div className="space-y-2">
-                <Label htmlFor="phone">Phone Number</Label>
-                <div className="relative">
-                  <Phone className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
-                  <Input
-                    id="phone"
-                    type="tel"
-                    placeholder="01XXXXXXXXX"
-                    value={formatPhoneDisplay(phoneNumber)}
-                    onChange={handlePhoneChange}
-                    className={`pl-10 ${errors.phone ? "border-red-500" : ""}`}
-                    disabled={isLoading}
-                  />
-                </div>
-                {errors.phone && <p className="text-sm text-red-600">{errors.phone}</p>}
-                <p className="text-xs text-gray-500">Enter your 11-digit Bangladesh phone number</p>
-              </div>
-
-              {/* Password Input */}
-              <div className="space-y-2">
-                <Label htmlFor="password">Password</Label>
-                <div className="relative">
-                  <Lock className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
-                  <Input
-                    id="password"
-                    type={showPassword ? "text" : "password"}
-                    placeholder="Enter your password"
-                    value={password}
-                    onChange={(e) => {
-                      setPassword(e.target.value)
-                      if (errors.password) {
-                        setErrors({ ...errors, password: undefined })
-                      }
-                    }}
-                    className={`pl-10 pr-10 ${errors.password ? "border-red-500" : ""}`}
-                    disabled={isLoading}
-                  />
-                  <button
-                    type="button"
-                    onClick={() => setShowPassword(!showPassword)}
-                    className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600"
-                    disabled={isLoading}
-                  >
-                    {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
-                  </button>
-                </div>
-                {errors.password && <p className="text-sm text-red-600">{errors.password}</p>}
-              </div>
-
-              {/* General Error */}
-              {errors.general && (
-                <div className="p-3 bg-red-50 border border-red-200 rounded-lg">
-                  <p className="text-sm text-red-600">{errors.general}</p>
-                </div>
-              )}
-
-              {/* Forgot Password Link */}
-              <div className="text-right">
-                <Link href="/auth/forgot-password" className="text-sm text-green-600 hover:text-green-700">
-                  Forgot password?
-                </Link>
-              </div>
-
-              {/* Submit Button */}
-              <Button type="submit" className="w-full bg-green-600 hover:bg-green-700" disabled={isLoading}>
-                {isLoading ? "Signing in..." : "Sign In"}
-              </Button>
-            </form>
-
-            {/* Sign Up Link */}
-            <div className="mt-6 text-center">
-              <p className="text-sm text-gray-600">
-                {"Don't have an account? "}
-                <Link href="/auth/signup" className="text-green-600 hover:text-green-700 font-medium">
-                  Sign up
-                </Link>
-              </p>
+    <AuthGuard requireAuth={false}>
+      <div className="min-h-screen bg-gradient-to-br from-green-50 to-blue-50 flex items-center justify-center p-4">
+        <div className="w-full max-w-md">
+          {/* Logo and Header */}
+          <div className="text-center mb-8">
+            <div className="w-16 h-16 bg-green-600 rounded-xl flex items-center justify-center mx-auto mb-4">
+              <span className="text-white font-bold text-2xl">14</span>
             </div>
-          </CardContent>
-        </Card>
+            <h1 className="text-2xl font-bold text-gray-900">LivestockPro ERP</h1>
+            <p className="text-gray-600 mt-2">Sign in to your account</p>
+          </div>
 
-        {/* Demo Credentials */}
-        <div className="mt-6 p-4 bg-blue-50 rounded-lg">
-          <p className="text-sm text-blue-800 font-medium mb-2">Demo Credentials:</p>
-          <p className="text-xs text-blue-600">Phone: 01712345678</p>
-          <p className="text-xs text-blue-600">Password: demo123</p>
+          <Card className="shadow-lg">
+            <CardHeader>
+              <CardTitle className="text-center">Welcome Back</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <form onSubmit={handleSubmit} className="space-y-4">
+                {/* Phone Number Input */}
+                <div className="space-y-2">
+                  <Label htmlFor="phone">Phone Number</Label>
+                  <div className="relative">
+                    <Phone className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
+                    <Input
+                      id="phone"
+                      type="tel"
+                      placeholder="01XXXXXXXXX"
+                      value={formatPhoneDisplay(phoneNumber)}
+                      onChange={handlePhoneChange}
+                      className={`pl-10 ${errors.phone ? "border-red-500" : ""}`}
+                      disabled={isLoading}
+                    />
+                  </div>
+                  {errors.phone && <p className="text-sm text-red-600">{errors.phone}</p>}
+                  <p className="text-xs text-gray-500">Enter your 11-digit Bangladesh phone number</p>
+                </div>
+
+                {/* Password Input */}
+                <div className="space-y-2">
+                  <Label htmlFor="password">Password</Label>
+                  <div className="relative">
+                    <Lock className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
+                    <Input
+                      id="password"
+                      type={showPassword ? "text" : "password"}
+                      placeholder="Enter your password"
+                      value={password}
+                      onChange={(e) => {
+                        setPassword(e.target.value)
+                        if (errors.password) {
+                          setErrors({ ...errors, password: undefined })
+                        }
+                      }}
+                      className={`pl-10 pr-10 ${errors.password ? "border-red-500" : ""}`}
+                      disabled={isLoading}
+                    />
+                    <button
+                      type="button"
+                      onClick={() => setShowPassword(!showPassword)}
+                      className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600"
+                      disabled={isLoading}
+                    >
+                      {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                    </button>
+                  </div>
+                  {errors.password && <p className="text-sm text-red-600">{errors.password}</p>}
+                </div>
+
+                {/* General Error */}
+                {errors.general && (
+                  <div className="p-3 bg-red-50 border border-red-200 rounded-lg">
+                    <p className="text-sm text-red-600">{errors.general}</p>
+                  </div>
+                )}
+
+                {/* Forgot Password Link */}
+                <div className="text-right">
+                  <Link href="/auth/forgot-password" className="text-sm text-green-600 hover:text-green-700">
+                    Forgot password?
+                  </Link>
+                </div>
+
+                {/* Submit Button */}
+                <Button type="submit" className="w-full bg-green-600 hover:bg-green-700" disabled={isLoading}>
+                  {isLoading ? "Signing in..." : "Sign In"}
+                </Button>
+              </form>
+
+              {/* Sign Up Link */}
+              <div className="mt-6 text-center">
+                <p className="text-sm text-gray-600">
+                  {"Don't have an account? "}
+                  <Link href="/auth/signup" className="text-green-600 hover:text-green-700 font-medium">
+                    Sign up
+                  </Link>
+                </p>
+              </div>
+            </CardContent>
+          </Card>
         </div>
       </div>
-    </div>
+    </AuthGuard>
   )
 }

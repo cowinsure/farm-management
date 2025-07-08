@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import {
   Bell,
   Edit,
@@ -29,64 +29,43 @@ import { useRouter } from "next/navigation"
 import { useAuth } from "@/hooks/useAuth"
 import { AuthGuard } from "@/components/auth-guard"
 
-// Sample data for animals
-const animals = [
-  {
-    id: "COW001",
-    name: "Bella",
-    breed: "Holstein",
-    age: "3 years",
-    weight: "650 kg",
-    status: "Active",
-    location: "Pen A1",
-  },
-  {
-    id: "COW002",
-    name: "Thunder",
-    breed: "Angus",
-    age: "5 years",
-    weight: "800 kg",
-    status: "Active",
-    location: "Pen B2",
-  },
-  {
-    id: "COW003",
-    name: "Daisy",
-    breed: "Jersey",
-    age: "2 years",
-    weight: "450 kg",
-    status: "Sick",
-    location: "Isolation",
-  },
-  {
-    id: "COW004",
-    name: "Max",
-    breed: "Holstein",
-    age: "4 years",
-    weight: "720 kg",
-    status: "Active",
-    location: "Pen A2",
-  },
-  {
-    id: "COW005",
-    name: "Luna",
-    breed: "Jersey",
-    age: "1 year",
-    weight: "380 kg",
-    status: "Quarantine",
-    location: "Quarantine Block",
-  },
-]
-
 export default function LivestockInventory() {
+  const [animals, setAnimals] = useState<any[]>([])
   const [searchTerm, setSearchTerm] = useState("")
   const [statusFilter, setStatusFilter] = useState("all")
   const [breedFilter, setBreedFilter] = useState("all")
   const [genderFilter, setGenderFilter] = useState("all")
   const [sidebarOpen, setSidebarOpen] = useState(false)
   const { logout } = useAuth()
+  const [page, setPage] = useState(1)
+  const [pageSize, setPageSize] = useState(10)
+  const [total, setTotal] = useState(0)
+  const [Active,setActive] = useState(0)
+  const [loading, setLoading] = useState(false)
+  const [error, setError] = useState<string | null>(null)
 
   const router = useRouter()
+
+  useEffect(() => {
+    setLoading(true)
+    setError(null)
+    const token = typeof window !== "undefined" ? localStorage.getItem("access_token") : null;
+    fetch(`http://127.0.0.1:8000/api/lms/assets-service?start_record=${(page-1)*pageSize+1}&page_size=${pageSize}`,
+      {
+        headers: {
+          ...(token ? { Authorization: `Bearer ${token}` } : {}),
+        },
+      }
+    )
+      .then(res => res.json())
+      .then(data => {
+        setAnimals(data.data.list)
+        setTotal(data.data.summary.Total)
+        setActive(data.data.summary.Active)
+      })
+      .catch(() => setError("Failed to fetch data"))
+      .finally(() => setLoading(false))
+  }, [page, pageSize])
 
   const handleLogout = () => {
     logout()
@@ -94,16 +73,16 @@ export default function LivestockInventory() {
 
   const filteredAnimals = animals.filter((animal) => {
     const matchesSearch =
-      animal.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      animal.id.toLowerCase().includes(searchTerm.toLowerCase())
-    const matchesStatus = statusFilter === "all" || animal.status.toLowerCase() === statusFilter.toLowerCase()
-    const matchesBreed = breedFilter === "all" || animal.breed.toLowerCase() === breedFilter.toLowerCase()
-
-    return matchesSearch && matchesStatus && matchesBreed
+      animal.name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      animal.reference_id?.toLowerCase().includes(searchTerm.toLowerCase())
+    const matchesStatus = statusFilter === "all" || animal.current_status?.toLowerCase() === statusFilter.toLowerCase()
+    const matchesBreed = breedFilter === "all" || animal.asset_type?.toLowerCase() === breedFilter.toLowerCase()
+    const matchesGender = genderFilter === "all" || (animal.gender ? animal.gender.toLowerCase() === genderFilter.toLowerCase() : false)
+    return matchesSearch && matchesStatus && matchesBreed && matchesGender
   })
 
   const getStatusBadge = (status: string) => {
-    switch (status.toLowerCase()) {
+    switch (status?.toLowerCase()) {
       case "active":
         return <Badge className="bg-green-100 text-green-800 hover:bg-green-100">Active</Badge>
       case "sick":
@@ -237,7 +216,7 @@ export default function LivestockInventory() {
             <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 lg:gap-6 mb-6 lg:mb-8">
               <Card>
                 <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                  <CardTitle className="text-lg lg:text-xl font-medium text-gray-600">247</CardTitle>
+                  <CardTitle className="text-lg lg:text-xl font-medium text-gray-600">{total}</CardTitle>
                   <Users className="h-4 w-4 text-green-600" />
                 </CardHeader>
                 <CardContent>
@@ -245,39 +224,7 @@ export default function LivestockInventory() {
                 </CardContent>
               </Card>
 
-              <Card>
-                <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                  <CardTitle className="text-lg lg:text-xl font-medium text-gray-600">232</CardTitle>
-                  <Heart className="h-4 w-4 text-blue-600" />
-                </CardHeader>
-                <CardContent>
-                  <div className="text-xs lg:text-sm text-gray-600">Active</div>
-                </CardContent>
-              </Card>
-
-              <Card>
-                <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                  <CardTitle className="text-lg lg:text-xl font-medium text-gray-600">8</CardTitle>
-                  <div className="w-4 h-4 bg-red-100 rounded flex items-center justify-center">
-                    <div className="w-2 h-2 bg-red-600 rounded-full"></div>
-                  </div>
-                </CardHeader>
-                <CardContent>
-                  <div className="text-xs lg:text-sm text-gray-600">Sick</div>
-                </CardContent>
-              </Card>
-
-              <Card>
-                <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                  <CardTitle className="text-lg lg:text-xl font-medium text-gray-600">7</CardTitle>
-                  <div className="w-4 h-4 bg-orange-100 rounded flex items-center justify-center">
-                    <div className="w-2 h-2 bg-orange-600 rounded-full"></div>
-                  </div>
-                </CardHeader>
-                <CardContent>
-                  <div className="text-xs lg:text-sm text-gray-600">Quarantine</div>
-                </CardContent>
-              </Card>
+              {/* You can add more summary cards here if needed */}
             </div>
 
             {/* Animal Registry */}
@@ -286,7 +233,7 @@ export default function LivestockInventory() {
                 <CardTitle className="text-lg lg:text-xl">Animal Registry</CardTitle>
                 <div className="flex flex-col lg:flex-row items-start lg:items-center justify-between gap-4">
                   <p className="text-sm text-gray-600">
-                    Showing {filteredAnimals.length} of {animals.length} animals
+                    Showing {filteredAnimals.length} of {total} animals
                   </p>
 
                   {/* Search and Filters */}
@@ -317,13 +264,12 @@ export default function LivestockInventory() {
                       </Select>
                       <Select value={breedFilter} onValueChange={setBreedFilter}>
                         <SelectTrigger className="w-full lg:w-32">
-                          <SelectValue placeholder="All Breeds" />
+                          <SelectValue placeholder="All Types" />
                         </SelectTrigger>
                         <SelectContent>
-                          <SelectItem value="all">All Breeds</SelectItem>
-                          <SelectItem value="holstein">Holstein</SelectItem>
-                          <SelectItem value="angus">Angus</SelectItem>
-                          <SelectItem value="jersey">Jersey</SelectItem>
+                          <SelectItem value="all">All Types</SelectItem>
+                          <SelectItem value="cow">Cow</SelectItem>
+                          {/* Add more asset types as needed */}
                         </SelectContent>
                       </Select>
                       <Select value={genderFilter} onValueChange={setGenderFilter}>
@@ -341,93 +287,124 @@ export default function LivestockInventory() {
                 </div>
               </CardHeader>
               <CardContent>
-                {/* Mobile Card View */}
-                <div className="lg:hidden space-y-4">
-                  {filteredAnimals.map((animal) => (
-                    <Card key={animal.id} className="p-4">
-                      <div className="flex items-start justify-between mb-3">
-                        <div>
-                          <h3 className="font-semibold text-lg">{animal.name}</h3>
-                          <p className="text-sm text-gray-600">{animal.id}</p>
-                        </div>
-                        {getStatusBadge(animal.status)}
-                      </div>
-                      <div className="grid grid-cols-2 gap-3 text-sm mb-4">
-                        <div>
-                          <span className="text-gray-500">Breed:</span>
-                          <p className="font-medium">{animal.breed}</p>
-                        </div>
-                        <div>
-                          <span className="text-gray-500">Age:</span>
-                          <p className="font-medium">{animal.age}</p>
-                        </div>
-                        <div>
-                          <span className="text-gray-500">Weight:</span>
-                          <p className="font-medium">{animal.weight}</p>
-                        </div>
-                        <div>
-                          <span className="text-gray-500">Location:</span>
-                          <p className="font-medium">{animal.location}</p>
-                        </div>
-                      </div>
-                      <div className="flex items-center justify-end space-x-2">
-                        <Button size="sm" variant="ghost" className="h-8 w-8 p-0">
-                          <Eye className="h-4 w-4" />
-                        </Button>
-                        <Button size="sm" variant="ghost" className="h-8 w-8 p-0">
-                          <Edit className="h-4 w-4" />
-                        </Button>
-                        <Button size="sm" variant="ghost" className="h-8 w-8 p-0 text-red-600 hover:text-red-700">
-                          <Trash2 className="h-4 w-4" />
-                        </Button>
-                      </div>
-                    </Card>
-                  ))}
-                </div>
-
-                {/* Desktop Table View */}
-                <div className="hidden lg:block overflow-x-auto">
-                  <table className="w-full">
-                    <thead>
-                      <tr className="border-b border-gray-200">
-                        <th className="text-left py-3 px-4 font-medium text-gray-600">ID</th>
-                        <th className="text-left py-3 px-4 font-medium text-gray-600">Name</th>
-                        <th className="text-left py-3 px-4 font-medium text-gray-600">Breed</th>
-                        <th className="text-left py-3 px-4 font-medium text-gray-600">Age</th>
-                        <th className="text-left py-3 px-4 font-medium text-gray-600">Weight</th>
-                        <th className="text-left py-3 px-4 font-medium text-gray-600">Status</th>
-                        <th className="text-left py-3 px-4 font-medium text-gray-600">Location</th>
-                        <th className="text-left py-3 px-4 font-medium text-gray-600">Actions</th>
-                      </tr>
-                    </thead>
-                    <tbody>
+                {loading ? (
+                  <div className="text-center py-10">Loading...</div>
+                ) : error ? (
+                  <div className="text-center text-red-600 py-10">{error}</div>
+                ) : (
+                  <>
+                    {/* Mobile Card View */}
+                    <div className="lg:hidden space-y-4">
                       {filteredAnimals.map((animal) => (
-                        <tr key={animal.id} className="border-b border-gray-100 hover:bg-gray-50">
-                          <td className="py-3 px-4 font-medium">{animal.id}</td>
-                          <td className="py-3 px-4">{animal.name}</td>
-                          <td className="py-3 px-4">{animal.breed}</td>
-                          <td className="py-3 px-4">{animal.age}</td>
-                          <td className="py-3 px-4">{animal.weight}</td>
-                          <td className="py-3 px-4">{getStatusBadge(animal.status)}</td>
-                          <td className="py-3 px-4">{animal.location}</td>
-                          <td className="py-3 px-4">
-                            <div className="flex items-center space-x-2">
-                              <Button size="sm" variant="ghost" className="h-8 w-8 p-0">
-                                <Eye className="h-4 w-4" />
-                              </Button>
-                              <Button size="sm" variant="ghost" className="h-8 w-8 p-0">
-                                <Edit className="h-4 w-4" />
-                              </Button>
-                              <Button size="sm" variant="ghost" className="h-8 w-8 p-0 text-red-600 hover:text-red-700">
-                                <Trash2 className="h-4 w-4" />
-                              </Button>
+                        <Card key={animal.reference_id} className="p-4">
+                          <div className="flex items-start justify-between mb-3">
+                            <div>
+                              <h3 className="font-semibold text-lg">{animal.name}</h3>
+                              <p className="text-sm text-gray-600">{animal.reference_id}</p>
                             </div>
-                          </td>
-                        </tr>
+                            {getStatusBadge(animal.current_status)}
+                          </div>
+                          <div className="grid grid-cols-2 gap-3 text-sm mb-4">
+                            <div>
+                              <span className="text-gray-500">Type:</span>
+                              <p className="font-medium">{animal.asset_type}</p>
+                            </div>
+                            <div>
+                              <span className="text-gray-500">Age (months):</span>
+                              <p className="font-medium">{animal.age_in_months}</p>
+                            </div>
+                            <div>
+                              <span className="text-gray-500">Weight (kg):</span>
+                              <p className="font-medium">{animal.weight_kg}</p>
+                            </div>
+                            <div>
+                              <span className="text-gray-500">Location:</span>
+                              <p className="font-medium">{animal.special_mark}</p>
+                            </div>
+                          </div>
+                          <div className="flex items-center justify-end space-x-2">
+                            <Button size="sm" variant="ghost" className="h-8 w-8 p-0">
+                              <Eye className="h-4 w-4" />
+                            </Button>
+                            <Button size="sm" variant="ghost" className="h-8 w-8 p-0">
+                              <Edit className="h-4 w-4" />
+                            </Button>
+                            <Button size="sm" variant="ghost" className="h-8 w-8 p-0 text-red-600 hover:text-red-700">
+                              <Trash2 className="h-4 w-4" />
+                            </Button>
+                          </div>
+                        </Card>
                       ))}
-                    </tbody>
-                  </table>
-                </div>
+                    </div>
+
+                    {/* Desktop Table View */}
+                    <div className="hidden lg:block overflow-x-auto" style={{ maxHeight: 500, overflowY: 'auto' }}>
+                      <table className="w-full">
+                        <thead>
+                          <tr className="border-b border-gray-200">
+                            <th className="text-left py-3 px-4 font-medium text-gray-600">ID</th>
+                            <th className="text-left py-3 px-4 font-medium text-gray-600">Name</th>
+                            <th className="text-left py-3 px-4 font-medium text-gray-600">Type</th>
+                            <th className="text-left py-3 px-4 font-medium text-gray-600">Age (months)</th>
+                            <th className="text-left py-3 px-4 font-medium text-gray-600">Weight (kg)</th>
+                            <th className="text-left py-3 px-4 font-medium text-gray-600">Status</th>
+                            <th className="text-left py-3 px-4 font-medium text-gray-600">Location</th>
+                            <th className="text-left py-3 px-4 font-medium text-gray-600">Actions</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          {filteredAnimals.map((animal) => (
+                            <tr key={animal.reference_id} className="border-b border-gray-100 hover:bg-gray-50">
+                              <td className="py-3 px-4 font-medium">{animal.reference_id}</td>
+                              <td className="py-3 px-4">{animal.name}</td>
+                              <td className="py-3 px-4">{animal.asset_type}</td>
+                              <td className="py-3 px-4">{animal.age_in_months}</td>
+                              <td className="py-3 px-4">{animal.weight_kg}</td>
+                              <td className="py-3 px-4">{getStatusBadge(animal.current_status)}</td>
+                              <td className="py-3 px-4">{animal.special_mark}</td>
+                              <td className="py-3 px-4">
+                                <div className="flex items-center space-x-2">
+                                  <Button size="sm" variant="ghost" className="h-8 w-8 p-0">
+                                    <Eye className="h-4 w-4" />
+                                  </Button>
+                                  <Button size="sm" variant="ghost" className="h-8 w-8 p-0">
+                                    <Edit className="h-4 w-4" />
+                                  </Button>
+                                  <Button size="sm" variant="ghost" className="h-8 w-8 p-0 text-red-600 hover:text-red-700">
+                                    <Trash2 className="h-4 w-4" />
+                                  </Button>
+                                </div>
+                              </td>
+                            </tr>
+                          ))}
+                        </tbody>
+                      </table>
+                    </div>
+
+                    {/* Pagination Controls */}
+                    <div className="flex justify-between items-center mt-6">
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={() => setPage((p) => Math.max(1, p - 1))}
+                        disabled={page === 1}
+                      >
+                        Previous
+                      </Button>
+                      <span>
+                        Page {page} of {Math.ceil(total / pageSize)}
+                      </span>
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={() => setPage((p) => p + 1)}
+                        disabled={page * pageSize >= total}
+                      >
+                        Next
+                      </Button>
+                    </div>
+                  </>
+                )}
               </CardContent>
             </Card>
           </main>

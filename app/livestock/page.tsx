@@ -96,110 +96,13 @@ export default function LivestockInventory() {
 
   return (
     <AuthGuard requireAuth={true}>
-      <div className="min-h-screen bg-gray-50">
-        {/* Header */}
-        <header className="bg-white border-b border-gray-200 px-4 lg:px-6 py-4">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center space-x-3">
-              <div className="w-8 h-8 lg:w-10 lg:h-10 bg-green-600 rounded-lg flex items-center justify-center">
-                <span className="text-white font-bold text-sm lg:text-lg">14</span>
-              </div>
-              <div>
-                <h1 className="text-lg lg:text-xl font-bold text-gray-900">LivestockPro ERP</h1>
-                <p className="text-xs lg:text-sm text-gray-600">Farm Management System</p>
-              </div>
-            </div>
-            <div className="flex items-center space-x-3 lg:space-x-4">
-              <div className="relative">
-                <Bell className="w-5 h-5 lg:w-6 lg:h-6 text-gray-600" />
-                <span className="absolute -top-2 -right-2 bg-red-500 text-white text-xs rounded-full w-4 h-4 lg:w-5 lg:h-5 flex items-center justify-center text-xs">
-                  3
-                </span>
-              </div>
-              <div className="flex items-center space-x-2">
-                <div className="w-7 h-7 lg:w-8 lg:h-8 bg-green-600 rounded-full flex items-center justify-center">
-                  <span className="text-white font-semibold text-xs lg:text-sm">JD</span>
-                </div>
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  onClick={handleLogout}
-                  className="text-gray-600 hover:text-red-600 hover:bg-red-50"
-                >
-                  <LogOut className="w-4 h-4" />
-                  <span className="hidden sm:inline ml-1">Logout</span>
-                </Button>
-              </div>
-            </div>
-          </div>
-        </header>
+    
+     
 
         <div className="flex relative">
-          {/* Mobile menu button */}
-          <div className="lg:hidden fixed top-20 left-4 z-50">
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={() => setSidebarOpen(!sidebarOpen)}
-              className="bg-white shadow-md"
-            >
-              <Menu className="h-4 w-4" />
-            </Button>
-          </div>
+    
 
-          {/* Sidebar */}
-          <aside
-            className={`
-          fixed lg:static inset-y-0 left-0 z-40 w-64 bg-white border-r border-gray-200 transform transition-transform duration-300 ease-in-out
-          ${sidebarOpen ? "translate-x-0" : "-translate-x-full lg:translate-x-0"}
-        `}
-          >
-            <nav className="p-4 space-y-2 pt-20 lg:pt-4">
-              <Link
-                href="/"
-                className="flex items-center space-x-3 px-3 py-2 text-gray-600 hover:bg-gray-50 rounded-lg"
-              >
-                <Home className="w-5 h-5" />
-                <span>Dashboard</span>
-              </Link>
-              <div className="flex items-center space-x-3 px-3 py-2 bg-green-50 text-green-700 rounded-lg">
-                <Users className="w-5 h-5" />
-                <span className="font-medium">Livestock Inventory</span>
-              </div>
-              <Link
-                href="/health"
-                className="flex items-center space-x-3 px-3 py-2 text-gray-600 hover:bg-gray-50 rounded-lg cursor-pointer"
-              >
-                <Heart className="w-5 h-5" />
-                <span>Health & Vaccination</span>
-              </Link>
-              <div className="flex items-center space-x-3 px-3 py-2 text-gray-600 hover:bg-gray-50 rounded-lg cursor-pointer">
-                <TrendingUp className="w-5 h-5" />
-                <span>Breeding & Reproduction</span>
-              </div>
-              <div className="flex items-center space-x-3 px-3 py-2 text-gray-600 hover:bg-gray-50 rounded-lg cursor-pointer">
-                <Zap className="w-5 h-5" />
-                <span>Production Tracking</span>
-              </div>
-              <Link
-                href="/financial"
-                className="flex items-center space-x-3 px-3 py-2 text-gray-600 hover:bg-gray-50 rounded-lg cursor-pointer"
-              >
-                <DollarSign className="w-5 h-5" />
-                <span>Financial Management</span>
-              </Link>
-              <div className="flex items-center space-x-3 px-3 py-2 text-gray-600 hover:bg-gray-50 rounded-lg cursor-pointer">
-                <TrendingUp className="w-5 h-5" />
-                <span>Reports & Analytics</span>
-              </div>
-              <div className="flex items-center space-x-3 px-3 py-2 text-gray-600 hover:bg-gray-50 rounded-lg cursor-pointer">
-                <Settings className="w-5 h-5" />
-                <span>Farm Settings</span>
-              </div>
-            </nav>
-          </aside>
 
-          <MobileOverlay isOpen={sidebarOpen} onClose={() => setSidebarOpen(false)} />
 
           {/* Main Content */}
           <main className="flex-1 lg:ml-0 p-4 lg:p-6 pt-16 lg:pt-6">
@@ -409,7 +312,7 @@ export default function LivestockInventory() {
             </Card>
           </main>
         </div>
-      </div>
+     
     </AuthGuard>
   )
 }

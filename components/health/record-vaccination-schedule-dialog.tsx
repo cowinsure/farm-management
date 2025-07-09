@@ -43,7 +43,7 @@ export function RecordVaccinationScheduleDialog({ open, onOpenChange, onSuccess 
     if (open) {
       setLoadingAssets(true)
       const token = typeof window !== "undefined" ? localStorage.getItem("access_token") : null
-      fetch("http://127.0.0.1:8000/api/lms/vaccination-schedule-service", {
+      fetch("http://127.0.0.1:8000/api/lms/assets-service", {
         headers: {
           ...(token ? { Authorization: `Bearer ${token}` } : {}),
         },

@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react"
 import { authService, type User } from "@/lib/api/auth"
+import { useRouter, usePathname } from 'next/navigation';
 
 interface AuthState {
   user: User | null
@@ -10,6 +11,9 @@ interface AuthState {
 }
 
 export function useAuth() {
+  const router = useRouter()
+  const pathname = usePathname();
+
   const [authState, setAuthState] = useState<AuthState>({
     user: null,
     isAuthenticated: false,
@@ -17,11 +21,10 @@ export function useAuth() {
   })
 
   useEffect(() => {
-    // Check authentication status on mount
+    // Check authentication status on mount and on route change
     const checkAuth = () => {
       const isAuthenticated = authService.isAuthenticated()
       const user = authService.getCurrentUser()
-
       setAuthState({
         user,
         isAuthenticated,
@@ -30,7 +33,10 @@ export function useAuth() {
     }
 
     checkAuth()
-  }, [])
+    // Listen for storage events (cross-tab login/logout)
+    window.addEventListener('storage', checkAuth)
+    return () => window.removeEventListener('storage', checkAuth)
+  }, [pathname])
 
   const login = (userData: User) => {
     setAuthState({
@@ -42,11 +48,13 @@ export function useAuth() {
 
   const logout = () => {
     authService.logout()
+     // Redirect to login page after logout
     setAuthState({
       user: null,
       isAuthenticated: false,
       isLoading: false,
     })
+    router.push('/auth/login')
   }
 
   return {

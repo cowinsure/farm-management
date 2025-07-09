@@ -1,5 +1,10 @@
+
 import type { Metadata } from 'next'
 import './globals.css'
+import ClientDashboardLayout from "@/components/layouts/ClientDashboardLayout"
+
+import React from "react"
+import ClientRootLayout from '@/components/layouts/ClientRootLayout'
 
 export const metadata: Metadata = {
   title: 'v0 App',
@@ -14,7 +19,12 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body>{children}</body>
+      <body>
+        <ClientRootLayout>{children}</ClientRootLayout>
+      </body>
     </html>
   )
 }
+
+// Client-side wrapper to conditionally show dashboard layout
+

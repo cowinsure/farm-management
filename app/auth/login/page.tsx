@@ -128,7 +128,7 @@ export default function LoginPage() {
                       id="phone"
                       type="tel"
                       placeholder="01XXXXXXXXX"
-                      value={formatPhoneDisplay(phoneNumber)}
+                      value={(phoneNumber)}
                       onChange={handlePhoneChange}
                       className={`pl-10 ${errors.phone ? "border-red-500" : ""}`}
                       disabled={isLoading}

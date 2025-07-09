@@ -31,6 +31,10 @@ import { MobileOverlay } from "@/components/mobile-overlay"
 import { useRouter } from "next/navigation"
 import { useAuth } from "@/hooks/useAuth"
 import { AuthGuard } from "@/components/auth-guard"
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog"
+import { useEffect } from "react"
+import { RecordHealthIssueDialog } from "@/components/health/record-health-issue-dialog"
+import { RecordVaccinationScheduleDialog } from "@/components/health/record-vaccination-schedule-dialog"
 
 // Sample data for vaccinations
 const vaccinations = [
@@ -68,41 +72,28 @@ const vaccinations = [
   },
 ]
 
-// Sample data for health records
-const healthRecords = [
-  {
-    id: "H001",
-    animal: "Bella",
-    animalId: "COW001",
-    type: "Routine Checkup",
-    date: "2024-05-28",
-    status: "Healthy",
-  },
-  {
-    id: "H002",
-    animal: "Luna",
-    animalId: "COW003",
-    type: "Sick Visit",
-    date: "2024-05-26",
-    status: "Under Treatment",
-  },
-  {
-    id: "H003",
-    animal: "Thunder",
-    animalId: "COW002",
-    type: "Routine Checkup",
-    date: "2024-05-25",
-    status: "Healthy",
-  },
-  {
-    id: "H004",
-    animal: "Daisy",
-    animalId: "COW004",
-    type: "Emergency Visit",
-    date: "2024-05-24",
-    status: "Complete",
-  },
-]
+// Add type for health record
+interface HealthRecord {
+  id: number
+  remarks: string
+  asset_id: number
+  symptoms: string
+  is_active: boolean
+  treatment: string
+  created_at: string
+  created_by: number
+  modified_at: string | null
+  modified_by: number | null
+  severity_id: number
+  status_name: string
+  asset_ref_id: string
+  condition_id: number
+  veterinarian: string
+  severity_name: string
+  condition_name: string
+  treatment_date: string
+  current_status_id: number
+}
 
 export default function HealthVaccination() {
   const [vaccinationSearch, setVaccinationSearch] = useState("")
@@ -127,13 +118,42 @@ export default function HealthVaccination() {
     return matchesSearch && matchesFilter
   })
 
-  const filteredHealthRecords = healthRecords.filter((record) => {
-    const matchesSearch =
-      record.animal.toLowerCase().includes(healthSearch.toLowerCase()) ||
-      record.type.toLowerCase().includes(healthSearch.toLowerCase())
-    const matchesFilter = healthFilter === "all" || record.status.toLowerCase() === healthFilter.toLowerCase()
-    return matchesSearch && matchesFilter
-  })
+  // Remove static healthRecords and summary values
+  const [healthRecords, setHealthRecords] = useState<HealthRecord[]>([])
+  const [summary, setSummary] = useState({ Total: 0, Critical: 0  , Sick:0})
+  const [currentPage, setCurrentPage] = useState(1)
+  const [pageSize] = useState(10)
+  const [totalRecords, setTotalRecords] = useState(0)
+  const [viewRecord, setViewRecord] = useState<HealthRecord | null>(null)
+  const [isDialogOpen, setIsDialogOpen] = useState(false)
+  const [recordDialogOpen, setRecordDialogOpen] = useState(false)
+  const [vaccinationDialogOpen, setVaccinationDialogOpen] = useState(false)
+
+  useEffect(() => {
+    async function fetchHealthRecords() {
+      try {
+    const token = typeof window !== "undefined" ? localStorage.getItem("access_token") : null;
+
+        const res = await fetch(
+          `http://127.0.0.1:8000/api/lms/health-record-service/?start_record=${(currentPage - 1) * pageSize + 1}&page_size=${pageSize}`,
+          {
+            headers: {
+              ...(token ? { Authorization: `Bearer ${token}` } : {}),
+            },
+          }
+        )
+        const data = await res.json()
+        if (data.status === "success") {
+          setHealthRecords(data.data.list)
+          setSummary(data.data.summary)
+          setTotalRecords(data.data.summary.Total)
+        }
+      } catch (e) {
+        // handle error
+      }
+    }
+    fetchHealthRecords()
+  }, [currentPage, pageSize])
 
   const getVaccinationStatusBadge = (status: string) => {
     switch (status.toLowerCase()) {
@@ -179,7 +199,7 @@ export default function HealthVaccination() {
             <div className="flex items-center space-x-3 lg:space-x-4">
               <div className="relative">
                 <Bell className="w-5 h-5 lg:w-6 lg:h-6 text-gray-600" />
-                <span className="absolute -top-2 -right-2 bg-red-500 text-white text-xs rounded-full w-4 h-4 lg:w-5 lg:h-5 flex items-center justify-center text-xs">
+                <span className="absolute -top-2 -right-2 bg-red-500 text-white  rounded-full w-4 h-4 lg:w-5 lg:h-5 flex items-center justify-center text-xs">
                   3
                 </span>
               </div>
@@ -268,16 +288,30 @@ export default function HealthVaccination() {
             <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-6">
               <h2 className="text-2xl font-bold text-gray-900">Health & Vaccination</h2>
               <div className="flex flex-col sm:flex-row gap-2 sm:gap-3 w-full sm:w-auto">
-                <Button className="bg-blue-600 hover:bg-blue-700">
+                <Button className="bg-blue-600 hover:bg-blue-700" onClick={() => setVaccinationDialogOpen(true)}>
                   <Calendar className="w-4 h-4 mr-2" />
                   Schedule Vaccination
                 </Button>
-                <Button className="bg-red-600 hover:bg-red-700">
+                <Button className="bg-red-600 hover:bg-red-700" onClick={() => setRecordDialogOpen(true)}>
                   <Plus className="w-4 h-4 mr-2" />
                   Record Health Issue
                 </Button>
               </div>
             </div>
+            <RecordVaccinationScheduleDialog
+              open={vaccinationDialogOpen}
+              onOpenChange={setVaccinationDialogOpen}
+              onSuccess={() => {
+                setCurrentPage(1); // Optionally refresh or reset page
+              }}
+            />
+            <RecordHealthIssueDialog
+              open={recordDialogOpen}
+              onOpenChange={setRecordDialogOpen}
+              onSuccess={() => {
+                setCurrentPage(1); // Optionally reset to first page
+              }}
+            />
 
             {/* Summary Cards */}
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
@@ -293,11 +327,23 @@ export default function HealthVaccination() {
 
               <Card>
                 <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                  <CardTitle className="text-sm font-medium text-gray-600">3</CardTitle>
+                  <CardTitle className="text-sm font-medium text-gray-600">{summary.Sick}</CardTitle>
                   <Heart className="h-4 w-4 text-red-600" />
                 </CardHeader>
                 <CardContent>
                   <div className="text-sm text-gray-600">Sick Animals</div>
+                </CardContent>
+              </Card>
+              
+              <Card>
+                <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                  <CardTitle className="text-sm font-medium text-gray-600">{summary.Critical}</CardTitle>
+                  <div className="w-4 h-4 bg-green-100 rounded flex items-center justify-center">
+                    <div className="w-2 h-2 bg-red-600 rounded-full"></div>
+                  </div>
+                </CardHeader>
+                <CardContent>
+                  <div className="text-sm text-gray-600">Critical Animals</div>
                 </CardContent>
               </Card>
 
@@ -315,7 +361,9 @@ export default function HealthVaccination() {
 
               <Card>
                 <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                  <CardTitle className="text-sm font-medium text-gray-600">96%</CardTitle>
+                  <CardTitle className="text-sm font-medium text-gray-600">
+                    {summary.Total > 0 ? `${Math.round(((summary.Total - summary.Critical) / summary.Total) * 100)}%` : "0%"}
+                  </CardTitle>
                   <div className="w-4 h-4 bg-purple-100 rounded flex items-center justify-center">
                     <div className="w-2 h-2 bg-purple-600 rounded-full"></div>
                   </div>
@@ -467,30 +515,26 @@ export default function HealthVaccination() {
                           </tr>
                         </thead>
                         <tbody>
-                          {filteredHealthRecords.map((record) => (
+                          {healthRecords.map((record) => (
                             <tr key={record.id} className="border-b border-gray-100 hover:bg-gray-50">
                               <td className="py-3 px-2">
                                 <div>
-                                  <div className="font-medium text-sm">{record.animal}</div>
-                                  <div className="text-xs text-gray-500">{record.animalId}</div>
+                                  <div className="font-medium text-sm">{record.asset_ref_id}</div>
+                                  <div className="text-xs text-gray-500">{record.asset_id}</div>
                                 </div>
                               </td>
-                              <td className="py-3 px-2 text-sm">{record.type}</td>
-                              <td className="py-3 px-2 text-sm">{record.date}</td>
-                              <td className="py-3 px-2">{getHealthStatusBadge(record.status)}</td>
+                              <td className="py-3 px-2 text-sm">{record.condition_name}</td>
+                              <td className="py-3 px-2 text-sm">{record.treatment_date || record.created_at}</td>
+                              <td className="py-3 px-2">{getHealthStatusBadge(record.status_name)}</td>
                               <td className="py-3 px-2">
                                 <div className="flex items-center space-x-1">
-                                  <Button size="sm" variant="ghost" className="h-7 w-7 p-0">
+                                  <Button size="sm" variant="ghost" className="h-7 w-7 p-0" onClick={() => { setViewRecord(record); setIsDialogOpen(true); }}>
                                     <Eye className="h-3 w-3" />
                                   </Button>
                                   <Button size="sm" variant="ghost" className="h-7 w-7 p-0">
                                     <Edit className="h-3 w-3" />
                                   </Button>
-                                  <Button
-                                    size="sm"
-                                    variant="ghost"
-                                    className="h-7 w-7 p-0 text-red-600 hover:text-red-700"
-                                  >
+                                  <Button size="sm" variant="ghost" className="h-7 w-7 p-0 text-red-600 hover:text-red-700">
                                     <Trash2 className="h-3 w-3" />
                                   </Button>
                                 </div>
@@ -504,6 +548,39 @@ export default function HealthVaccination() {
                 </CardContent>
               </Card>
             </div>
+            {/* Pagination Controls */}
+            <div className="flex justify-end items-center gap-2 mt-4">
+              <Button size="sm" variant="outline" onClick={() => setCurrentPage((p) => Math.max(1, p - 1))} disabled={currentPage === 1}>
+                Prev
+              </Button>
+              <span className="text-sm">Page {currentPage} of {Math.ceil(totalRecords / pageSize) || 1}</span>
+              <Button size="sm" variant="outline" onClick={() => setCurrentPage((p) => p + 1)} disabled={currentPage * pageSize >= totalRecords}>
+                Next
+              </Button>
+            </div>
+            {/* View Dialog */}
+            <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
+              <DialogContent>
+                <DialogHeader>
+                  <DialogTitle>Health Record Details</DialogTitle>
+                </DialogHeader>
+                {viewRecord && (
+                  <div className="space-y-2 text-sm">
+                    <div><b>Animal Ref:</b> {viewRecord.asset_ref_id}</div>
+                    <div><b>Animal ID:</b> {viewRecord.asset_id}</div>
+                    <div><b>Condition:</b> {viewRecord.condition_name}</div>
+                    <div><b>Severity:</b> {viewRecord.severity_name}</div>
+                    <div><b>Status:</b> {viewRecord.status_name}</div>
+                    <div><b>Symptoms:</b> {viewRecord.symptoms}</div>
+                    <div><b>Treatment:</b> {viewRecord.treatment}</div>
+                    <div><b>Veterinarian:</b> {viewRecord.veterinarian}</div>
+                    <div><b>Remarks:</b> {viewRecord.remarks}</div>
+                    <div><b>Treatment Date:</b> {viewRecord.treatment_date}</div>
+                    <div><b>Created At:</b> {viewRecord.created_at}</div>
+                  </div>
+                )}
+              </DialogContent>
+            </Dialog>
           </main>
         </div>
       </div>

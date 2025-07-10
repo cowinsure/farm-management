@@ -44,7 +44,7 @@ export default function Dashboard() {
         
 
           {/* Main Content */}
-          <main className="flex-1 lg:ml-0 p-4 lg:p-6">
+          <main className="flex-1 lg:ml-0 ">
             {/* Welcome Banner */}
             <div className="bg-gradient-to-r from-green-500 to-blue-600 rounded-lg p-6 mb-6 text-white">
               <h2 className="text-2xl font-bold mb-2">Welcome back, {user?.role || "User"}!</h2>

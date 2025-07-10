@@ -190,14 +190,14 @@ export default function LoginPage() {
               </form>
 
               {/* Sign Up Link */}
-              <div className="mt-6 text-center">
+              {/* <div className="mt-6 text-center">
                 <p className="text-sm text-gray-600">
                   {"Don't have an account? "}
                   <Link href="/auth/signup" className="text-green-600 hover:text-green-700 font-medium">
                     Sign up
                   </Link>
                 </p>
-              </div>
+              </div> */}
             </CardContent>
           </Card>
         </div>

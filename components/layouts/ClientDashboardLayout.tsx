@@ -11,6 +11,7 @@ import {
   TrendingUp,
   Users,
   Zap,
+  X
 } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import Link from "next/link"
@@ -23,6 +24,7 @@ export default function ClientDashboardLayout({ children }: { children: React.Re
   const [sidebarOpen, setSidebarOpen] = useState(false)
   const [activeModule, setActiveModule] = useState('/');
   const { user, logout } = useAuth()
+   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const handleLogout = () => logout()
   return (
     <div className="min-h-screen bg-gray-50">
@@ -60,22 +62,22 @@ export default function ClientDashboardLayout({ children }: { children: React.Re
               </Button>
             </div>
 
-            {/* <button 
+            <button 
               className="md:hidden p-2"
-              onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+              onClick={() => setSidebarOpen(!sidebarOpen)}
             >
-              {isMobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
-            </button> */}
+              {sidebarOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
+            </button>
           </div>
         </div>
       </header>
       <div className="flex">
         {/* Mobile menu button */}
-        <div className="lg:hidden fixed top-4 left-4 z-50">
+        {/* <div className="lg:hidden fixed top-4 left-4 z-50">
           <Button variant="outline" size="sm" onClick={() => setSidebarOpen(!sidebarOpen)} className="bg-white">
             <Menu className="h-4 w-4" />
           </Button>
-        </div>
+        </div> */}
         {/* Sidebar */}
         {/* <aside
           className={`
@@ -134,18 +136,19 @@ export default function ClientDashboardLayout({ children }: { children: React.Re
             </div>
           </nav>
         </aside> */}
-          <div className=" sm:px-6  py-6">
+          <div className=" w-full px-4 sm:px-6 lg:px-8 py-6">
           <div className="flex flex-col lg:flex-row">
-        <div className="lg:w-64 flex-shrink-0">
+        <div className={`lg:w-64 flex-shrink-0 ${sidebarOpen ? 'block' : 'hidden lg:block'}`}>
 
           <Navigation activeModule={activeModule} setActiveModule={setActiveModule} />
         </div>
+                {/* Main Content */}
+        <main className="flex-1 lg:ml-0  ">{children}</main>
         </div>
         </div>
 
-        <MobileOverlay isOpen={sidebarOpen} onClose={() => setSidebarOpen(false)} />
-        {/* Main Content */}
-        <main className="flex-1 lg:ml-0 p-4 lg:p-6">{children}</main>
+        {/* <MobileOverlay isOpen={sidebarOpen} onClose={() => setSidebarOpen(false)} /> */}
+
       </div>
     </div>
   )

@@ -17,6 +17,7 @@ import {
   Zap,
   Menu,
   LogOut,
+  PawPrint
 } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
@@ -28,6 +29,7 @@ import { MobileOverlay } from "@/components/mobile-overlay"
 import { useRouter } from "next/navigation"
 import { useAuth } from "@/hooks/useAuth"
 import { AuthGuard } from "@/components/auth-guard"
+import ViewAnimalModal from "@/components/Livestock/ViewAnimalModal"
 
 export default function LivestockInventory() {
   const [animals, setAnimals] = useState<any[]>([])
@@ -43,6 +45,8 @@ export default function LivestockInventory() {
   const [Active,setActive] = useState(0)
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
+  const [viewModalOpen, setViewModalOpen] = useState(false)
+  const [selectedAnimal, setSelectedAnimal] = useState<any | null>(null)
 
   const router = useRouter()
 
@@ -94,6 +98,18 @@ export default function LivestockInventory() {
     }
   }
 
+  // Helper to map animal to modal format
+  const mapAnimalForModal = (animal: any) => ({
+    id: animal.reference_id,
+    name: animal.name,
+    breed: animal.asset_type,
+    age: animal.age_in_months ? String(animal.age_in_months) : '',
+    gender: animal.gender,
+    weight: animal.weight_kg ? String(animal.weight_kg) : '',
+    status: animal.current_status,
+    location: animal.special_mark,
+  })
+
   return (
     <AuthGuard requireAuth={true}>
     
@@ -105,10 +121,10 @@ export default function LivestockInventory() {
 
 
           {/* Main Content */}
-          <main className="flex-1 lg:ml-0 p-4 lg:p-6 pt-16 lg:pt-6">
+          <main className="flex-1 lg:ml-0 px-4">
             {/* Page Header */}
             <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-6">
-              <h2 className="text-xl lg:text-2xl font-bold text-gray-900">Livestock Inventory</h2>
+            <h2 className="text-3xl font-bold text-gray-900">Livestock Inventory</h2>
               <Button className="bg-green-600 hover:bg-green-700 w-full sm:w-auto">
                 <Plus className="w-4 h-4 mr-2" />
                 Add Animal
@@ -117,7 +133,7 @@ export default function LivestockInventory() {
 
             {/* Summary Cards */}
             <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 lg:gap-6 mb-6 lg:mb-8">
-              <Card>
+              {/* <Card>
                 <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                   <CardTitle className="text-lg lg:text-xl font-medium text-gray-600">{total}</CardTitle>
                   <Users className="h-4 w-4 text-green-600" />
@@ -125,7 +141,21 @@ export default function LivestockInventory() {
                 <CardContent>
                   <div className="text-xs lg:text-sm text-gray-600">Total Animals</div>
                 </CardContent>
-              </Card>
+              </Card> */}
+              <Card>
+          <CardContent className="p-4">
+            <div className="flex items-center space-x-3">
+              <div className="p-2 bg-green-100 rounded-lg">
+                {/* <Users className="w-6 h-6 text-green-600" /> */}
+                <PawPrint className="w-6 h-6 text-green-600" />
+              </div>
+              <div>
+                <div className="text-2xl font-bold text-green-600">{total}</div>
+                <div className="text-sm text-gray-600">Total Animals</div>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
 
               {/* You can add more summary cards here if needed */}
             </div>
@@ -220,21 +250,21 @@ export default function LivestockInventory() {
                               <span className="text-gray-500">Weight (kg):</span>
                               <p className="font-medium">{animal.weight_kg}</p>
                             </div>
-                            <div>
+                            {/* <div>
                               <span className="text-gray-500">Location:</span>
                               <p className="font-medium">{animal.special_mark}</p>
-                            </div>
+                            </div> */}
                           </div>
                           <div className="flex items-center justify-end space-x-2">
-                            <Button size="sm" variant="ghost" className="h-8 w-8 p-0">
+                            <Button size="sm" variant="ghost" className="h-8 w-8 p-0" onClick={() => { setSelectedAnimal(mapAnimalForModal(animal)); setViewModalOpen(true); }}>
                               <Eye className="h-4 w-4" />
                             </Button>
-                            <Button size="sm" variant="ghost" className="h-8 w-8 p-0">
+                            {/* <Button size="sm" variant="ghost" className="h-8 w-8 p-0">
                               <Edit className="h-4 w-4" />
                             </Button>
                             <Button size="sm" variant="ghost" className="h-8 w-8 p-0 text-red-600 hover:text-red-700">
                               <Trash2 className="h-4 w-4" />
-                            </Button>
+                            </Button> */}
                           </div>
                         </Card>
                       ))}
@@ -251,7 +281,7 @@ export default function LivestockInventory() {
                             <th className="text-left py-3 px-4 font-medium text-gray-600">Age (months)</th>
                             <th className="text-left py-3 px-4 font-medium text-gray-600">Weight (kg)</th>
                             <th className="text-left py-3 px-4 font-medium text-gray-600">Status</th>
-                            <th className="text-left py-3 px-4 font-medium text-gray-600">Location</th>
+                            {/* <th className="text-left py-3 px-4 font-medium text-gray-600">Location</th> */}
                             <th className="text-left py-3 px-4 font-medium text-gray-600">Actions</th>
                           </tr>
                         </thead>
@@ -264,18 +294,18 @@ export default function LivestockInventory() {
                               <td className="py-3 px-4">{animal.age_in_months}</td>
                               <td className="py-3 px-4">{animal.weight_kg}</td>
                               <td className="py-3 px-4">{getStatusBadge(animal.current_status)}</td>
-                              <td className="py-3 px-4">{animal.special_mark}</td>
+                              {/* <td className="py-3 px-4">{animal.special_mark}</td> */}
                               <td className="py-3 px-4">
                                 <div className="flex items-center space-x-2">
-                                  <Button size="sm" variant="ghost" className="h-8 w-8 p-0">
+                                  <Button size="sm" variant="ghost" className="h-8 w-8 p-0" onClick={() => { setSelectedAnimal(mapAnimalForModal(animal)); setViewModalOpen(true); }}>
                                     <Eye className="h-4 w-4" />
                                   </Button>
-                                  <Button size="sm" variant="ghost" className="h-8 w-8 p-0">
+                                  {/* <Button size="sm" variant="ghost" className="h-8 w-8 p-0">
                                     <Edit className="h-4 w-4" />
                                   </Button>
                                   <Button size="sm" variant="ghost" className="h-8 w-8 p-0 text-red-600 hover:text-red-700">
                                     <Trash2 className="h-4 w-4" />
-                                  </Button>
+                                  </Button> */}
                                 </div>
                               </td>
                             </tr>
@@ -313,6 +343,8 @@ export default function LivestockInventory() {
           </main>
         </div>
      
+      {/* Place modal at root of component */}
+      <ViewAnimalModal open={viewModalOpen} onOpenChange={setViewModalOpen} animal={selectedAnimal} />
     </AuthGuard>
   )
 }

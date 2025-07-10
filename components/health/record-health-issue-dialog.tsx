@@ -37,7 +37,7 @@ const statuses = [
 
 export function RecordHealthIssueDialog({ open, onOpenChange, onSuccess }: RecordHealthIssueDialogProps) {
   const { toast } = useToast()
-  const [assets, setAssets] = useState<{ id: number; name: string }[]>([])
+  const [assets, setAssets] = useState<{ id: number; name: string; reference_id: string }[]>([])
   const [loadingAssets, setLoadingAssets] = useState(false)
   const [form, setForm] = useState({
     condition_id: "",
@@ -64,9 +64,15 @@ export function RecordHealthIssueDialog({ open, onOpenChange, onSuccess }: Recor
       })
         .then((res) => res.json())
         .then((data) => {
+          console.log("Assets data:", data);
+          
           // Assume data.list or data.data.list
           const list = data?.data?.list || data?.list || []
-          setAssets(list.map((a: any) => ({ id: a.id, name: a.name || a.asset_ref_id || `Asset ${a.id}` })))
+          setAssets(list.map((a: any) => ({ 
+            id: a.id,
+            name: a.name || a.asset_ref_id || `Asset ${a.id}`, 
+            reference_id: a.reference_id  
+          })))
         })
         .catch(() => setAssets([]))
         .finally(() => setLoadingAssets(false))
@@ -194,7 +200,7 @@ export function RecordHealthIssueDialog({ open, onOpenChange, onSuccess }: Recor
                 </SelectTrigger>
                 <SelectContent>
                   {assets.map((a) => (
-                    <SelectItem key={a.id} value={String(a.id)}>{a.name}</SelectItem>
+                    <SelectItem key={a.id} value={String(a.id)}>{a.reference_id}</SelectItem>
                   ))}
                 </SelectContent>
               </Select>

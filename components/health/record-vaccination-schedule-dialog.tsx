@@ -28,7 +28,7 @@ const vaccines = [
 
 export function RecordVaccinationScheduleDialog({ open, onOpenChange, onSuccess }: RecordVaccinationScheduleDialogProps) {
   const { toast } = useToast()
-  const [assets, setAssets] = useState<{ id: number; name: string }[]>([])
+  const [assets, setAssets] = useState<{ id: number; name: string; reference_id: string }[]>([])
   const [loadingAssets, setLoadingAssets] = useState(false)
   const [form, setForm] = useState({
     asset_id: "",
@@ -51,7 +51,11 @@ export function RecordVaccinationScheduleDialog({ open, onOpenChange, onSuccess 
         .then((res) => res.json())
         .then((data) => {
           const list = data?.data?.list || data?.list || []
-          setAssets(list.map((a: any) => ({ id: a.id, name: a.name || a.asset_ref_id || `Asset ${a.id}` })))
+          setAssets(list.map((a: any) => ({ 
+            id: a.id,
+            name: a.name || a.asset_ref_id || `Asset ${a.id}`, 
+            reference_id: a.reference_id  
+          })))
         })
         .catch(() => setAssets([]))
         .finally(() => setLoadingAssets(false))
@@ -124,7 +128,7 @@ export function RecordVaccinationScheduleDialog({ open, onOpenChange, onSuccess 
                 </SelectTrigger>
                 <SelectContent>
                   {assets.map((a) => (
-                    <SelectItem key={a.id} value={String(a.id)}>{a.name}</SelectItem>
+                    <SelectItem key={a.id} value={String(a.id)}>{a.reference_id}</SelectItem>
                   ))}
                 </SelectContent>
               </Select>

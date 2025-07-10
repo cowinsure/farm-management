@@ -20,6 +20,8 @@ import {
   Zap,
   Menu,
   LogOut,
+  TriangleAlert
+  
 } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
@@ -193,7 +195,7 @@ export default function HealthVaccination() {
 
 
           {/* Main Content */}
-          <main className="flex-1 lg:ml-0 p-4 lg:p-6">
+          <main className="flex-1 lg:ml-0 px-4">
             {/* Page Header */}
             <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-6">
               <h2 className="text-2xl font-bold text-gray-900">Health & Vaccination</h2>
@@ -225,27 +227,45 @@ export default function HealthVaccination() {
 
             {/* Summary Cards */}
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+            
               <Card>
-                <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                  <CardTitle className="text-sm font-medium text-gray-600">{vaccinationDue}</CardTitle>
-                  <Syringe className="h-4 w-4 text-blue-600" />
-                </CardHeader>
-                <CardContent>
-                  <div className="text-sm text-gray-600">Due Vaccinations</div>
-                </CardContent>
-              </Card>
+          <CardContent className="p-4">
+            <div className="flex items-center space-x-2">
+              <Syringe className="w-8 h-8 text-blue-600" />
+              <div>
+                <div className="text-2xl font-bold text-blue-600">{vaccinationDue}</div>
+                <div className="text-sm text-gray-600">Due Vaccinations</div>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
 
-              <Card>
-                <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                  <CardTitle className="text-sm font-medium text-gray-600">{summary.Sick}</CardTitle>
-                  <Heart className="h-4 w-4 text-red-600" />
-                </CardHeader>
-                <CardContent>
-                  <div className="text-sm text-gray-600">Sick Animals</div>
-                </CardContent>
-              </Card>
+          
+          <Card>
+          <CardContent className="p-4">
+            <div className="flex items-center space-x-2">
+              <Heart className="w-8 h-8 text-red-600" />
+              <div>
+                <div className="text-2xl font-bold text-red-600">{summary.Sick}</div>
+                <div className="text-sm text-gray-600">Sick Animals</div>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardContent className="p-4">
+            <div className="flex items-center space-x-2">
+              <TriangleAlert className="w-8 h-8 text-red-600" />
+              <div>
+                <div className="text-2xl font-bold text-red-600">{summary.Critical}</div>
+                <div className="text-sm text-gray-600">Critical Animals</div>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
               
-              <Card>
+              {/* <Card>
                 <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                   <CardTitle className="text-sm font-medium text-gray-600">{summary.Critical}</CardTitle>
                   <div className="w-4 h-4 bg-green-100 rounded flex items-center justify-center">
@@ -255,7 +275,7 @@ export default function HealthVaccination() {
                 <CardContent>
                   <div className="text-sm text-gray-600">Critical Animals</div>
                 </CardContent>
-              </Card>
+              </Card> */}
 
               {/* <Card>
                 <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">

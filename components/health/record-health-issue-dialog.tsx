@@ -7,6 +7,12 @@ import {
   DialogFooter,
   DialogClose,
 } from "@/components/ui/dialog"
+import {
+  Plus,
+  Image as ImageIcon,
+  Camera,
+  Upload,
+} from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
@@ -39,6 +45,7 @@ export function RecordHealthIssueDialog({ open, onOpenChange, onSuccess }: Recor
   const { toast } = useToast()
   const [assets, setAssets] = useState<{ id: number; name: string; reference_id: string }[]>([])
   const [loadingAssets, setLoadingAssets] = useState(false)
+     const [isMuzzelModalOpen, setIsMuzzelModalOpen] = useState(false);
   const [form, setForm] = useState({
     condition_id: "",
     severity_id: "",
@@ -204,6 +211,17 @@ export function RecordHealthIssueDialog({ open, onOpenChange, onSuccess }: Recor
                   ))}
                 </SelectContent>
               </Select>
+            </div>
+             <div>
+              <label className="block text-sm font-medium mb-1">Muzzel Verification</label>
+              <div className="flex flex-row relative">
+
+              <Input  name="muzzel" value={form.asset_id} onChange={handleChange} disabled />
+              <button
+              type="button" className="absolute right-0 bottom-0 top-0 mx-2">
+                <Camera className="h-6 w-6 text-gray-500" onClick={() => setIsMuzzelModalOpen(true)} /> 
+              </button>
+              </div>
             </div>
             <div>
               <label className="block text-sm font-medium mb-1">Status</label>

@@ -125,7 +125,11 @@ export default function LivestockInventory() {
             {/* Page Header */}
             <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-6">
             <h2 className="text-3xl font-bold text-gray-900">Livestock Inventory</h2>
-              <Button className="bg-green-600 hover:bg-green-700 w-full sm:w-auto">
+              <Button onClick={
+                () => {
+              router.push("/livestock/add_cow")
+                }
+              } className="bg-green-600 hover:bg-green-700 w-full sm:w-auto">
                 <Plus className="w-4 h-4 mr-2" />
                 Add Animal
               </Button>

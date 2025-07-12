@@ -5,6 +5,7 @@ import ClientDashboardLayout from "@/components/layouts/ClientDashboardLayout"
 
 import React from "react"
 import ClientRootLayout from '@/components/layouts/ClientRootLayout'
+import { CowRegistrationProvider } from '@/context/CowRegistrationContext'
 
 export const metadata: Metadata = {
   title: 'v0 App',
@@ -20,7 +21,10 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body>
+         <CowRegistrationProvider>
+
         <ClientRootLayout>{children}</ClientRootLayout>
+         </CowRegistrationProvider>
       </body>
     </html>
   )

@@ -36,7 +36,9 @@ const FinancialModal = ({ type }: FinancialModalProps) => {
     const token = typeof window !== 'undefined' ? localStorage.getItem('access_token') : null;
     const start_record = 1;
     const page_size = 10;
-    const ledgerType = type === 'income' ? 'I' : 'E';
+    const ledgerType = type === 'income' ? "I" : "E";
+    console.log(`Fetching ledgers for type: ${ledgerType}`);
+    
     const url = `http://127.0.0.1:8000/api/gls/ledger-service/?start_record=${start_record}&page_size=${page_size}&type=${ledgerType}`;
     fetch(url, {
       method: 'GET',

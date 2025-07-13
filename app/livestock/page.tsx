@@ -63,9 +63,16 @@ export default function LivestockInventory() {
     )
       .then(res => res.json())
       .then(data => {
-        setAnimals(data.data.list)
-        setTotal(data.data.summary.Total)
-        setActive(data.data.summary.Active)
+        if (data && data.data && data.data.list && data.data.summary) {
+          setAnimals(data.data.list)
+          setTotal(data.data.summary.Total)
+          setActive(data.data.summary.Active)
+        } else {
+          setAnimals([])
+          setTotal(0)
+          setActive(0)
+          setError("Invalid data format from server")
+        }
       })
       .catch(() => setError("Failed to fetch data"))
       .finally(() => setLoading(false))

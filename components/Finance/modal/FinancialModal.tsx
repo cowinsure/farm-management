@@ -86,6 +86,7 @@ const FinancialModal = ({ type }: FinancialModalProps) => {
       branch_id: 1,
       created_by: 99,
     };
+    console.log('Submitting financial record:', payload);
     try {
       const token = typeof window !== 'undefined' ? localStorage.getItem('access_token') : null;
       const res = await fetch('http://127.0.0.1:8000/api/gls/income-expense-service/', {

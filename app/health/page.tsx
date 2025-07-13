@@ -37,7 +37,8 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/u
 import { useEffect } from "react"
 import { RecordHealthIssueDialog } from "@/components/health/record-health-issue-dialog"
 import { RecordVaccinationScheduleDialog } from "@/components/health/record-vaccination-schedule-dialog"
-import VaccinationScheduleDetailsDialog from "@/components/health/VaccinationScheduleDetailsDialog"
+import ViewVaccinationModal from "@/components/health/viewVaccinationModalProps"
+import ViewHealthModal from "@/components/health/viewHealthModalProps"
 
 // Add type for health record
 interface HealthRecord {
@@ -306,10 +307,18 @@ export default function HealthVaccination() {
 
             {/* Vaccination Schedule (API-driven) Table */}
           
-            <VaccinationScheduleDetailsDialog
+            <ViewVaccinationModal
               open={isVaccinationDialogOpen}
               onOpenChange={setIsVaccinationDialogOpen}
-              record={selectedVaccination}
+              schedule={selectedVaccination ? {
+                id: selectedVaccination.id,
+                animalId: selectedVaccination.reference_id,
+                animalName: selectedVaccination.name,
+                vaccine: selectedVaccination.vaccine_name,
+                dueDate: selectedVaccination.due_date,
+                status: selectedVaccination.status,
+                notes: selectedVaccination.remarks || undefined,
+              } : null}
             />
 
             {/* Main Content Grid */}
@@ -493,28 +502,19 @@ export default function HealthVaccination() {
             </div>
           
             {/* View Dialog */}
-            <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
-              <DialogContent>
-                <DialogHeader>
-                  <DialogTitle>Health Record Details</DialogTitle>
-                </DialogHeader>
-                {viewRecord && (
-                  <div className="space-y-2 text-sm">
-                    <div><b>Animal Ref:</b> {viewRecord.asset_ref_id}</div>
-                    <div><b>Animal ID:</b> {viewRecord.asset_id}</div>
-                    <div><b>Condition:</b> {viewRecord.condition_name}</div>
-                    <div><b>Severity:</b> {viewRecord.severity_name}</div>
-                    <div><b>Status:</b> {viewRecord.status_name}</div>
-                    <div><b>Symptoms:</b> {viewRecord.symptoms}</div>
-                    <div><b>Treatment:</b> {viewRecord.treatment}</div>
-                    <div><b>Veterinarian:</b> {viewRecord.veterinarian}</div>
-                    <div><b>Remarks:</b> {viewRecord.remarks}</div>
-                    <div><b>Treatment Date:</b> {viewRecord.treatment_date}</div>
-                    <div><b>Created At:</b> {viewRecord.created_at}</div>
-                  </div>
-                )}
-              </DialogContent>
-            </Dialog>
+            <ViewHealthModal
+              open={isDialogOpen}
+              onOpenChange={setIsDialogOpen}
+              record={viewRecord ? {
+                id: String(viewRecord.id),
+                animalId: String(viewRecord.asset_id),
+                animalName: viewRecord.asset_ref_id,
+                checkupType: viewRecord.condition_name,
+                date: viewRecord.treatment_date || viewRecord.created_at,
+                status: viewRecord.status_name,
+                notes: viewRecord.remarks || undefined,
+              } : null}
+            />
           </main>
         </div>
    

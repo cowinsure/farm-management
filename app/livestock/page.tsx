@@ -51,6 +51,8 @@ export default function LivestockInventory() {
   const router = useRouter()
 
   useEffect(() => {
+    console.log(page, pageSize);
+    
     setLoading(true)
     setError(null)
     const token = typeof window !== "undefined" ? localStorage.getItem("access_token") : null;
@@ -61,18 +63,17 @@ export default function LivestockInventory() {
         },
       }
     )
-      .then(res => res.json())
+      .then(res => res.json()
+      )
       .then(data => {
-        if (data && data.data && data.data.list && data.data.summary) {
-          setAnimals(data.data.list)
-          setTotal(data.data.summary.Total)
-          setActive(data.data.summary.Active)
-        } else {
-          setAnimals([])
-          setTotal(0)
-          setActive(0)
-          setError("Invalid data format from server")
-        }
+        console.log("Fetched data:", data);
+        setAnimals(data.data.list)
+        const newTotal = typeof data.data.summary.Total === 'number' ? data.data.summary.Total : 0;
+        setTotal(newTotal)
+        setActive(data.data.summary.Active)
+        // If the current page is now out of range, reset to last valid page
+        const lastPage = pageSize > 0 ? Math.max(1, Math.ceil(newTotal / pageSize)) : 1;
+        if (page > lastPage) setPage(lastPage);
       })
       .catch(() => setError("Failed to fetch data"))
       .finally(() => setLoading(false))
@@ -82,7 +83,7 @@ export default function LivestockInventory() {
     logout()
   }
 
-  const filteredAnimals = animals?.filter((animal) => {
+  const filteredAnimals = (Array.isArray(animals) ? animals : []).filter((animal) => {
     const matchesSearch =
       animal.name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
       animal.reference_id?.toLowerCase().includes(searchTerm.toLowerCase())
@@ -177,7 +178,7 @@ export default function LivestockInventory() {
                 <CardTitle className="text-lg lg:text-xl">Animal Registry</CardTitle>
                 <div className="flex flex-col lg:flex-row items-start lg:items-center justify-between gap-4">
                   <p className="text-sm text-gray-600">
-                    Showing {filteredAnimals.length} of {total} animals
+                    Showing {(filteredAnimals ? filteredAnimals.length : 0)} of {total} animals
                   </p>
 
                   {/* Search and Filters */}
@@ -239,7 +240,7 @@ export default function LivestockInventory() {
                   <>
                     {/* Mobile Card View */}
                     <div className="lg:hidden space-y-4">
-                      {filteredAnimals.map((animal) => (
+                      {(filteredAnimals || []).map((animal) => (
                         <Card key={animal.reference_id} className="p-4">
                           <div className="flex items-start justify-between mb-3">
                             <div>
@@ -297,7 +298,7 @@ export default function LivestockInventory() {
                           </tr>
                         </thead>
                         <tbody>
-                          {filteredAnimals.map((animal) => (
+                          {(filteredAnimals || []).map((animal) => (
                             <tr key={animal.reference_id} className="border-b border-gray-100 hover:bg-gray-50">
                               <td className="py-3 px-4 font-medium">{animal.reference_id}</td>
                               <td className="py-3 px-4">{animal.name}</td>
@@ -336,13 +337,16 @@ export default function LivestockInventory() {
                         Previous
                       </Button>
                       <span>
-                        Page {page} of {Math.ceil(total / pageSize)}
+                        Page {page} of {pageSize > 0 && total > 0 ? Math.max(1, Math.ceil(total / pageSize)) : 1}
                       </span>
                       <Button
                         variant="outline"
                         size="sm"
-                        onClick={() => setPage((p) => p + 1)}
-                        disabled={page * pageSize >= total}
+                        onClick={() => {
+                          const lastPage = pageSize > 0 && total > 0 ? Math.max(1, Math.ceil(total / pageSize)) : 1;
+                          if (page < lastPage) setPage(page + 1);
+                        }}
+                        disabled={pageSize === 0 || total === 0 || page >= (pageSize > 0 && total > 0 ? Math.max(1, Math.ceil(total / pageSize)) : 1)}
                       >
                         Next
                       </Button>

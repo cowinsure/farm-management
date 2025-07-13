@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import PhotoCaptureModal from '@/helper/PhotoCaptureModal';
 import { useCowRegistration } from '@/context/CowRegistrationContext';
+import { Camera } from "lucide-react";
 
 const StepFour: React.FC = () => {
     const { data, updateStep, validateStep, reset } = useCowRegistration();
@@ -57,7 +58,7 @@ const StepFour: React.FC = () => {
               {/* Right Side Image Card */}
               <div className="border rounded-lg shadow p-4 bg-white">
                 <div className="flex items-center mb-2">
-                  <span className="mr-2 text-green-600">📷</span>
+                  <Camera className="mr-2 text-green-600" />
                   <span className="font-bold">Right Side Image</span>
                 </div>
                 <div className="text-sm text-gray-600 mb-2">Capture the right side view of the animal</div>
@@ -90,7 +91,7 @@ const StepFour: React.FC = () => {
               {/* Left Side Image Card */}
               <div className="border rounded-lg shadow p-4 bg-white">
                 <div className="flex items-center mb-2">
-                  <span className="mr-2 text-green-600">📷</span>
+                  <Camera className="mr-2 text-green-600" />
                   <span className="font-bold">Left Side Image</span>
                 </div>
                 <div className="text-sm text-gray-600 mb-2">Capture the left side view of the animal</div>
@@ -123,7 +124,7 @@ const StepFour: React.FC = () => {
               {/* Owner & Animal Image Card */}
               <div className="border rounded-lg shadow p-4 bg-white">
                 <div className="flex items-center mb-2">
-                  <span className="mr-2 text-green-600">📷</span>
+                  <Camera className="mr-2 text-green-600" />
                   <span className="font-bold">Owner & Animal Image</span>
                 </div>
                 <div className="text-sm text-gray-600 mb-2">Capture image with the owner and animal</div>
@@ -156,7 +157,7 @@ const StepFour: React.FC = () => {
               {/* Birthmark Image Card */}
               <div className="border rounded-lg shadow p-4 bg-white">
                 <div className="flex items-center mb-2">
-                  <span className="mr-2 text-green-600">📷</span>
+                  <Camera className="mr-2 text-green-600" />
                   <span className="font-bold">Birthmark Image</span>
                 </div>
                 <div className="text-sm text-gray-600 mb-2">Capture any distinctive marks or birthmarks</div>
@@ -189,7 +190,7 @@ const StepFour: React.FC = () => {
               {/* Challan Paper Card */}
               <div className="border rounded-lg shadow p-4 bg-white">
                 <div className="flex items-center mb-2">
-                  <span className="mr-2 text-green-600">📷</span>
+                  <Camera className="mr-2 text-green-600" />
                   <span className="font-bold">Challan Paper</span>
                 </div>
                 <div className="text-sm text-gray-600 mb-2">Capture the challan or receipt document</div>
@@ -222,7 +223,7 @@ const StepFour: React.FC = () => {
               {/* Chairman Certificate Card */}
               <div className="border rounded-lg shadow p-4 bg-white">
                 <div className="flex items-center mb-2">
-                  <span className="mr-2 text-green-600">📷</span>
+                  <Camera className="mr-2 text-green-600" />
                   <span className="font-bold">Chairman Certificate</span>
                 </div>
                 <div className="text-sm text-gray-600 mb-2">Capture the chairman certificate document</div>
@@ -255,7 +256,7 @@ const StepFour: React.FC = () => {
               {/* Vet Certificate Card */}
               <div className="border rounded-lg shadow p-4 bg-white">
                 <div className="flex items-center mb-2">
-                  <span className="mr-2 text-green-600">📷</span>
+                  <Camera className="mr-2 text-green-600" />
                   <span className="font-bold">Vet Certificate</span>
                 </div>
                 <div className="text-sm text-gray-600 mb-2">Capture the vet certificate document</div>

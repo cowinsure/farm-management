@@ -1,4 +1,4 @@
-
+'use client';
 import React, { useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -62,10 +62,10 @@ const FarmSettings = () => {
       <Tabs defaultValue="general" className="space-y-4">
         <TabsList className="grid w-full grid-cols-5">
           <TabsTrigger value="general">General</TabsTrigger>
-          <TabsTrigger value="users">Users</TabsTrigger>
-          <TabsTrigger value="notifications">Notifications</TabsTrigger>
+          {/* <TabsTrigger value="users">Users</TabsTrigger> */}
+          {/* <TabsTrigger value="notifications">Notifications</TabsTrigger>
           <TabsTrigger value="security">Security</TabsTrigger>
-          <TabsTrigger value="backup">Backup</TabsTrigger>
+          <TabsTrigger value="backup">Backup</TabsTrigger> */}
         </TabsList>
 
         <TabsContent value="general" className="space-y-4">

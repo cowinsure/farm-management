@@ -75,7 +75,7 @@ export default function LivestockInventory() {
     logout()
   }
 
-  const filteredAnimals = animals.filter((animal) => {
+  const filteredAnimals = animals?.filter((animal) => {
     const matchesSearch =
       animal.name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
       animal.reference_id?.toLowerCase().includes(searchTerm.toLowerCase())

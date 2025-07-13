@@ -50,138 +50,240 @@ const StepFour: React.FC = () => {
 
     return (
         <div>
-            <h2 className="text-xl font-semibold mb-4">Upload Images</h2>
-            <div className="flex flex-col gap-4 justify-start w-auto">
+            <h2 className="text-2xl font-bold mb-2">Upload Images</h2>
+            <p className="mb-6 text-gray-600">Capture and upload required images for animal registration</p>
 
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              {/* Right Side Image Card */}
+              <div className="border rounded-lg shadow p-4 bg-white">
+                <div className="flex items-center mb-2">
+                  <span className="mr-2 text-green-600">📷</span>
+                  <span className="font-bold">Right Side Image</span>
+                </div>
+                <div className="text-sm text-gray-600 mb-2">Capture the right side view of the animal</div>
+                <PhotoCaptureModal
+                  onPhotoCapture={(file) => updateImage("right_side_image", file)}
+                  triggerText="Capture Right Side"
+                  title="Take Side Image"
+                />
+                {images.right_side_image && (
+                  <div className="mt-3">
+                    <img
+                      src={getPreviewUrl(images.right_side_image)!}
+                      alt="Right Side Image"
+                      className="w-full h-32 object-cover border rounded mb-2"
+                    />
+                    <div className="flex items-center text-green-600 text-sm">
+                      <span className="mr-1">✔️</span>
+                      Image captured
+                      <button
+                        className="ml-auto text-red-600 hover:underline"
+                        onClick={() => updateImage("right_side_image", null)}
+                      >
+                        Remove
+                      </button>
+                    </div>
+                  </div>
+                )}
+              </div>
 
-            <div className="flex lg:flex-col flex-col gap-1 items-start">
-                    <PhotoCaptureModal
-                        onPhotoCapture={(file) => updateImage("right_side_image", file)}
-                        triggerText="Capture right side Image"
-                        title="Take Side Image"
-                    />
-                    {images.right_side_image && (
-                        <div className="mt-2 mb-4">
-                            <h3 className="text-center text-sm font-medium">Right Side Image</h3>
-                            <img
-                                src={getPreviewUrl(images.right_side_image)!}
-                                alt="Side Image"
-                                className="w-32 h-32 object-cover border rounded"
-                            />
-                        </div>
-                    )}
+              {/* Left Side Image Card */}
+              <div className="border rounded-lg shadow p-4 bg-white">
+                <div className="flex items-center mb-2">
+                  <span className="mr-2 text-green-600">📷</span>
+                  <span className="font-bold">Left Side Image</span>
                 </div>
-                {/* Side Image */}
-                <div className="flex lg:flex-col flex-col gap-1 items-start">
-                    <PhotoCaptureModal
-                        onPhotoCapture={(file) => updateImage( "left_side_image",file)}
-                        triggerText="Capture left Side Image"
-                        title="Take Left Side Image"
+                <div className="text-sm text-gray-600 mb-2">Capture the left side view of the animal</div>
+                <PhotoCaptureModal
+                  onPhotoCapture={(file) => updateImage("left_side_image", file)}
+                  triggerText="Capture Left Side"
+                  title="Take Left Side Image"
+                />
+                {images.left_side_image && (
+                  <div className="mt-3">
+                    <img
+                      src={getPreviewUrl(images.left_side_image)!}
+                      alt="Left Side Image"
+                      className="w-full h-32 object-cover border rounded mb-2"
                     />
-                    {images.left_side_image && (
-                        <div className="mt-2 mb-4">
-                            <h3 className="text-center text-sm font-medium">Left Side Image</h3>
-                            <img
-                                src={getPreviewUrl(images.left_side_image)!}
-                                alt="Side Image"
-                                className="w-32 h-32 object-cover border rounded"
-                            />
-                        </div>
-                    )}
-                </div>
+                    <div className="flex items-center text-green-600 text-sm">
+                      <span className="mr-1">✔️</span>
+                      Image captured
+                      <button
+                        className="ml-auto text-red-600 hover:underline"
+                        onClick={() => updateImage("left_side_image", null)}
+                      >
+                        Remove
+                      </button>
+                    </div>
+                  </div>
+                )}
+              </div>
 
-                {/* Owner and Cow Image */}
-                <div className="flex lg:flex-col flex-col gap-3 items-start">
-                    <PhotoCaptureModal
-                        onPhotoCapture={(file) => updateImage( "image_with_owner", file)}
-                        triggerText="Capture Owner & Cow Image"
-                        title="Take Owner & Cow Image"
-                    />
-                    {images.image_with_owner && (
-                        <div className="mt-4">
-                            <h3 className="text-center text-sm font-medium">Owner & Cow Image</h3>
-                            <img
-                                src={getPreviewUrl(images.image_with_owner)!}
-                                alt="Owner and Cow Image"
-                                className="w-32 h-32 object-cover border rounded"
-                            />
-                        </div>
-                    )}
+              {/* Owner & Animal Image Card */}
+              <div className="border rounded-lg shadow p-4 bg-white">
+                <div className="flex items-center mb-2">
+                  <span className="mr-2 text-green-600">📷</span>
+                  <span className="font-bold">Owner & Animal Image</span>
                 </div>
+                <div className="text-sm text-gray-600 mb-2">Capture image with the owner and animal</div>
+                <PhotoCaptureModal
+                  onPhotoCapture={(file) => updateImage("image_with_owner", file)}
+                  triggerText="Capture Owner & Animal"
+                  title="Take Owner & Cow Image"
+                />
+                {images.image_with_owner && (
+                  <div className="mt-3">
+                    <img
+                      src={getPreviewUrl(images.image_with_owner)!}
+                      alt="Owner & Animal Image"
+                      className="w-full h-32 object-cover border rounded mb-2"
+                    />
+                    <div className="flex items-center text-green-600 text-sm">
+                      <span className="mr-1">✔️</span>
+                      Image captured
+                      <button
+                        className="ml-auto text-red-600 hover:underline"
+                        onClick={() => updateImage("image_with_owner", null)}
+                      >
+                        Remove
+                      </button>
+                    </div>
+                  </div>
+                )}
+              </div>
 
-                {/* Birthmark Image */}
-                <div className="flex lg:flex-col flex-col gap-3 items-start">
-                    <PhotoCaptureModal
-                        onPhotoCapture={(file) => updateImage("special_mark", file)}
-                        triggerText="Capture Birthmark Image"
-                        title="Take Birthmark Image"
-                    />
-                    {images.special_mark && (
-                        <div className="mt-4">
-                            <h3 className="text-center text-sm font-medium">Birthmark Image</h3>
-                            <img
-                                src={getPreviewUrl(images.special_mark)!}
-                                alt="Birthmark Image"
-                                className="w-32 h-32 object-cover border rounded"
-                            />
-                        </div>
-                    )}
+              {/* Birthmark Image Card */}
+              <div className="border rounded-lg shadow p-4 bg-white">
+                <div className="flex items-center mb-2">
+                  <span className="mr-2 text-green-600">📷</span>
+                  <span className="font-bold">Birthmark Image</span>
                 </div>
+                <div className="text-sm text-gray-600 mb-2">Capture any distinctive marks or birthmarks</div>
+                <PhotoCaptureModal
+                  onPhotoCapture={(file) => updateImage("special_mark", file)}
+                  triggerText="Capture Birthmark"
+                  title="Take Birthmark Image"
+                />
+                {images.special_mark && (
+                  <div className="mt-3">
+                    <img
+                      src={getPreviewUrl(images.special_mark)!}
+                      alt="Birthmark Image"
+                      className="w-full h-32 object-cover border rounded mb-2"
+                    />
+                    <div className="flex items-center text-green-600 text-sm">
+                      <span className="mr-1">✔️</span>
+                      Image captured
+                      <button
+                        className="ml-auto text-red-600 hover:underline"
+                        onClick={() => updateImage("special_mark", null)}
+                      >
+                        Remove
+                      </button>
+                    </div>
+                  </div>
+                )}
+              </div>
 
-                {/* Challan Image */}
-                <div className="flex lg:flex-col flex-col gap-3 items-start">
-                    <PhotoCaptureModal
-                        onPhotoCapture={(file) => updateImage( "challan_paper", file)}
-                        triggerText="Capture Challan Image"
-                        title="Take Challan Paper Image"
-                    />
-                    {images.challan_paper && (
-                        <div className="mt-4">
-                            <h3 className="text-center text-sm font-medium">Challan Image</h3>
-                            <img
-                                src={getPreviewUrl(images.challan_paper)!}
-                                alt="Challan Image"
-                                className="w-32 h-32 object-cover border rounded"
-                            />
-                        </div>
-                    )}
+              {/* Challan Paper Card */}
+              <div className="border rounded-lg shadow p-4 bg-white">
+                <div className="flex items-center mb-2">
+                  <span className="mr-2 text-green-600">📷</span>
+                  <span className="font-bold">Challan Paper</span>
                 </div>
+                <div className="text-sm text-gray-600 mb-2">Capture the challan or receipt document</div>
+                <PhotoCaptureModal
+                  onPhotoCapture={(file) => updateImage("challan_paper", file)}
+                  triggerText="Capture Challan"
+                  title="Take Challan Paper Image"
+                />
+                {images.challan_paper && (
+                  <div className="mt-3">
+                    <img
+                      src={getPreviewUrl(images.challan_paper)!}
+                      alt="Challan Paper"
+                      className="w-full h-32 object-cover border rounded mb-2"
+                    />
+                    <div className="flex items-center text-green-600 text-sm">
+                      <span className="mr-1">✔️</span>
+                      Image captured
+                      <button
+                        className="ml-auto text-red-600 hover:underline"
+                        onClick={() => updateImage("challan_paper", null)}
+                      >
+                        Remove
+                      </button>
+                    </div>
+                  </div>
+                )}
+              </div>
 
-                {/* Chairman Certificate Image */}
-                <div className="flex lg:flex-col flex-col gap-3 items-start">
-                    <PhotoCaptureModal
-                        onPhotoCapture={(file) => updateImage("chairman_certificate", file)}
-                        triggerText="Capture Chairman Certificate"
-                        title="Take Chairman Certificate Image"
-                    />
-                    {images.chairman_certificate && (
-                        <div className="mt-4">
-                            <h3 className="text-center text-sm font-medium">Chairman Certificate</h3>
-                            <img
-                                src={getPreviewUrl(images.chairman_certificate)!}
-                                alt="Chairman Certificate"
-                                className="w-32 h-32 object-cover border rounded"
-                            />
-                        </div>
-                    )}
+              {/* Chairman Certificate Card */}
+              <div className="border rounded-lg shadow p-4 bg-white">
+                <div className="flex items-center mb-2">
+                  <span className="mr-2 text-green-600">📷</span>
+                  <span className="font-bold">Chairman Certificate</span>
                 </div>
-                <div className="flex lg:flex-col flex-col gap-3 items-start">
-                    <PhotoCaptureModal
-                        onPhotoCapture={(file) => updateImage("vet_certificate", file)}
-                        triggerText="Capture Vet Certificate"
-                        title="Capture Vet Certificate Image"
+                <div className="text-sm text-gray-600 mb-2">Capture the chairman certificate document</div>
+                <PhotoCaptureModal
+                  onPhotoCapture={(file) => updateImage("chairman_certificate", file)}
+                  triggerText="Capture Certificate"
+                  title="Take Chairman Certificate Image"
+                />
+                {images.chairman_certificate && (
+                  <div className="mt-3">
+                    <img
+                      src={getPreviewUrl(images.chairman_certificate)!}
+                      alt="Chairman Certificate"
+                      className="w-full h-32 object-cover border rounded mb-2"
                     />
-                    {images.vet_certificate && (
-                        <div className="mt-4">
-                            <h3 className="text-center text-sm font-medium">Vet Certificate</h3>
-                            <img
-                                src={getPreviewUrl(images.vet_certificate)!}
-                                alt="Vet Certificate"
-                                className="w-32 h-32 object-cover border rounded"
-                            />
-                        </div>
-                    )}
+                    <div className="flex items-center text-green-600 text-sm">
+                      <span className="mr-1">✔️</span>
+                      Image captured
+                      <button
+                        className="ml-auto text-red-600 hover:underline"
+                        onClick={() => updateImage("chairman_certificate", null)}
+                      >
+                        Remove
+                      </button>
+                    </div>
+                  </div>
+                )}
+              </div>
+
+              {/* Vet Certificate Card */}
+              <div className="border rounded-lg shadow p-4 bg-white">
+                <div className="flex items-center mb-2">
+                  <span className="mr-2 text-green-600">📷</span>
+                  <span className="font-bold">Vet Certificate</span>
                 </div>
+                <div className="text-sm text-gray-600 mb-2">Capture the vet certificate document</div>
+                <PhotoCaptureModal
+                  onPhotoCapture={(file) => updateImage("vet_certificate", file)}
+                  triggerText="Capture Vet Certificate"
+                  title="Capture Vet Certificate Image"
+                />
+                {images.vet_certificate && (
+                  <div className="mt-3">
+                    <img
+                      src={getPreviewUrl(images.vet_certificate)!}
+                      alt="Vet Certificate"
+                      className="w-full h-32 object-cover border rounded mb-2"
+                    />
+                    <div className="flex items-center text-green-600 text-sm">
+                      <span className="mr-1">✔️</span>
+                      Image captured
+                      <button
+                        className="ml-auto text-red-600 hover:underline"
+                        onClick={() => updateImage("vet_certificate", null)}
+                      >
+                        Remove
+                      </button>
+                    </div>
+                  </div>
+                )}
+              </div>
             </div>
         </div>
     );

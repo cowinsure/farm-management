@@ -403,7 +403,7 @@ export default function FinancialManagement() {
             <div className="mt-4 p-3 bg-gray-50 rounded-lg">
               <div className="flex justify-between items-center">
                 <span className="font-medium">Total Expenses:</span>
-                <span className="text-lg font-bold text-red-600">$18,800</span>
+                <span className="text-lg font-bold text-red-600">{expenseSummary.Total_Expenses}</span>
               </div>
             </div>
           </CardContent>

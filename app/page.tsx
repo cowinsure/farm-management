@@ -42,6 +42,8 @@ export default function Dashboard() {
     })
       .then((res) => res.json())
       .then((data) => {
+        console.log(data.data.summary);
+        
         if (data?.data?.summary) {
           setDashboardSummary(data.data.summary)
         }
@@ -89,7 +91,7 @@ export default function Dashboard() {
                   </div>
                 </CardHeader>
                 <CardContent>
-                  <div className="text-2xl font-bold text-gray-900">14</div>
+                  <div className="text-2xl font-bold text-gray-900">{dashboardSummary?.Total_Animals || 0}</div>
                   {/* <p className="text-xs text-gray-600 mt-1">{stat.change}</p> */}
                 </CardContent>
               </Card>
@@ -103,7 +105,7 @@ export default function Dashboard() {
                   </div>
                 </CardHeader>
                 <CardContent>
-                  <div className="text-2xl font-bold text-gray-900">94%</div>
+                  <div className="text-2xl font-bold text-gray-900">{dashboardSummary?.Health_Status || 0}%</div>
                   {/* <p className="text-xs text-gray-600 mt-1">{stat.change}</p> */}
                 </CardContent>
               </Card>
@@ -117,7 +119,7 @@ export default function Dashboard() {
                   </div>
                 </CardHeader>
                 <CardContent>
-                  <div className="text-2xl font-bold text-gray-900">৳ 12,450</div>
+                  <div className="text-2xl font-bold text-gray-900">৳ {dashboardSummary.Monthly_Revenue || 0}</div>
                   {/* <p className="text-xs text-gray-600 mt-1">{stat.change}</p> */}
                 </CardContent>
               </Card>

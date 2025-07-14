@@ -17,6 +17,7 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { useToast } from "@/hooks/use-toast"
+import UploadVideo from "@/helper/UploadVedio"
 
 interface RecordHealthIssueDialogProps {
   open: boolean
@@ -40,12 +41,25 @@ const statuses = [
   { id: 3, name: "Complete" },
   { id: 4, name: "Critical" },
 ]
-
+const jwt = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJmcmVzaCI6ZmFsc2UsImlhdCI6MTc0NzU2NTY5NiwianRpIjoiNzViZThkMjYtNGMwZC00YTc4LWEzM2ItMjAyODU4OGVkZmU4IiwidHlwZSI6ImFjY2VzcyIsInN1YiI6InRlc3QiLCJuYmYiOjE3NDc1NjU2OTYsImNzcmYiOiI2Y2VjNWM1Mi0xMDJkLTRmYjUtOTE3NS1lNzZkZTBkMDM3YTYifQ.n5moEixJyO4eaXpYI8yG6Qnjf3jjBrWA7W19gW_4h8c"
+interface MuzzleResponse {
+  geo_location: string;
+  matched_id: string;
+  msg: string;
+  segmentation_image: string;
+}
 export function RecordHealthIssueDialog({ open, onOpenChange, onSuccess }: RecordHealthIssueDialogProps) {
   const { toast } = useToast()
   const [assets, setAssets] = useState<{ id: number; name: string; reference_id: string }[]>([])
   const [loadingAssets, setLoadingAssets] = useState(false)
-     const [isMuzzelModalOpen, setIsMuzzelModalOpen] = useState(false);
+  const [isMuzzelModalOpen, setIsMuzzelModalOpen] = useState(false);
+  const [muzzleResponse, setMuzzleResponse] = useState<MuzzleResponse | null>(null);
+  const [erromuzzleResponse, setErroMuzzleResponse] = useState<MuzzleResponse | null>(null);
+  const [selectedFile, setSelectedFile] = useState<File | null>(null);
+  const [selectedAnimalId, setSelectedAnimalId] = useState<string | null>(null);
+const [selectedReferenceId, setSelectedReferenceId] = useState<string | null>(null);
+
+
   const [form, setForm] = useState({
     condition_id: "",
     severity_id: "",
@@ -57,7 +71,89 @@ export function RecordHealthIssueDialog({ open, onOpenChange, onSuccess }: Recor
     asset_id: "",
     current_status_id: "",
   })
+  const [isUploading, setIsUploading] = useState(false);
+
   const [submitting, setSubmitting] = useState(false)
+
+   const handleVideoUpload = async (file: File) => {
+    // setModalOpen(false)
+
+    console.log("Video file captured:", file);
+
+    const formData = new FormData();
+    formData.append("video", file); // Append the video file to the form data
+    // setFormData(prev => ({
+    //   ...prev,
+    //   claim_muzzle: file
+    // }));
+
+
+
+
+
+    try {
+      setIsUploading(true);
+      const response = await fetch("https://ai.insurecow.com/claim", {
+        method: "POST",
+        body: formData,
+        headers: {
+          // "Content-Type": "application/json",
+          Authorization: `Bearer ${jwt}`,
+        },
+      });
+      // 3.110.218.87:8000
+
+      // console.log(await response.json());
+
+
+      if (response.status === 400) {
+        const data = await response.json();
+        // setErrorModalOpen(true)
+        console.error("Error 400:", data.msg);
+        alert(`Error: ${data.msg}`);
+        return;
+      }
+
+      if (response.status === 401) {
+        const data = await response.json();
+        console.error("Error 401:", data.msg);
+        alert(`Error: ${data.msg}`);
+        return;
+      }
+
+      if (response.status === 404) {
+        const data = await response.json();
+        setErroMuzzleResponse(data);
+        console.error("Error 401:", data.msg);
+        // alert(`Error: ${data.msg}`);
+        return;
+      }
+
+      if (response.status === 200) {
+        const data: MuzzleResponse = await response.json(); // Use the interface for type safety
+        console.log("API Response:", data);
+        setMuzzleResponse(data);
+        // setResponseData(data);
+        // setModalOpen(true)
+        // setFormData(prev => ({
+        //   ...prev,
+        //   reference_id: data.matched_id
+        // })); // Save the response data to state
+        // alert(data.msg);
+        return;
+      }
+
+      if (!response.ok) {
+        throw new Error("Failed to upload video");
+      }
+    } catch (error) {
+      console.error("Error uploading video:", error);
+      alert("Something went wrong: " + error);
+    } finally {
+      setIsUploading(false);
+    }
+  };
+
 
   // Fetch assets when dialog opens
   useEffect(() => {
@@ -72,13 +168,13 @@ export function RecordHealthIssueDialog({ open, onOpenChange, onSuccess }: Recor
         .then((res) => res.json())
         .then((data) => {
           console.log("Assets data:", data);
-          
+
           // Assume data.list or data.data.list
           const list = data?.data?.list || data?.list || []
-          setAssets(list.map((a: any) => ({ 
+          setAssets(list.map((a: any) => ({
             id: a.id,
-            name: a.name || a.asset_ref_id || `Asset ${a.id}`, 
-            reference_id: a.reference_id  
+            name: a.name || a.asset_ref_id || `Asset ${a.id}`,
+            reference_id: a.reference_id
           })))
         })
         .catch(() => setAssets([]))
@@ -145,6 +241,8 @@ export function RecordHealthIssueDialog({ open, onOpenChange, onSuccess }: Recor
     }
   }
 
+
+
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent>
@@ -201,7 +299,15 @@ export function RecordHealthIssueDialog({ open, onOpenChange, onSuccess }: Recor
             </div>
             <div>
               <label className="block text-sm font-medium mb-1">Asset</label>
-              <Select value={form.asset_id} onValueChange={(v) => handleSelect("asset_id", v)} disabled={loadingAssets}>
+              <Select value={form.asset_id} onValueChange={(v) =>{
+                  handleSelect("asset_id", v)
+                 setSelectedAnimalId(v);
+    const animal = assets.find((a) => String(a.id) === v);
+    setSelectedReferenceId(animal ? animal.reference_id : null);
+              }
+               
+                 
+                 } disabled={loadingAssets}>
                 <SelectTrigger className="w-full">
                   <SelectValue placeholder={loadingAssets ? "Loading..." : "Select asset"} />
                 </SelectTrigger>
@@ -212,7 +318,7 @@ export function RecordHealthIssueDialog({ open, onOpenChange, onSuccess }: Recor
                 </SelectContent>
               </Select>
             </div>
-             <div>
+            {/* <div>
               <label className="block text-sm font-medium mb-1">Muzzel Verification</label>
               <div className="flex flex-row relative">
 
@@ -222,7 +328,35 @@ export function RecordHealthIssueDialog({ open, onOpenChange, onSuccess }: Recor
                 <Camera className="h-6 w-6 text-gray-500" onClick={() => setIsMuzzelModalOpen(true)} /> 
               </button>
               </div>
+            </div> */}
+            <div>
+              <label className="block text-sm font-medium mb-1">Muzzel Verification (optional)</label>
+              <UploadVideo onVideoCapture={(file) => {
+                console.log("Captured video file:", file);
+                setSelectedFile(file);
+
+              }} />
+
             </div>
+            <Button
+              type="button"
+              variant="outline"
+              className="text-green-700 w-full flex items-center gap-2 border border-green-700"
+              onClick={() => {
+                  if (selectedFile) {
+                    handleVideoUpload(selectedFile); // Call the upload function when the video is captured
+                  } else {
+                    alert("Please select a video file before uploading.");
+                  }
+              }}
+            >
+              <Camera className="h-5 w-5 text-green-600" />
+              {isUploading ? "Uploading..." : "Upload Muzzle Video"}
+              {/* {isUploading ? "Uploading..." : "Claim Cow"} */}
+            </Button>
+
+
+
             <div>
               <label className="block text-sm font-medium mb-1">Status</label>
               <Select value={form.current_status_id} onValueChange={(v) => handleSelect("current_status_id", v)}>

@@ -13,11 +13,14 @@ import {
   Zap,
   Menu,
   LogOut,
+  TrendingDown,
+  PawPrint,
+  Icon,
 } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import Link from "next/link"
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import { MobileOverlay } from "@/components/mobile-overlay"
 import { useAuth } from "@/hooks/useAuth"
 import { AuthGuard } from "@/components/auth-guard"
@@ -25,6 +28,26 @@ import { AuthGuard } from "@/components/auth-guard"
 export default function Dashboard() {
   const [sidebarOpen, setSidebarOpen] = useState(false)
   const { user, logout } = useAuth()
+  const [dashboardSummary, setDashboardSummary] = useState<any>({})
+
+  useEffect(() => {
+    const token = typeof window !== "undefined" ? localStorage.getItem("access_token") : null
+    fetch("http://127.0.0.1:8000/api/gls/fms-dashboard-service", {
+      method: "GET",
+      headers: {
+        ...(token ? { Authorization: `Bearer ${token}` } : {}),
+        "Content-Type": "application/json",
+      },
+
+    })
+      .then((res) => res.json())
+      .then((data) => {
+        if (data?.data?.summary) {
+          setDashboardSummary(data.data.summary)
+        }
+      })
+      .catch(() => setDashboardSummary({}))
+  }, [])
 
   const handleLogout = () => {
     logout()
@@ -33,18 +56,18 @@ export default function Dashboard() {
   return (
     <AuthGuard requireAuth={true}>
       <div className="min-h-screen bg-gray-50">
-     
+
 
         <div className="flex">
           {/* Mobile menu button */}
-     
 
-       
 
-        
+
+
+
 
           {/* Main Content */}
-          <main className="flex-1 lg:ml-0 ">
+          <main className="flex-1 lg:ml-4">
             {/* Welcome Banner */}
             <div className="bg-gradient-to-r from-green-500 to-blue-600 rounded-lg p-6 mb-6 text-white">
               <h2 className="text-2xl font-bold mb-2">Welcome back, {user?.role || "User"}!</h2>
@@ -53,47 +76,49 @@ export default function Dashboard() {
 
             {/* Metrics Cards */}
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 lg:gap-6 mb-6 lg:mb-8">
-              <Card>
-                <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+              
+
+
+              
+             
+              <Card className="border-0 shadow-lg hover:shadow-xl transition-shadow duration-300">
+                <CardHeader className="flex flex-row items-center justify-between pb-2">
                   <CardTitle className="text-sm font-medium text-gray-600">Total Animals</CardTitle>
-                  <Users className="h-4 w-4 text-blue-600" />
+                  <div className={`p-2 rounded-lg text-green-600`}>
+                    <PawPrint className={`w-4 h-4 bg-green-100 `} />
+                  </div>
                 </CardHeader>
                 <CardContent>
-                  <div className="text-2xl font-bold">247</div>
-                  <p className="text-xs text-green-600">+12 this month</p>
+                  <div className="text-2xl font-bold text-gray-900">14</div>
+                  {/* <p className="text-xs text-gray-600 mt-1">{stat.change}</p> */}
                 </CardContent>
               </Card>
 
-              <Card>
-                <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+              
+              <Card className="border-0 shadow-lg hover:shadow-xl transition-shadow duration-300">
+                <CardHeader className="flex flex-row items-center justify-between pb-2">
                   <CardTitle className="text-sm font-medium text-gray-600">Health Status</CardTitle>
-                  <Heart className="h-4 w-4 text-green-600" />
+                  <div className={`p-2 rounded-lg text-green-600`}>
+                    <Heart className={`w-4 h-4 bg-green-100 `} />
+                  </div>
                 </CardHeader>
                 <CardContent>
-                  <div className="text-2xl font-bold">94%</div>
-                  <p className="text-xs text-gray-600">Healthy animals</p>
+                  <div className="text-2xl font-bold text-gray-900">94%</div>
+                  {/* <p className="text-xs text-gray-600 mt-1">{stat.change}</p> */}
                 </CardContent>
               </Card>
 
-              <Card>
-                <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                  <CardTitle className="text-sm font-medium text-gray-600">Milk Production</CardTitle>
-                  <TrendingUp className="h-4 w-4 text-purple-600" />
-                </CardHeader>
-                <CardContent>
-                  <div className="text-2xl font-bold">1,450L</div>
-                  <p className="text-xs text-green-600">+5% from last week</p>
-                </CardContent>
-              </Card>
 
-              <Card>
-                <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+              <Card className="border-0 shadow-lg hover:shadow-xl transition-shadow duration-300">
+                <CardHeader className="flex flex-row items-center justify-between pb-2">
                   <CardTitle className="text-sm font-medium text-gray-600">Monthly Revenue</CardTitle>
-                  <DollarSign className="h-4 w-4 text-yellow-600" />
+                  <div className={`p-2 rounded-lg text-orange-600`}>
+                    <DollarSign className={`w-4 h-4 bg-orange-100 `} />
+                  </div>
                 </CardHeader>
                 <CardContent>
-                  <div className="text-2xl font-bold">$12,450</div>
-                  <p className="text-xs text-green-600">+8% from last month</p>
+                  <div className="text-2xl font-bold text-gray-900">৳ 12,450</div>
+                  {/* <p className="text-xs text-gray-600 mt-1">{stat.change}</p> */}
                 </CardContent>
               </Card>
             </div>
@@ -110,10 +135,10 @@ export default function Dashboard() {
                   <Calendar className="w-4 h-4 mr-2" />
                   Schedule Vaccination
                 </Button>
-                <Button className="bg-purple-600 hover:bg-purple-700 h-12">
+                {/* <Button className="bg-purple-600 hover:bg-purple-700 h-12">
                   <TrendingUp className="w-4 h-4 mr-2" />
                   Record Production
-                </Button>
+                </Button> */}
                 <Button className="bg-red-600 hover:bg-red-700 h-12">
                   <Plus className="w-4 h-4 mr-2" />
                   Record Health Issue
@@ -123,7 +148,7 @@ export default function Dashboard() {
 
             <div className="grid grid-cols-1 xl:grid-cols-3 gap-4 lg:gap-6">
               {/* Recent Activity */}
-              <div className="xl:col-span-2">
+              {/* <div className="xl:col-span-2">
                 <Card>
                   <CardHeader>
                     <CardTitle className="flex items-center">
@@ -177,10 +202,10 @@ export default function Dashboard() {
                     </div>
                   </CardContent>
                 </Card>
-              </div>
+              </div> */}
 
               {/* Alerts & Reminders */}
-              <div>
+              {/* <div>
                 <Card>
                   <CardHeader>
                     <CardTitle className="flex items-center">
@@ -230,7 +255,7 @@ export default function Dashboard() {
                     </div>
                   </CardContent>
                 </Card>
-              </div>
+              </div> */}
             </div>
           </main>
         </div>

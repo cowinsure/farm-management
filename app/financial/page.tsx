@@ -44,6 +44,8 @@ export default function FinancialManagement() {
   const { logout } = useAuth()
   const [viewModalOpen, setViewModalOpen] = useState(false)
   const [selectedTransaction, setSelectedTransaction] = useState<any | null>(null)
+  const [expenseBreakdown, setExpenseBreakdown] = useState<any[]>([])
+  const [expenseSummary, setExpenseSummary] = useState<any>({})
 
   useEffect(() => {
     setLoading(true)
@@ -62,10 +64,48 @@ export default function FinancialManagement() {
       .then((res) => res.json())
       .then((data) => {
         setTransactions(data.data.list)
+        
         setSummary(data.data.summary)
       })
       .finally(() => setLoading(false))
   }, [page, pageSize])
+
+  useEffect(() => {
+    console.log("calling expense breakdown API");
+    
+    // ... your other fetches ...
+
+    // Fetch expense breakdown
+    try {
+       const token = typeof window !== "undefined" ? localStorage.getItem("access_token") : null
+    fetch("http://127.0.0.1:8000/api/gls/income-expense-breakdown-service/", {
+      method: "GET",
+      headers: {
+        ...(token ? { Authorization: `Bearer ${token}` } : {}),
+        "Content-Type": "application/json",
+      },
+     
+    })
+      .then((res) => res.json()
+   
+    
+    )
+      .then((data) => {
+        console.log(data.data.list);
+        setExpenseBreakdown(data.data.list)
+        
+        setExpenseSummary(data.data.summary)
+      })
+      .catch(() => {
+        setExpenseBreakdown([])
+        setExpenseSummary({})
+      })
+    } catch (error) {
+      console.log("Error fetching expense breakdown:", error);
+      
+    }
+   
+  }, [])
 
   const handleLogout = () => {
     logout()
@@ -322,7 +362,7 @@ export default function FinancialManagement() {
 
             {/* Expense Breakdown - hidden or placeholder since not in API */}
             <div>
-              <Card>
+              {/* <Card>
                 <CardHeader>
                   <CardTitle className="flex items-center">
                     <TrendingDown className="w-5 h-5 mr-2" />
@@ -332,7 +372,43 @@ export default function FinancialManagement() {
                 <CardContent className="space-y-4">
                   <div className="text-gray-500 text-center py-8">Expense breakdown data not available.</div>
                 </CardContent>
-              </Card>
+              </Card> */}
+               <Card>
+          <CardHeader>
+            <CardTitle className="flex items-center">
+              <TrendingDown className="w-5 h-5 mr-2 text-red-600" />
+              Expense Breakdown
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="space-y-4">
+              {expenseBreakdown.map((expense, index) => (
+                
+                <div key={index} className="space-y-2">
+                  
+                  <div className="flex justify-between items-center">
+                    <span className="text-sm font-medium">{expense.txn_head}</span>
+                    <span className="text-sm text-gray-600">${expense.amount}</span>
+                  </div>
+                  <div className="w-full bg-gray-200 rounded-full h-2">
+                    <div 
+                      className="bg-blue-600 h-2 rounded-full" 
+                      style={{ width: `${expense.percentage}%` }}
+                    ></div>
+                  </div>
+                  <div className="text-xs text-gray-500 text-right">{expense.percentage}%</div>
+                </div>
+              ))}
+            </div>
+            <div className="mt-4 p-3 bg-gray-50 rounded-lg">
+              <div className="flex justify-between items-center">
+                <span className="font-medium">Total Expenses:</span>
+                <span className="text-lg font-bold text-red-600">$18,800</span>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+              
             </div>
           </div>
         </main>

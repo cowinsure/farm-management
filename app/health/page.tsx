@@ -254,7 +254,7 @@ export default function HealthVaccination() {
           </CardContent>
         </Card>
 
-        <Card>
+        {/* <Card>
           <CardContent className="p-4">
             <div className="flex items-center space-x-2">
               <TriangleAlert className="w-8 h-8 text-red-600" />
@@ -264,7 +264,7 @@ export default function HealthVaccination() {
               </div>
             </div>
           </CardContent>
-        </Card>
+        </Card> */}
               
               {/* <Card>
                 <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
@@ -473,12 +473,12 @@ export default function HealthVaccination() {
                                   <Button size="sm" variant="ghost" className="h-7 w-7 p-0" onClick={() => { setViewRecord(record); setIsDialogOpen(true); }}>
                                     <Eye className="h-3 w-3" />
                                   </Button>
-                                  <Button size="sm" variant="ghost" className="h-7 w-7 p-0">
+                                  {/* <Button size="sm" variant="ghost" className="h-7 w-7 p-0">
                                     <Edit className="h-3 w-3" />
                                   </Button>
                                   <Button size="sm" variant="ghost" className="h-7 w-7 p-0 text-red-600 hover:text-red-700">
                                     <Trash2 className="h-3 w-3" />
-                                  </Button>
+                                  </Button> */}
                                 </div>
                               </td>
                             </tr>

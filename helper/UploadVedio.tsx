@@ -438,6 +438,7 @@ export default function UploadVideo({ onVideoCapture }: { onVideoCapture?: (file
 
             <div className="flex gap-4 mt-2">
               <button
+              type="button"
                 className="px-4 py-2 border border-emerald-500 text-emerald-600 rounded hover:bg-emerald-50"
                 onClick={() => document.getElementById("file-upload")?.click()}
               >

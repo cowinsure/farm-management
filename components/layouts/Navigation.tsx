@@ -24,7 +24,7 @@ const Navigation = ({ activeModule, setActiveModule }: NavigationProps) => {
     // { id: '/production', label: 'Production Tracking', icon: Calendar, color: 'text-orange-600' },
     { id: '/financial', label: 'Financial Management', icon: DollarSign, color: 'text-yellow-600' },
     // { id: 'reports', label: 'Reports & Analytics', icon: FileText, color: 'text-indigo-600' },
-    { id: '/farmsettings', label: 'Farm Settings', icon: Settings, color: 'text-gray-600' },
+    // { id: '/farmsettings', label: 'Farm Settings', icon: Settings, color: 'text-gray-600' },
   ];
 
   return (

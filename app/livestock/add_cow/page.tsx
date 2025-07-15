@@ -28,45 +28,68 @@ export default function StepForm() {
     
 
 
+    const [locationError, setLocationError] = useState<string | null>(null);
+
     const handleSubmit = async () => {
-      console.log(data, "data from add cow page ");
-      const formData = new FormData();
-
-      // Assuming `data` is an object with key-value pairs
-      Object.keys(data).forEach((key: string) => {
-        formData.append(key, data[key as keyof typeof data] as string);
-      });
-
-      try {
-        setIsLoading(true); // Show loading spinner
-        const token = localStorage.getItem('accessToken');
-        const response = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/create-asset/`, {
-          method: 'POST',
-          headers: {
-            'Authorization': `Bearer ${token}`,
-          },
-          body: formData,
-        });
-
-        const result = await response.json();
-
-        if (response.ok) {
-          setSuccessMessage("Form submitted successfully!");
-        } else if (response.status === 400) {
-          setErrorMessage(result.data.message);
-        } else if (response.status === 401) {
-          setSessionExpired(true);
-          console.log(unauthorized);
-          // Show session expired dialog
-        } else {
-          throw new Error(result.message || "Failed to submit form");
-        }
-      } catch (error) {
-        console.error("Error submitting form:", error);
-        alert(`Something went wrong. Please try again.\nError: ${error}`);
-      } finally {
-        setIsLoading(false); // Hide loading spinner
+      setLocationError(null);
+      // Check geolocation permission and get location
+      if (!navigator.geolocation) {
+        setLocationError('Geolocation is not supported by your browser.');
+        return;
       }
+
+      setIsLoading(true); // Show loading spinner
+      navigator.geolocation.getCurrentPosition(
+        async (position) => {
+          const latitude = position.coords.latitude;
+          const longitude = position.coords.longitude;
+          const formData = new FormData();
+
+          console.log(latitude, longitude, "lat long");
+          
+
+          // Assuming `data` is an object with key-value pairs
+          Object.keys(data).forEach((key: string) => {
+            formData.append(key, data[key as keyof typeof data] as string);
+          });
+          formData.append('latitude', String(latitude));
+          formData.append('longitude', String(longitude));
+
+          try {
+            const token = localStorage.getItem('accessToken');
+            const response = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/create-asset/`, {
+              method: 'POST',
+              headers: {
+                'Authorization': `Bearer ${token}`,
+              },
+              body: formData,
+            });
+
+            const result = await response.json();
+
+            if (response.ok) {
+              setSuccessMessage("Form submitted successfully!");
+            } else if (response.status === 400) {
+              setErrorMessage(result.data.message);
+            } else if (response.status === 401) {
+              setSessionExpired(true);
+              console.log(unauthorized);
+              // Show session expired dialog
+            } else {
+              throw new Error(result.message || "Failed to submit form");
+            }
+          } catch (error) {
+            console.error("Error submitting form:", error);
+            alert(`Something went wrong. Please try again.\nError: ${error}`);
+          } finally {
+            setIsLoading(false); // Hide loading spinner
+          }
+        },
+        (error) => {
+          setIsLoading(false);
+          setLocationError('Unable to retrieve your location. Please allow location access and try again.');
+        }
+      );
     };
      
   
@@ -151,6 +174,12 @@ export default function StepForm() {
                 </div>
             )} */}
 
+            {/* Show location error if any */}
+            {locationError && (
+              <div className="mt-4 p-4 bg-red-100 border border-red-300 rounded-md text-red-700">
+                <p>{locationError}</p>
+              </div>
+            )}
 
             <ModalGeneral isOpen={sessionExpired} onClose={() => { setSessionExpired(false) }}>
                 <div className='text-black  text-center flex flex-col items-center p-5'>

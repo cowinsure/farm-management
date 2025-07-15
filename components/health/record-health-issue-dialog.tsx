@@ -48,10 +48,10 @@ export function RecordHealthIssueDialog({ open, onOpenChange, onSuccess }: Recor
   const [erromuzzleResponse, setErroMuzzleResponse] = useState<MuzzleResponse | null>(null);
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [selectedAnimalId, setSelectedAnimalId] = useState<string | null>(null);
-const [selectedReferenceId, setSelectedReferenceId] = useState<string | null>(null);
-const [conditions, setConditions] = useState<{ id: number; name: string }[]>([]);
-// Add severities state
-const [severities, setSeverities] = useState<{ id: number; name: string }[]>([]);
+  const [selectedReferenceId, setSelectedReferenceId] = useState<string | null>(null);
+  const [conditions, setConditions] = useState<{ id: number; name: string }[]>([]);
+  // Add severities state
+  const [severities, setSeverities] = useState<{ id: number; name: string }[]>([]);
 
 
   const [form, setForm] = useState({
@@ -69,7 +69,7 @@ const [severities, setSeverities] = useState<{ id: number; name: string }[]>([])
 
   const [submitting, setSubmitting] = useState(false)
 
-   const handleVideoUpload = async (file: File) => {
+  const handleVideoUpload = async (file: File) => {
     // setModalOpen(false)
 
     console.log("Video file captured:", file);
@@ -154,7 +154,7 @@ const [severities, setSeverities] = useState<{ id: number; name: string }[]>([])
     if (open) {
       setLoadingAssets(true)
       const token = typeof window !== "undefined" ? localStorage.getItem("access_token") : null
-      fetch("http://127.0.0.1:8000/api/lms/assets-service", {
+      fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/lms/assets-service`, {
         headers: {
           ...(token ? { Authorization: `Bearer ${token}` } : {}),
         },
@@ -181,7 +181,7 @@ const [severities, setSeverities] = useState<{ id: number; name: string }[]>([])
     if (open) {
       const token = typeof window !== "undefined" ? localStorage.getItem("access_token") : null
 
-      fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/lms/medical-condition-service`,{
+      fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/lms/medical-condition-service`, {
         headers: {
           "Content-Type": "application/json",
           ...(token ? { Authorization: `Bearer ${token}` } : {}),
@@ -190,7 +190,7 @@ const [severities, setSeverities] = useState<{ id: number; name: string }[]>([])
         .then((res) => res.json())
         .then((data) => {
           console.log(data);
-          
+
           if (data?.data) setConditions(data.data)
           else setConditions([])
         })
@@ -334,15 +334,15 @@ const [severities, setSeverities] = useState<{ id: number; name: string }[]>([])
             </div>
             <div>
               <label className="block text-sm font-medium mb-1">Asset</label>
-              <Select value={form.asset_id} onValueChange={(v) =>{
-                  handleSelect("asset_id", v)
-                 setSelectedAnimalId(v);
-    const animal = assets.find((a) => String(a.id) === v);
-    setSelectedReferenceId(animal ? animal.reference_id : null);
+              <Select value={form.asset_id} onValueChange={(v) => {
+                handleSelect("asset_id", v)
+                setSelectedAnimalId(v);
+                const animal = assets.find((a) => String(a.id) === v);
+                setSelectedReferenceId(animal ? animal.reference_id : null);
               }
-               
-                 
-                 } disabled={loadingAssets}>
+
+
+              } disabled={loadingAssets}>
                 <SelectTrigger className="w-full">
                   <SelectValue placeholder={loadingAssets ? "Loading..." : "Select asset"} />
                 </SelectTrigger>
@@ -378,11 +378,11 @@ const [severities, setSeverities] = useState<{ id: number; name: string }[]>([])
               variant="outline"
               className="text-green-700 w-full flex items-center gap-2 border border-green-700"
               onClick={() => {
-                  if (selectedFile) {
-                    handleVideoUpload(selectedFile); // Call the upload function when the video is captured
-                  } else {
-                    alert("Please select a video file before uploading.");
-                  }
+                if (selectedFile) {
+                  handleVideoUpload(selectedFile); // Call the upload function when the video is captured
+                } else {
+                  alert("Please select a video file before uploading.");
+                }
               }}
             >
               <Camera className="h-5 w-5 text-green-600" />

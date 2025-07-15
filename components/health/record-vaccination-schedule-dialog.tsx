@@ -11,6 +11,8 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { useToast } from "@/hooks/use-toast"
+import UploadVideo from "@/helper/UploadVedio"
+import { Camera } from "lucide-react"
 
 interface RecordVaccinationScheduleDialogProps {
   open: boolean
@@ -25,6 +27,13 @@ const vaccines = [
   { id: 3, name: "Anthrax" },
   { id: 4, name: "Rabies" },
 ]
+const jwt = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJmcmVzaCI6ZmFsc2UsImlhdCI6MTc0NzU2NTY5NiwianRpIjoiNzViZThkMjYtNGMwZC00YTc4LWEzM2ItMjAyODU4OGVkZmU4IiwidHlwZSI6ImFjY2VzcyIsInN1YiI6InRlc3QiLCJuYmYiOjE3NDc1NjU2OTYsImNzcmYiOiI2Y2VjNWM1Mi0xMDJkLTRmYjUtOTE3NS1lNzZkZTBkMDM3YTYifQ.n5moEixJyO4eaXpYI8yG6Qnjf3jjBrWA7W19gW_4h8c"
+interface MuzzleResponse {
+  geo_location: string;
+  matched_id: string;
+  msg: string;
+  segmentation_image: string;
+}
 
 export function RecordVaccinationScheduleDialog({ open, onOpenChange, onSuccess }: RecordVaccinationScheduleDialogProps) {
   const { toast } = useToast()
@@ -38,10 +47,15 @@ export function RecordVaccinationScheduleDialog({ open, onOpenChange, onSuccess 
   })
   const [submitting, setSubmitting] = useState(false)
   const [vaccines, setVaccines] = useState<{ id: number; name: string }[]>([]);
+  const [isUploading, setIsUploading] = useState(false);
+  const [muzzleResponse, setMuzzleResponse] = useState<MuzzleResponse | null>(null);
+  const [erromuzzleResponse, setErroMuzzleResponse] = useState<MuzzleResponse | null>(null);
+  const [selectedFile, setSelectedFile] = useState<File | null>(null);
 
 
 
-    // Fetch vaccines from the API when dialog opens
+
+  // Fetch vaccines from the API when dialog opens
   useEffect(() => {
     if (open) {
       const token = typeof window !== "undefined" ? localStorage.getItem("access_token") : null;
@@ -73,10 +87,10 @@ export function RecordVaccinationScheduleDialog({ open, onOpenChange, onSuccess 
         .then((res) => res.json())
         .then((data) => {
           const list = data?.data?.list || data?.list || []
-          setAssets(list.map((a: any) => ({ 
+          setAssets(list.map((a: any) => ({
             id: a.id,
-            name: a.name || a.asset_ref_id || `Asset ${a.id}`, 
-            reference_id: a.reference_id  
+            name: a.name || a.asset_ref_id || `Asset ${a.id}`,
+            reference_id: a.reference_id
           })))
         })
         .catch(() => setAssets([]))
@@ -106,7 +120,7 @@ export function RecordVaccinationScheduleDialog({ open, onOpenChange, onSuccess 
         vaccine_id: Number(form.vaccine_id),
       }
       console.log(payload);
-      
+
       const res = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/lms/vaccination-schedule-service/`, {
         method: "POST",
         headers: {
@@ -136,6 +150,85 @@ export function RecordVaccinationScheduleDialog({ open, onOpenChange, onSuccess 
     }
   }
 
+  const handleVideoUpload = async (file: File) => {
+    // setModalOpen(false)
+
+    console.log("Video file captured:", file);
+
+    const formData = new FormData();
+    formData.append("video", file); // Append the video file to the form data
+    // setFormData(prev => ({
+    //   ...prev,
+    //   claim_muzzle: file
+    // }));
+
+
+
+
+
+    try {
+      setIsUploading(true);
+      const response = await fetch("https://ai.insurecow.com/claim", {
+        method: "POST",
+        body: formData,
+        headers: {
+          // "Content-Type": "application/json",
+          Authorization: `Bearer ${jwt}`,
+        },
+      });
+      // 3.110.218.87:8000
+
+      // console.log(await response.json());
+
+
+      if (response.status === 400) {
+        const data = await response.json();
+        // setErrorModalOpen(true)
+        console.error("Error 400:", data.msg);
+        alert(`Error: ${data.msg}`);
+        return;
+      }
+
+      if (response.status === 401) {
+        const data = await response.json();
+        console.error("Error 401:", data.msg);
+        alert(`Error: ${data.msg}`);
+        return;
+      }
+
+      if (response.status === 404) {
+        const data = await response.json();
+        setErroMuzzleResponse(data);
+        console.error("Error 401:", data.msg);
+        // alert(`Error: ${data.msg}`);
+        return;
+      }
+
+      if (response.status === 200) {
+        const data: MuzzleResponse = await response.json(); // Use the interface for type safety
+        console.log("API Response:", data);
+        setMuzzleResponse(data);
+        // setResponseData(data);
+        // setModalOpen(true)
+        // setFormData(prev => ({
+        //   ...prev,
+        //   reference_id: data.matched_id
+        // })); // Save the response data to state
+        // alert(data.msg);
+        return;
+      }
+
+      if (!response.ok) {
+        throw new Error("Failed to upload video");
+      }
+    } catch (error) {
+      console.error("Error uploading video:", error);
+      alert("Something went wrong: " + error);
+    } finally {
+      setIsUploading(false);
+    }
+  };
+
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent>
@@ -157,6 +250,31 @@ export function RecordVaccinationScheduleDialog({ open, onOpenChange, onSuccess 
                 </SelectContent>
               </Select>
             </div>
+                <div>
+              <label className="block text-sm font-medium mb-1">Muzzel Verification (optional)</label>
+              <UploadVideo onVideoCapture={(file) => {
+                console.log("Captured video file:", file);
+                setSelectedFile(file);
+
+              }} />
+
+            </div>
+            <Button
+              type="button"
+              variant="outline"
+              className="text-green-700 w-full flex items-center gap-2 border border-green-700"
+              onClick={() => {
+                if (selectedFile) {
+                  handleVideoUpload(selectedFile); // Call the upload function when the video is captured
+                } else {
+                  alert("Please select a video file before uploading.");
+                }
+              }}
+            >
+              <Camera className="h-5 w-5 text-green-600" />
+              {isUploading ? "Uploading..." : "Upload Muzzle Video"}
+              {/* {isUploading ? "Uploading..." : "Claim Cow"} */}
+            </Button>
             <div>
               <label className="block text-sm font-medium mb-1">Vaccine</label>
               <Select value={form.vaccine_id} onValueChange={(v) => handleSelect("vaccine_id", v)}>

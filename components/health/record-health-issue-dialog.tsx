@@ -26,15 +26,6 @@ interface RecordHealthIssueDialogProps {
 }
 
 // Dummy data for dropdowns
-const conditions = [
-  { id: 1, name: "Mastitis" },
-  { id: 2, name: "Foot Rot" },
-]
-const severities = [
-  { id: 1, name: "Mild" },
-  { id: 2, name: "Moderate" },
-  { id: 3, name: "Severe" },
-]
 const statuses = [
   { id: 1, name: "Healthy" },
   { id: 2, name: "Under Treatment" },
@@ -58,6 +49,9 @@ export function RecordHealthIssueDialog({ open, onOpenChange, onSuccess }: Recor
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [selectedAnimalId, setSelectedAnimalId] = useState<string | null>(null);
 const [selectedReferenceId, setSelectedReferenceId] = useState<string | null>(null);
+const [conditions, setConditions] = useState<{ id: number; name: string }[]>([]);
+// Add severities state
+const [severities, setSeverities] = useState<{ id: number; name: string }[]>([]);
 
 
   const [form, setForm] = useState({
@@ -182,6 +176,47 @@ const [selectedReferenceId, setSelectedReferenceId] = useState<string | null>(nu
     }
   }, [open])
 
+  // Fetch medical conditions when dialog opens
+  useEffect(() => {
+    if (open) {
+      const token = typeof window !== "undefined" ? localStorage.getItem("access_token") : null
+
+      fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/lms/medical-condition-service`,{
+        headers: {
+          "Content-Type": "application/json",
+          ...(token ? { Authorization: `Bearer ${token}` } : {}),
+        },
+      })
+        .then((res) => res.json())
+        .then((data) => {
+          console.log(data);
+          
+          if (data?.data) setConditions(data.data)
+          else setConditions([])
+        })
+        .catch(() => setConditions([]))
+    }
+  }, [open])
+
+  // Fetch severities from the API when dialog opens
+  useEffect(() => {
+    if (open) {
+      const token = typeof window !== "undefined" ? localStorage.getItem("access_token") : null;
+      fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/lms/medical-condition-severity-service`, {
+        headers: {
+          "Content-Type": "application/json",
+          ...(token ? { Authorization: `Bearer ${token}` } : {}),
+        },
+      })
+        .then((res) => res.json())
+        .then((data) => {
+          if (data?.data) setSeverities(data.data);
+          else setSeverities([]);
+        })
+        .catch(() => setSeverities([]));
+    }
+  }, [open]);
+
   // Handle input changes
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     setForm({ ...form, [e.target.name]: e.target.value })
@@ -207,7 +242,7 @@ const [selectedReferenceId, setSelectedReferenceId] = useState<string | null>(nu
         current_status_id: Number(form.current_status_id),
         by_user_id,
       }
-      const res = await fetch("http://127.0.0.1:8000/api/lms/health-record-service/", {
+      const res = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/lms/health-record-service/`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

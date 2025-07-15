@@ -116,7 +116,7 @@ export default function HealthVaccination() {
     const token = typeof window !== "undefined" ? localStorage.getItem("access_token") : null;
 
         const res = await fetch(
-          `http://127.0.0.1:8000/api/lms/health-record-service/?start_record=${(currentPage - 1) * pageSize + 1}&page_size=${pageSize}`,
+          `${process.env.NEXT_PUBLIC_API_BASE_URL}/lms/health-record-service/?start_record=${(currentPage - 1) * pageSize + 1}&page_size=${pageSize}`,
           {
             headers: {
               ...(token ? { Authorization: `Bearer ${token}` } : {}),
@@ -141,7 +141,7 @@ export default function HealthVaccination() {
       try {
         const token = typeof window !== "undefined" ? localStorage.getItem("access_token") : null;
         const start_record = (currentVaccinationPage - 1) * vaccinationPageSize + 1;
-        const res = await fetch(`http://127.0.0.1:8000/api/lms/vaccination-schedule-service?start_record=${start_record}&page_size=${vaccinationPageSize}`,
+        const res = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/lms/vaccination-schedule-service?start_record=${start_record}&page_size=${vaccinationPageSize}`,
           {
             headers: {
               ...(token ? { Authorization: `Bearer ${token}` } : {}),

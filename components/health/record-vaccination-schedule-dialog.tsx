@@ -37,13 +37,35 @@ export function RecordVaccinationScheduleDialog({ open, onOpenChange, onSuccess 
     remarks: "",
   })
   const [submitting, setSubmitting] = useState(false)
+  const [vaccines, setVaccines] = useState<{ id: number; name: string }[]>([]);
+
+
+
+    // Fetch vaccines from the API when dialog opens
+  useEffect(() => {
+    if (open) {
+      const token = typeof window !== "undefined" ? localStorage.getItem("access_token") : null;
+      fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/lms/vaccine-service`, {
+        headers: {
+          "Content-Type": "application/json",
+          ...(token ? { Authorization: `Bearer ${token}` } : {}),
+        },
+      })
+        .then((res) => res.json())
+        .then((data) => {
+          if (data?.data) setVaccines(data.data);
+          else setVaccines([]);
+        })
+        .catch(() => setVaccines([]));
+    }
+  }, [open]);
 
   // Fetch assets when dialog opens
   useEffect(() => {
     if (open) {
       setLoadingAssets(true)
       const token = typeof window !== "undefined" ? localStorage.getItem("access_token") : null
-      fetch("http://127.0.0.1:8000/api/lms/assets-service", {
+      fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/lms/assets-service`, {
         headers: {
           ...(token ? { Authorization: `Bearer ${token}` } : {}),
         },
@@ -83,7 +105,9 @@ export function RecordVaccinationScheduleDialog({ open, onOpenChange, onSuccess 
         asset_id: Number(form.asset_id),
         vaccine_id: Number(form.vaccine_id),
       }
-      const res = await fetch("http://127.0.0.1:8000/api/lms/vaccination-schedule-service", {
+      console.log(payload);
+      
+      const res = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/lms/vaccination-schedule-service/`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

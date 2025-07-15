@@ -51,7 +51,7 @@ export default function FinancialManagement() {
     setLoading(true)
     const token = typeof window !== "undefined" ? localStorage.getItem("access_token") : null;
 
-    fetch(`http://127.0.0.1:8000/api/gls/income-expense-service`, {
+    fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/gls/income-expense-service`, {
       method: "POST",
       headers: {
         ...(token ? { Authorization: `Bearer ${token}` } : {}),
@@ -78,7 +78,7 @@ export default function FinancialManagement() {
     // Fetch expense breakdown
     try {
        const token = typeof window !== "undefined" ? localStorage.getItem("access_token") : null
-    fetch("http://127.0.0.1:8000/api/gls/income-expense-breakdown-service/", {
+    fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/gls/income-expense-breakdown-service/`, {
       method: "GET",
       headers: {
         ...(token ? { Authorization: `Bearer ${token}` } : {}),

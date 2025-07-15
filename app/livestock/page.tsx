@@ -61,7 +61,7 @@ export default function LivestockInventory() {
     console.log("Access token:", token);
     // Calculate start_record for 1-based pagination: 1, 11, 21, ...
     const startRecord = (page - 1) * pageSize + 1;
-    fetch(`http://127.0.0.1:8000/api/lms/assets-service?start_record=${startRecord}&page_size=${pageSize}`,
+    fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/lms/assets-service?start_record=${startRecord}&page_size=${pageSize}`,
       {
         headers: {
           ...(token ? { Authorization: `Bearer ${token}` } : {}),

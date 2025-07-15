@@ -25,10 +25,18 @@ import { MobileOverlay } from "@/components/mobile-overlay"
 import { useAuth } from "@/hooks/useAuth"
 import { AuthGuard } from "@/components/auth-guard"
 
+import { useRouter } from "next/navigation"
+import { RecordVaccinationScheduleDialog } from "@/components/health/record-vaccination-schedule-dialog"
+import { RecordHealthIssueDialog } from "@/components/health/record-health-issue-dialog"
+
 export default function Dashboard() {
   const [sidebarOpen, setSidebarOpen] = useState(false)
   const { user, logout } = useAuth()
   const [dashboardSummary, setDashboardSummary] = useState<any>({})
+    const [recordDialogOpen, setRecordDialogOpen] = useState(false)
+  const [vaccinationDialogOpen, setVaccinationDialogOpen] = useState(false)
+
+    const router = useRouter()
 
   useEffect(() => {
     const token = typeof window !== "undefined" ? localStorage.getItem("access_token") : null
@@ -129,11 +137,13 @@ export default function Dashboard() {
             <div className="mb-8">
               <h3 className="text-lg font-semibold text-gray-900 mb-4">Quick Actions</h3>
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 lg:gap-4">
-                <Button className="bg-green-600 hover:bg-green-700 h-12">
+                <Button onClick={ () => {
+                router.push("/livestock/add_cow")
+              }} className="bg-green-600 hover:bg-green-700 h-12">
                   <Plus className="w-4 h-4 mr-2" />
                   Add Animal
                 </Button>
-                <Button className="bg-blue-600 hover:bg-blue-700 h-12">
+                <Button onClick={()=>{setVaccinationDialogOpen(true)}} className="bg-blue-600 hover:bg-blue-700 h-12">
                   <Calendar className="w-4 h-4 mr-2" />
                   Schedule Vaccination
                 </Button>
@@ -141,7 +151,7 @@ export default function Dashboard() {
                   <TrendingUp className="w-4 h-4 mr-2" />
                   Record Production
                 </Button> */}
-                <Button className="bg-red-600 hover:bg-red-700 h-12">
+                <Button onClick={()=>{setRecordDialogOpen(true)}} className="bg-red-600 hover:bg-red-700 h-12">
                   <Plus className="w-4 h-4 mr-2" />
                   Record Health Issue
                 </Button>
@@ -262,6 +272,21 @@ export default function Dashboard() {
           </main>
         </div>
       </div>
+
+             <RecordVaccinationScheduleDialog
+                    open={vaccinationDialogOpen}
+                    onOpenChange={setVaccinationDialogOpen}
+                    onSuccess={() => {
+                      // setCurrentPage(1); // Optionally refresh or reset page
+                    }}
+                  />
+                  <RecordHealthIssueDialog
+                    open={recordDialogOpen}
+                    onOpenChange={setRecordDialogOpen}
+                    onSuccess={() => {
+                      // setCurrentPage(1); // Optionally reset to first page
+                    }}
+                  />
     </AuthGuard>
   )
 }

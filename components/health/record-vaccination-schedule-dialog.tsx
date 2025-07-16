@@ -42,7 +42,7 @@ export function RecordVaccinationScheduleDialog({ open, onOpenChange, onSuccess 
   const [form, setForm] = useState({
     asset_id: "",
     vaccine_id: "",
-    treatment_date: "",
+    due_date: "",
     remarks: "",
   })
   const [submitting, setSubmitting] = useState(false)
@@ -290,7 +290,7 @@ export function RecordVaccinationScheduleDialog({ open, onOpenChange, onSuccess 
             </div>
             <div>
               <label className="block text-sm font-medium mb-1">Treatment Date</label>
-              <Input type="datetime-local" name="treatment_date" value={form.treatment_date} onChange={handleChange} required />
+              <Input type="datetime-local" name="due_date" value={form.due_date} onChange={handleChange} required />
             </div>
             <div>
               <label className="block text-sm font-medium mb-1">Remarks</label>

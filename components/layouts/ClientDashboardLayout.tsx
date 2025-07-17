@@ -143,7 +143,7 @@ export default function ClientDashboardLayout({ children }: { children: React.Re
           <Navigation activeModule={activeModule} setActiveModule={setActiveModule} />
         </div>
                 {/* Main Content */}
-        <main className="flex-1 lg:ml-0  ">{children}</main>
+        <main className="flex-1 lg:ml-4">{children}</main>
         </div>
         </div>
 

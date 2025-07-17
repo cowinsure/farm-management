@@ -90,7 +90,35 @@ const config: Config = {
   		animation: {
   			'accordion-down': 'accordion-down 0.2s ease-out',
   			'accordion-up': 'accordion-up 0.2s ease-out'
-  		}
+  		},
+    fontFamily: {
+      sans: [
+        'ui-sans-serif',
+        'system-ui',
+        'sans-serif',
+        'Apple Color Emoji',
+        'Segoe UI Emoji',
+        'Segoe UI Symbol',
+        'Noto Color Emoji',
+      ],
+      serif: [
+        'ui-serif',
+        'Georgia',
+        'Cambria',
+        'Times New Roman',
+        'Times',
+        'serif',
+      ],
+      mono: [
+        'ui-monospace',
+        'SFMono-Regular',
+        'SF Mono',
+        'Consolas',
+        'Liberation Mono',
+        'Menlo',
+        'monospace',
+      ],
+    }
   	}
   },
   plugins: [require("tailwindcss-animate")],

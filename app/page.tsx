@@ -40,7 +40,7 @@ export default function Dashboard() {
 
   useEffect(() => {
     const token = typeof window !== "undefined" ? localStorage.getItem("access_token") : null
-    fetch("http://127.0.0.1:8000/api/gls/fms-dashboard-service", {
+    fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/gls/fms-dashboard-service`, {
       method: "GET",
       headers: {
         ...(token ? { Authorization: `Bearer ${token}` } : {}),
@@ -93,9 +93,10 @@ export default function Dashboard() {
              
               <Card className="border-0 shadow-lg hover:shadow-xl transition-shadow duration-300">
                 <CardHeader className="flex flex-row items-center justify-between pb-2">
-                  <CardTitle className="text-sm font-medium text-gray-600">Total Animals</CardTitle>
-                  <div className={`p-2 rounded-lg text-green-600`}>
-                    <PawPrint className={`w-4 h-4 bg-green-100 `} />
+                  <CardTitle className="text-sm font-medium text-gray-600">Total Cattle</CardTitle>
+                  <div className="p-2 bg-green-100 rounded-lg">
+                    {/* <Users className="w-6 h-6 text-green-600" /> */}
+                    <PawPrint className="w-6 h-6 text-green-600" />
                   </div>
                 </CardHeader>
                 <CardContent>
@@ -108,8 +109,9 @@ export default function Dashboard() {
               <Card className="border-0 shadow-lg hover:shadow-xl transition-shadow duration-300">
                 <CardHeader className="flex flex-row items-center justify-between pb-2">
                   <CardTitle className="text-sm font-medium text-gray-600">Health Status</CardTitle>
-                  <div className={`p-2 rounded-lg text-green-600`}>
-                    <Heart className={`w-4 h-4 bg-green-100 `} />
+                  <div className="p-2 bg-green-100 rounded-lg">
+                    {/* <Users className="w-6 h-6 text-green-600" /> */}
+                    <Heart className="w-6 h-6 text-green-600" />
                   </div>
                 </CardHeader>
                 <CardContent>
@@ -122,8 +124,9 @@ export default function Dashboard() {
               <Card className="border-0 shadow-lg hover:shadow-xl transition-shadow duration-300">
                 <CardHeader className="flex flex-row items-center justify-between pb-2">
                   <CardTitle className="text-sm font-medium text-gray-600">Monthly Revenue</CardTitle>
-                  <div className={`p-2 rounded-lg text-orange-600`}>
-                    <DollarSign className={`w-4 h-4 bg-orange-100 `} />
+                  <div className="p-2 bg-orange-100 rounded-lg">
+                    {/* <Users className="w-6 h-6 text-green-600" /> */}
+                    <DollarSign className="w-6 h-6 text-orange-600" />
                   </div>
                 </CardHeader>
                 <CardContent>
@@ -134,16 +137,16 @@ export default function Dashboard() {
             </div>
 
             {/* Quick Actions */}
-            <div className="mb-8">
+            <div className="mb-8 bg-white p-7 rounded-lg shadow-lg">
               <h3 className="text-lg font-semibold text-gray-900 mb-4">Quick Actions</h3>
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 lg:gap-4">
+              <div className="grid grid-cols-3 gap-3">
                 <Button onClick={ () => {
                 router.push("/livestock/add_cow")
-              }} className="bg-green-600 hover:bg-green-700 h-12">
+              }} className="bg-green-600 hover:bg-green-700 h-20">
                   <Plus className="w-4 h-4 mr-2" />
                   Add Animal
                 </Button>
-                <Button onClick={()=>{setVaccinationDialogOpen(true)}} className="bg-blue-600 hover:bg-blue-700 h-12">
+                <Button onClick={()=>{setVaccinationDialogOpen(true)}} className="bg-blue-600 hover:bg-blue-700 h-20">
                   <Calendar className="w-4 h-4 mr-2" />
                   Schedule Vaccination
                 </Button>
@@ -151,7 +154,7 @@ export default function Dashboard() {
                   <TrendingUp className="w-4 h-4 mr-2" />
                   Record Production
                 </Button> */}
-                <Button onClick={()=>{setRecordDialogOpen(true)}} className="bg-red-600 hover:bg-red-700 h-12">
+                <Button onClick={()=>{setRecordDialogOpen(true)}} className="bg-red-600 hover:bg-red-700 h-20">
                   <Plus className="w-4 h-4 mr-2" />
                   Record Health Issue
                 </Button>

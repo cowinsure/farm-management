@@ -137,7 +137,7 @@ export function RecordVaccinationScheduleDialog({ open, onOpenChange, onSuccess 
         setForm({
           asset_id: "",
           vaccine_id: "",
-          treatment_date: "",
+          due_date: "",
           remarks: "",
         })
       } else {

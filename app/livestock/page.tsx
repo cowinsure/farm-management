@@ -160,7 +160,7 @@ export default function LivestockInventory() {
           </div>
 
           {/* Summary Cards */}
-          <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 lg:gap-6 mb-6 lg:mb-8">
+          <div className="grid grid-cols-2 lg:grid-cols-3 gap-3 lg:gap-6 mb-6 lg:mb-8">
             {/* <Card>
                 <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                   <CardTitle className="text-lg lg:text-xl font-medium text-gray-600">{total}</CardTitle>
@@ -329,7 +329,7 @@ export default function LivestockInventory() {
                   </div>
 
                   {/* Desktop Table View */}
-                  <div className="hidden lg:block overflow-x-auto" style={{ maxHeight: 500, overflowY: 'auto' }}>
+                  <div className="hidden lg:block overflow-x-auto" style={{ maxHeight: 300, overflowY: 'auto' }}>
                     <table className="w-full">
                       <thead>
                         <tr className="border-b border-gray-200">

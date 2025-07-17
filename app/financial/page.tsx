@@ -31,6 +31,7 @@ import { useAuth } from "@/hooks/useAuth"
 import { AuthGuard } from "@/components/auth-guard"
 import ViewTransactionModal from "@/components/Finance/modal/ViewTransactionModal"
 import FinancialModal from "@/components/Finance/modal/FinancialModal"
+import { Span } from "next/dist/trace"
 
 export default function FinancialManagement() {
   const [sidebarOpen, setSidebarOpen] = useState(false)
@@ -64,7 +65,7 @@ export default function FinancialManagement() {
       .then((res) => res.json())
       .then((data) => {
         setTransactions(data.data.list)
-        
+
         setSummary(data.data.summary)
       })
       .finally(() => setLoading(false))
@@ -72,39 +73,39 @@ export default function FinancialManagement() {
 
   useEffect(() => {
     console.log("calling expense breakdown API");
-    
+
     // ... your other fetches ...
 
     // Fetch expense breakdown
     try {
-       const token = typeof window !== "undefined" ? localStorage.getItem("access_token") : null
-    fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/gls/income-expense-breakdown-service/`, {
-      method: "GET",
-      headers: {
-        ...(token ? { Authorization: `Bearer ${token}` } : {}),
-        "Content-Type": "application/json",
-      },
-     
-    })
-      .then((res) => res.json()
-   
-    
-    )
-      .then((data) => {
-        console.log(data.data.list);
-        setExpenseBreakdown(data.data.list)
-        
-        setExpenseSummary(data.data.summary)
+      const token = typeof window !== "undefined" ? localStorage.getItem("access_token") : null
+      fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/gls/income-expense-breakdown-service/`, {
+        method: "GET",
+        headers: {
+          ...(token ? { Authorization: `Bearer ${token}` } : {}),
+          "Content-Type": "application/json",
+        },
+
       })
-      .catch(() => {
-        setExpenseBreakdown([])
-        setExpenseSummary({})
-      })
+        .then((res) => res.json()
+
+
+        )
+        .then((data) => {
+          console.log(data.data.list);
+          setExpenseBreakdown(data.data.list)
+
+          setExpenseSummary(data.data.summary)
+        })
+        .catch(() => {
+          setExpenseBreakdown([])
+          setExpenseSummary({})
+        })
     } catch (error) {
       console.log("Error fetching expense breakdown:", error);
-      
+
     }
-   
+
   }, [])
 
   const handleLogout = () => {
@@ -165,54 +166,73 @@ export default function FinancialManagement() {
           {/* Summary Cards */}
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 lg:gap-6 mb-6 lg:mb-8">
             <Card>
-              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                <CardTitle className="text-lg lg:text-xl font-medium text-gray-600">
-                  {summary["Monthly Revenue"] !== undefined ? `৳${summary["Monthly Revenue"].toLocaleString()}` : "-"}
-                </CardTitle>
-                <DollarSign className="h-4 w-4 text-green-600" />
-              </CardHeader>
-              <CardContent>
-                <div className="text-xs lg:text-sm text-gray-600">Monthly Revenue</div>
-              </CardContent>
-            </Card>
+              <CardContent className="p-4">
+                <div className="flex items-center space-x-2">
+                  <span className="text-3xl font-extrabold text-green-600">৳</span>
 
-            <Card>
-              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                <CardTitle className="text-lg lg:text-xl font-medium text-gray-600">
-                  {summary["Monthly Expense"] !== undefined ? `৳${summary["Monthly Expense"].toLocaleString()}` : "-"}
-                </CardTitle>
-                <TrendingDown className="h-4 w-4 text-red-600" />
-              </CardHeader>
-              <CardContent>
-                <div className="text-xs lg:text-sm text-gray-600">Monthly Expenses</div>
-              </CardContent>
-            </Card>
-
-            <Card>
-              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                <CardTitle className="text-lg lg:text-xl font-medium text-gray-600">
-                  {summary["Net Profit"] !== undefined ? `৳${summary["Net Profit"].toLocaleString()}` : "-"}
-                </CardTitle>
-                <TrendingUp className="h-4 w-4 text-blue-600" />
-              </CardHeader>
-              <CardContent>
-                <div className="text-xs lg:text-sm text-gray-600">Net Profit</div>
-              </CardContent>
-            </Card>
-
-            <Card>
-              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                <CardTitle className="text-lg lg:text-xl font-medium text-gray-600">
-                  {summary["Profit Margin"] !== undefined ? `${summary["Profit Margin"]}%` : "-"}
-                </CardTitle>
-                <div className="w-4 h-4 bg-purple-100 rounded flex items-center justify-center">
-                  <div className="w-2 h-2 bg-purple-600 rounded-full"></div>
+                  <div>
+                    <div className="text-2xl font-bold text-green-600">
+                      {summary["Monthly Revenue"] !== undefined ? `৳${summary["Monthly Revenue"].toLocaleString()}` : "-"}
+                    </div>
+                    <div className="text-sm text-gray-600">Monthly Revenue</div>
+                  </div>
                 </div>
-              </CardHeader>
-              <CardContent>
-                <div className="text-xs lg:text-sm text-gray-600">Profit Margin</div>
               </CardContent>
             </Card>
+
+            <Card>
+              <CardContent className="p-4">
+                <div className="flex items-center space-x-2">
+                  <TrendingDown className="w-8 h-8 text-red-600" />
+
+                  <div>
+                    <div className="text-2xl font-bold text-red-600">
+                      {summary["Monthly Expense"] !== undefined ? `৳${summary["Monthly Expense"].toLocaleString()}` : "-"}
+                    </div>
+                    <div className="text-sm text-gray-600">Monthly Expenses</div>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+
+
+
+            <Card>
+              <CardContent className="p-4">
+                <div className="flex items-center space-x-2">
+                  <TrendingUp className="w-8 h-8 text-blue-600" />
+
+                  <div>
+                    <div className="text-2xl font-bold text-blue-600">
+
+                      {summary["Net Profit"] !== undefined ? `৳${summary["Net Profit"].toLocaleString()}` : "-"}
+
+                    </div>
+                    <div className="text-sm text-gray-600">Net Profit</div>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+
+
+            <Card>
+              <CardContent className="p-4">
+                <div className="flex items-center space-x-2">
+                  <div className="w-8 h-8 bg-purple-100 rounded-full flex items-center justify-center">
+                    <span className="text-purple-600 font-bold">%</span>
+                  </div>
+
+                  <div>
+                    <div className="text-2xl font-bold text-purple-600">
+                      {summary["Profit Margin"] !== undefined ? `${summary["Profit Margin"]}%` : "-"}
+                    </div>
+                    <div className="text-sm text-gray-600">Profit Margin</div>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+
+
           </div>
 
           {/* Main Content Grid */}
@@ -267,9 +287,8 @@ export default function FinancialManagement() {
                             <div className="text-right">
                               {getTransactionBadge(transaction.type)}
                               <p
-                                className={`font-bold text-lg mt-1 ${
-                                  transaction.amount > 0 ? "text-green-600" : "text-red-600"
-                                }`}
+                                className={`font-bold text-lg mt-1 ${transaction.amount > 0 ? "text-green-600" : "text-red-600"
+                                  }`}
                               >
                                 {formatCurrency(transaction.amount)}
                               </p>
@@ -293,7 +312,7 @@ export default function FinancialManagement() {
                   </div>
 
                   {/* Desktop Table View */}
-                  <div className="hidden lg:block overflow-x-auto">
+                  <div className="hidden lg:block overflow-x-auto" style={{ maxHeight: 300, overflowY: 'auto' }}>
                     {loading ? (
                       <div className="text-center py-8 text-gray-500">Loading...</div>
                     ) : filteredTransactions.length === 0 ? (
@@ -317,9 +336,8 @@ export default function FinancialManagement() {
                               <td className="py-3 px-2">{getTransactionBadge(transaction.type)}</td>
                               <td className="py-3 px-2 text-sm">{transaction.txn_head}</td>
                               <td
-                                className={`py-3 px-2 font-semibold text-sm ${
-                                  transaction.amount > 0 ? "text-green-600" : "text-red-600"
-                                }`}
+                                className={`py-3 px-2 font-semibold text-sm ${transaction.amount > 0 ? "text-green-600" : "text-red-600"
+                                  }`}
                               >
                                 {formatCurrency(transaction.amount)}
                               </td>
@@ -373,42 +391,42 @@ export default function FinancialManagement() {
                   <div className="text-gray-500 text-center py-8">Expense breakdown data not available.</div>
                 </CardContent>
               </Card> */}
-               <Card>
-          <CardHeader>
-            <CardTitle className="flex items-center">
-              <TrendingDown className="w-5 h-5 mr-2 text-red-600" />
-              Expense Breakdown
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="space-y-4">
-              {expenseBreakdown.map((expense, index) => (
-                
-                <div key={index} className="space-y-2">
-                  
-                  <div className="flex justify-between items-center">
-                    <span className="text-sm font-medium">{expense.txn_head}</span>
-                    <span className="text-sm text-gray-600">${expense.amount}</span>
+              <Card>
+                <CardHeader>
+                  <CardTitle className="flex items-center">
+                    <TrendingDown className="w-5 h-5 mr-2 text-red-600" />
+                    Expense Breakdown
+                  </CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <div className="space-y-4">
+                    {expenseBreakdown.map((expense, index) => (
+
+                      <div key={index} className="space-y-2">
+
+                        <div className="flex justify-between items-center">
+                          <span className="text-sm font-medium">{expense.txn_head}</span>
+                          <span className="text-sm text-gray-600">{formatCurrency(expense.amount )}</span>
+                        </div>
+                        <div className="w-full bg-gray-200 rounded-full h-2">
+                          <div
+                            className="bg-blue-600 h-2 rounded-full"
+                            style={{ width: `${expense.percentage}%` }}
+                          ></div>
+                        </div>
+                        <div className="text-xs text-gray-500 text-right">{expense.percentage}%</div>
+                      </div>
+                    ))}
                   </div>
-                  <div className="w-full bg-gray-200 rounded-full h-2">
-                    <div 
-                      className="bg-blue-600 h-2 rounded-full" 
-                      style={{ width: `${expense.percentage}%` }}
-                    ></div>
+                  <div className="mt-4 p-3 bg-gray-50 rounded-lg">
+                    <div className="flex justify-between items-center">
+                      <span className="font-medium">Total Expenses:</span>
+                      <span className="text-lg font-bold text-red-600">{formatCurrency(expenseSummary.Total_Expenses )}</span>
+                    </div>
                   </div>
-                  <div className="text-xs text-gray-500 text-right">{expense.percentage}%</div>
-                </div>
-              ))}
-            </div>
-            <div className="mt-4 p-3 bg-gray-50 rounded-lg">
-              <div className="flex justify-between items-center">
-                <span className="font-medium">Total Expenses:</span>
-                <span className="text-lg font-bold text-red-600">{expenseSummary.Total_Expenses}</span>
-              </div>
-            </div>
-          </CardContent>
-        </Card>
-              
+                </CardContent>
+              </Card>
+
             </div>
           </div>
         </main>

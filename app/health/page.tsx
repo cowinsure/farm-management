@@ -125,6 +125,8 @@ export default function HealthVaccination() {
         )
         const data = await res.json()
         if (data.status === "success") {
+          console.log(data.data.summary);
+          
           setHealthRecords(data.data.list)
           setSummary(data.data.summary)
           setTotalRecords(data.data.summary.Total)
@@ -328,7 +330,7 @@ export default function HealthVaccination() {
               <CardHeader>
                 <div className="flex flex-col lg:flex-row items-start lg:items-center justify-between gap-4">
                   <CardTitle className="flex items-center">
-                    <Syringe className="w-5 h-5 mr-2" />
+                     <Syringe className="w-5 h-5 mr-2 text-blue-600" />
                     Vaccination Schedule
                   </CardTitle>
                   <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2 w-full lg:w-auto">
@@ -411,7 +413,7 @@ export default function HealthVaccination() {
                 <CardHeader>
                   <div className="flex flex-col lg:flex-row items-start lg:items-center justify-between gap-4">
                     <CardTitle className="flex items-center">
-                      <Heart className="w-5 h-5 mr-2" />
+                       <Heart className="w-5 h-5 mr-2 text-red-600" />
                       Health Records
                     </CardTitle>
                     <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2 w-full lg:w-auto">

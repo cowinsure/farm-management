@@ -65,7 +65,7 @@ const ViewVaccinationModal = ({ open, onOpenChange, schedule }: ViewVaccinationM
                   <span className="text-green-600 text-lg">🐄</span>
                 </div>
                 <div>
-                  <p className="text-sm text-gray-600">Animal</p>
+                  <p className="text-sm text-gray-600">Reference ID</p>
                   <p className="font-semibold">{schedule.animalName} ({schedule.animalId})</p>
                 </div>
               </CardContent>

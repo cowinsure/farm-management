@@ -37,7 +37,7 @@ export default function FinancialManagement() {
   const [sidebarOpen, setSidebarOpen] = useState(false)
   const [searchTerm, setSearchTerm] = useState("")
   const [typeFilter, setTypeFilter] = useState("all")
-  const [transactions, setTransactions] = useState<any[]>([])
+  const [transactions, setTransactions] = useState<any[] | null>(null)
   const [summary, setSummary] = useState<any>({})
   const [page, setPage] = useState(1)
   const [pageSize, setPageSize] = useState(10)
@@ -46,7 +46,7 @@ export default function FinancialManagement() {
   const [viewModalOpen, setViewModalOpen] = useState(false)
   const [selectedTransaction, setSelectedTransaction] = useState<any | null>(null)
   const [expenseBreakdown, setExpenseBreakdown] = useState<any[]>([])
-  const [expenseSummary, setExpenseSummary] = useState<any>({})
+  const [expenseSummary, setExpenseSummary] = useState<any>(null)
 
   useEffect(() => {
     setLoading(true)
@@ -64,8 +64,7 @@ export default function FinancialManagement() {
     })
       .then((res) => res.json())
       .then((data) => {
-        setTransactions(data.data.list)
-
+        setTransactions(Array.isArray(data.data.list) ? data.data.list : null)
         setSummary(data.data.summary)
       })
       .finally(() => setLoading(false))
@@ -94,12 +93,11 @@ export default function FinancialManagement() {
         .then((data) => {
           console.log(data.data.list);
           setExpenseBreakdown(data.data.list)
-
-          setExpenseSummary(data.data.summary)
+          setExpenseSummary(data.data.summary ?? null)
         })
         .catch(() => {
           setExpenseBreakdown([])
-          setExpenseSummary({})
+          setExpenseSummary(null)
         })
     } catch (error) {
       console.log("Error fetching expense breakdown:", error);
@@ -112,13 +110,15 @@ export default function FinancialManagement() {
     logout()
   }
 
-  const filteredTransactions = transactions.filter((transaction) => {
-    const matchesSearch =
-      transaction.description.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      transaction.txn_head.toLowerCase().includes(searchTerm.toLowerCase())
-    const matchesType = typeFilter === "all" || transaction.type.toLowerCase() === typeFilter.toLowerCase()
-    return matchesSearch && matchesType
-  })
+  const filteredTransactions = Array.isArray(transactions)
+    ? transactions.filter((transaction) => {
+        const matchesSearch =
+          transaction.description.toLowerCase().includes(searchTerm.toLowerCase()) ||
+          transaction.txn_head.toLowerCase().includes(searchTerm.toLowerCase())
+        const matchesType = typeFilter === "all" || transaction.type.toLowerCase() === typeFilter.toLowerCase()
+        return matchesSearch && matchesType
+      })
+    : []
 
   const getTransactionBadge = (type: string) => {
     switch (type.toLowerCase()) {
@@ -172,7 +172,9 @@ export default function FinancialManagement() {
 
                   <div>
                     <div className="text-2xl font-bold text-green-600">
-                      {summary["Monthly Revenue"] !== undefined ? `৳${summary["Monthly Revenue"].toLocaleString()}` : "-"}
+                      {summary && summary["Monthly Revenue"] !== undefined && summary["Monthly Revenue"] !== null
+                        ? `৳${summary["Monthly Revenue"].toLocaleString()}`
+                        : "-"}
                     </div>
                     <div className="text-sm text-gray-600">Monthly Revenue</div>
                   </div>
@@ -187,7 +189,9 @@ export default function FinancialManagement() {
 
                   <div>
                     <div className="text-2xl font-bold text-red-600">
-                      {summary["Monthly Expense"] !== undefined ? `৳${summary["Monthly Expense"].toLocaleString()}` : "-"}
+                      {summary && summary["Monthly Expense"] !== undefined && summary["Monthly Expense"] !== null
+                        ? `৳${summary["Monthly Expense"].toLocaleString()}`
+                        : "-"}
                     </div>
                     <div className="text-sm text-gray-600">Monthly Expenses</div>
                   </div>
@@ -204,9 +208,9 @@ export default function FinancialManagement() {
 
                   <div>
                     <div className="text-2xl font-bold text-blue-600">
-
-                      {summary["Net Profit"] !== undefined ? `৳${summary["Net Profit"].toLocaleString()}` : "-"}
-
+                      {summary && summary["Net Profit"] !== undefined && summary["Net Profit"] !== null
+                        ? `৳${summary["Net Profit"].toLocaleString()}`
+                        : "-"}
                     </div>
                     <div className="text-sm text-gray-600">Net Profit</div>
                   </div>
@@ -224,7 +228,9 @@ export default function FinancialManagement() {
 
                   <div>
                     <div className="text-2xl font-bold text-purple-600">
-                      {summary["Profit Margin"] !== undefined ? `${summary["Profit Margin"]}%` : "-"}
+                      {summary && summary["Profit Margin"] !== undefined && summary["Profit Margin"] !== null
+                        ? `${summary["Profit Margin"]}%`
+                        : "-"}
                     </div>
                     <div className="text-sm text-gray-600">Profit Margin</div>
                   </div>
@@ -400,28 +406,34 @@ export default function FinancialManagement() {
                 </CardHeader>
                 <CardContent>
                   <div className="space-y-4">
-                    {expenseBreakdown.map((expense, index) => (
-
-                      <div key={index} className="space-y-2">
-
-                        <div className="flex justify-between items-center">
-                          <span className="text-sm font-medium">{expense.txn_head}</span>
-                          <span className="text-sm text-gray-600">{formatCurrency(expense.amount )}</span>
+                    {Array.isArray(expenseBreakdown) && expenseBreakdown.length > 0 ? (
+                      expenseBreakdown.map((expense, index) => (
+                        <div key={index} className="space-y-2">
+                          <div className="flex justify-between items-center">
+                            <span className="text-sm font-medium">{expense.txn_head}</span>
+                            <span className="text-sm text-gray-600">{formatCurrency(expense.amount)}</span>
+                          </div>
+                          <div className="w-full bg-gray-200 rounded-full h-2">
+                            <div
+                              className="bg-blue-600 h-2 rounded-full"
+                              style={{ width: `${expense.percentage}%` }}
+                            ></div>
+                          </div>
+                          <div className="text-xs text-gray-500 text-right">{expense.percentage}%</div>
                         </div>
-                        <div className="w-full bg-gray-200 rounded-full h-2">
-                          <div
-                            className="bg-blue-600 h-2 rounded-full"
-                            style={{ width: `${expense.percentage}%` }}
-                          ></div>
-                        </div>
-                        <div className="text-xs text-gray-500 text-right">{expense.percentage}%</div>
-                      </div>
-                    ))}
+                      ))
+                    ) : (
+                      <div className="text-gray-500 text-center py-8">No expense breakdown data available.</div>
+                    )}
                   </div>
                   <div className="mt-4 p-3 bg-gray-50 rounded-lg">
                     <div className="flex justify-between items-center">
                       <span className="font-medium">Total Expenses:</span>
-                      <span className="text-lg font-bold text-red-600">{formatCurrency(expenseSummary.Total_Expenses )}</span>
+                      <span className="text-lg font-bold text-red-600">{
+                        expenseSummary && expenseSummary.Total_Expenses !== undefined && expenseSummary.Total_Expenses !== null
+                          ? formatCurrency(expenseSummary.Total_Expenses)
+                          : "-"
+                      }</span>
                     </div>
                   </div>
                 </CardContent>

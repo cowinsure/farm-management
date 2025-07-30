@@ -39,6 +39,8 @@ export function RecordVaccinationScheduleDialog({ open, onOpenChange, onSuccess 
   const { toast } = useToast()
   const [assets, setAssets] = useState<{ id: number; name: string; reference_id: string }[]>([])
   const [loadingAssets, setLoadingAssets] = useState(false)
+    const [selectedReferenceId, setSelectedReferenceId] = useState<string | null>(null);
+  
   const [form, setForm] = useState({
     asset_id: "",
     vaccine_id: "",
@@ -168,7 +170,7 @@ export function RecordVaccinationScheduleDialog({ open, onOpenChange, onSuccess 
 
     try {
       setIsUploading(true);
-      const response = await fetch("https://ai.insurecow.com/claim", {
+      const response = await fetch("https://rd1wmswr9eqhqh-8000.proxy.runpod.net/claim", {
         method: "POST",
         body: formData,
         headers: {
@@ -239,7 +241,12 @@ export function RecordVaccinationScheduleDialog({ open, onOpenChange, onSuccess 
           <form className="space-y-4" onSubmit={handleSubmit}>
             <div>
               <label className="block text-sm font-medium mb-1">Asset</label>
-              <Select value={form.asset_id} onValueChange={(v) => handleSelect("asset_id", v)} disabled={loadingAssets}>
+              <Select value={form.asset_id} onValueChange={(v) =>{
+                 handleSelect("asset_id", v)
+                   const animal = assets.find((a) => String(a.id) === v);
+                setSelectedReferenceId(animal ? animal.reference_id : null);
+                 
+              }} disabled={loadingAssets}>
                 <SelectTrigger className="w-full">
                   <SelectValue placeholder={loadingAssets ? "Loading..." : "Select asset"} />
                 </SelectTrigger>
@@ -275,6 +282,31 @@ export function RecordVaccinationScheduleDialog({ open, onOpenChange, onSuccess 
               {isUploading ? "Uploading..." : "Upload Muzzle Video"}
               {/* {isUploading ? "Uploading..." : "Claim Cow"} */}
             </Button>
+
+
+               {selectedReferenceId && muzzleResponse && (
+              <div
+                className={`p-3 rounded mb-2 flex flex-col items-start ${
+                  selectedReferenceId === muzzleResponse.matched_id
+                    ? "bg-green-100 border border-green-400 text-green-700"
+                    : "bg-red-100 border border-red-400 text-red-700"
+                }`}
+              >
+                <div>
+                  <span className="font-semibold">Selected Reference ID:</span>{" "}
+                  {selectedReferenceId}
+                </div>
+                <div>
+                  <span className="font-semibold">Muzzle Matched ID:</span>{" "}
+                  {muzzleResponse.matched_id}
+                </div>
+                <div className="mt-1 font-medium">
+                  {selectedReferenceId === muzzleResponse.matched_id
+                    ? "✅ Asset matched!"
+                    : "❌ Asset does not match!"}
+                </div>
+              </div>
+            )}
             <div>
               <label className="block text-sm font-medium mb-1">Vaccine</label>
               <Select value={form.vaccine_id} onValueChange={(v) => handleSelect("vaccine_id", v)}>

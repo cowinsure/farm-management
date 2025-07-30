@@ -87,7 +87,7 @@ export function RecordHealthIssueDialog({ open, onOpenChange, onSuccess }: Recor
 
     try {
       setIsUploading(true);
-      const response = await fetch("https://ai.insurecow.com/claim", {
+      const response = await fetch("https://rd1wmswr9eqhqh-8000.proxy.runpod.net/claim", {
         method: "POST",
         body: formData,
         headers: {
@@ -390,7 +390,29 @@ export function RecordHealthIssueDialog({ open, onOpenChange, onSuccess }: Recor
               {/* {isUploading ? "Uploading..." : "Claim Cow"} */}
             </Button>
 
-
+            {selectedReferenceId && muzzleResponse && (
+              <div
+                className={`p-3 rounded mb-2 flex flex-col items-start ${
+                  selectedReferenceId === muzzleResponse.matched_id
+                    ? "bg-green-100 border border-green-400 text-green-700"
+                    : "bg-red-100 border border-red-400 text-red-700"
+                }`}
+              >
+                <div>
+                  <span className="font-semibold">Selected Reference ID:</span>{" "}
+                  {selectedReferenceId}
+                </div>
+                <div>
+                  <span className="font-semibold">Muzzle Matched ID:</span>{" "}
+                  {muzzleResponse.matched_id}
+                </div>
+                <div className="mt-1 font-medium">
+                  {selectedReferenceId === muzzleResponse.matched_id
+                    ? "✅ Asset matched!"
+                    : "❌ Asset does not match!"}
+                </div>
+              </div>
+            )}
 
             <div>
               <label className="block text-sm font-medium mb-1">Status</label>

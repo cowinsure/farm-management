@@ -43,13 +43,13 @@ export default function ClientDashboardLayout({ children }: { children: React.Re
             </div>
             
             <div className="hidden md:flex items-center space-x-4">
-              <div className="relative">
+              {/* <div className="relative">
                 <Bell className="w-6 h-6 text-gray-600 cursor-pointer hover:text-green-600" />
                 <span className="absolute -top-2 -right-2 bg-red-500 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">3</span>
-              </div>
-              <div className="w-8 h-8 bg-green-600 rounded-full flex items-center justify-center">
+              </div> */}
+              {/* <div className="w-8 h-8 bg-green-600 rounded-full flex items-center justify-center">
                 <span className="text-white font-semibold text-sm">JD</span>
-              </div>
+              </div> */}
               <Button
                 variant="ghost"
                 size="sm"

@@ -246,6 +246,12 @@ export default function HealthVaccination() {
             Complete
           </Badge>
         );
+      case "sick":
+        return (
+          <Badge className="bg-red-100 text-red-800 hover:bg-red-100">
+            Sick
+          </Badge>
+        );
       default:
         return <Badge variant="secondary">{status}</Badge>;
     }
@@ -468,7 +474,7 @@ export default function HealthVaccination() {
                         {filteredVaccinations.map((vaccination) => (
                           <tr
                             key={vaccination.id}
-                            className="border-b border-gray-100 hover:bg-gray-50"
+                            className="border-b border-gray-100 hover:bg-gray-50 text-sm"
                           >
                             <td className="py-3 px-2">{vaccination.name}</td>
                             <td className="py-3 px-2">
@@ -477,7 +483,15 @@ export default function HealthVaccination() {
                             <td className="py-3 px-2">
                               {vaccination.vaccine_name}
                             </td>
-                            <td className="py-3 px-2">{vaccination.status}</td>
+                            <td
+                              className={`inline-block font-semibold rounded-full ${
+                                vaccination.status === "Due"
+                                  ? "bg-yellow-100 py-1 px-5 text-yellow-900"
+                                  : "bg-red-100 py-1 px-3 text-red-900"
+                              }`}
+                            >
+                              {vaccination.status}
+                            </td>
                             <td className="py-3 px-2">
                               {vaccination.due_date || "-"}
                             </td>
@@ -580,7 +594,7 @@ export default function HealthVaccination() {
                       <thead>
                         <tr className="border-b border-gray-200">
                           <th className="text-left py-3 px-2 font-medium text-gray-600 text-sm">
-                            Animal
+                            Reference ID
                           </th>
                           <th className="text-left py-3 px-2 font-medium text-gray-600 text-sm">
                             Type
@@ -607,16 +621,21 @@ export default function HealthVaccination() {
                                 <div className="font-medium text-sm">
                                   {record.asset_ref_id}
                                 </div>
-                                <div className="text-xs text-gray-500">
+                                {/* <div className="text-xs text-gray-500">
                                   {record.asset_id}
-                                </div>
+                                </div> */}
                               </div>
                             </td>
                             <td className="py-3 px-2 text-sm">
                               {record.condition_name}
                             </td>
                             <td className="py-3 px-2 text-sm">
-                              {record.treatment_date || record.created_at}
+                              {/* {record.treatment_date} */}
+                              {new Date().toLocaleDateString("en-US", {
+                                year: "numeric",
+                                month: "short",
+                                day: "numeric",
+                              })}
                             </td>
                             <td className="py-3 px-2">
                               {getHealthStatusBadge(record.status_name)}

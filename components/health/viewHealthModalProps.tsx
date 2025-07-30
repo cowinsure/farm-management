@@ -1,9 +1,13 @@
-
-import React from 'react';
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
-import { Badge } from '@/components/ui/badge';
-import { Card, CardContent } from '@/components/ui/card';
-import { Calendar, Heart, Thermometer, FileText } from 'lucide-react';
+import React from "react";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
+import { Badge } from "@/components/ui/badge";
+import { Card, CardContent } from "@/components/ui/card";
+import { Calendar, Heart, Thermometer, FileText } from "lucide-react";
 
 interface ViewHealthModalProps {
   open: boolean;
@@ -20,16 +24,25 @@ interface ViewHealthModalProps {
   } | null;
 }
 
-const ViewHealthModal = ({ open, onOpenChange, record }: ViewHealthModalProps) => {
+const ViewHealthModal = ({
+  open,
+  onOpenChange,
+  record,
+}: ViewHealthModalProps) => {
   if (!record) return null;
 
   const getStatusColor = (status: string) => {
     switch (status) {
-      case 'Healthy': return 'bg-green-100 text-green-800';
-      case 'Sick': return 'bg-red-100 text-red-800';
-      case 'Under Treatment': return 'bg-yellow-100 text-yellow-800';
-      case 'Recovered': return 'bg-blue-100 text-blue-800';
-      default: return 'bg-gray-100 text-gray-800';
+      case "Healthy":
+        return "bg-green-100 text-green-800";
+      case "Sick":
+        return "bg-red-100 text-red-800";
+      case "Under Treatment":
+        return "bg-yellow-100 text-yellow-800";
+      case "Recovered":
+        return "bg-blue-100 text-blue-800";
+      default:
+        return "bg-gray-100 text-gray-800";
     }
   };
 
@@ -44,7 +57,7 @@ const ViewHealthModal = ({ open, onOpenChange, record }: ViewHealthModalProps) =
             Health Record
           </DialogTitle>
         </DialogHeader>
-        
+
         <div className="space-y-4">
           <Card className="border-l-4 border-l-red-500">
             <CardContent className="p-4">
@@ -67,8 +80,10 @@ const ViewHealthModal = ({ open, onOpenChange, record }: ViewHealthModalProps) =
                   <span className="text-green-600 text-lg">🐄</span>
                 </div>
                 <div>
-                  <p className="text-sm text-gray-600">Animal</p>
-                  <p className="font-semibold">{record.animalName} ({record.animalId})</p>
+                  <p className="text-sm text-gray-600">Reference ID</p>
+                  <p className="font-semibold">
+                    {record.animalName} ({record.animalId})
+                  </p>
                 </div>
               </CardContent>
             </Card>
@@ -92,7 +107,13 @@ const ViewHealthModal = ({ open, onOpenChange, record }: ViewHealthModalProps) =
                 </div>
                 <div>
                   <p className="text-sm text-gray-600">Date</p>
-                  <p className="font-semibold">{record.date}</p>
+                  <p className="font-semibold">
+                    {new Date().toLocaleDateString("en-US", {
+                      year: "numeric",
+                      month: "short",
+                      day: "numeric",
+                    })}
+                  </p>
                 </div>
               </CardContent>
             </Card>

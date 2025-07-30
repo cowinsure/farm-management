@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react"
+import React, { useEffect, useState } from "react";
 import {
   Dialog,
   DialogContent,
@@ -6,23 +6,24 @@ import {
   DialogTitle,
   DialogFooter,
   DialogClose,
-} from "@/components/ui/dialog"
+} from "@/components/ui/dialog";
+import { Plus, Image as ImageIcon, Camera, Upload } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 import {
-  Plus,
-  Image as ImageIcon,
-  Camera,
-  Upload,
-} from "lucide-react"
-import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import { useToast } from "@/hooks/use-toast"
-import UploadVideo from "@/helper/UploadVedio"
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { useToast } from "@/hooks/use-toast";
+import UploadVideo from "@/helper/UploadVedio";
 
 interface RecordHealthIssueDialogProps {
-  open: boolean
-  onOpenChange: (open: boolean) => void
-  onSuccess?: () => void
+  open: boolean;
+  onOpenChange: (open: boolean) => void;
+  onSuccess?: () => void;
 }
 
 // Dummy data for dropdowns
@@ -31,28 +32,43 @@ const statuses = [
   { id: 2, name: "Under Treatment" },
   { id: 3, name: "Complete" },
   { id: 4, name: "Critical" },
-]
-const jwt = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJmcmVzaCI6ZmFsc2UsImlhdCI6MTc0NzU2NTY5NiwianRpIjoiNzViZThkMjYtNGMwZC00YTc4LWEzM2ItMjAyODU4OGVkZmU4IiwidHlwZSI6ImFjY2VzcyIsInN1YiI6InRlc3QiLCJuYmYiOjE3NDc1NjU2OTYsImNzcmYiOiI2Y2VjNWM1Mi0xMDJkLTRmYjUtOTE3NS1lNzZkZTBkMDM3YTYifQ.n5moEixJyO4eaXpYI8yG6Qnjf3jjBrWA7W19gW_4h8c"
+];
+const jwt =
+  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJmcmVzaCI6ZmFsc2UsImlhdCI6MTc0NzU2NTY5NiwianRpIjoiNzViZThkMjYtNGMwZC00YTc4LWEzM2ItMjAyODU4OGVkZmU4IiwidHlwZSI6ImFjY2VzcyIsInN1YiI6InRlc3QiLCJuYmYiOjE3NDc1NjU2OTYsImNzcmYiOiI2Y2VjNWM1Mi0xMDJkLTRmYjUtOTE3NS1lNzZkZTBkMDM3YTYifQ.n5moEixJyO4eaXpYI8yG6Qnjf3jjBrWA7W19gW_4h8c";
 interface MuzzleResponse {
   geo_location: string;
   matched_id: string;
   msg: string;
   segmentation_image: string;
 }
-export function RecordHealthIssueDialog({ open, onOpenChange, onSuccess }: RecordHealthIssueDialogProps) {
-  const { toast } = useToast()
-  const [assets, setAssets] = useState<{ id: number; name: string; reference_id: string }[]>([])
-  const [loadingAssets, setLoadingAssets] = useState(false)
+export function RecordHealthIssueDialog({
+  open,
+  onOpenChange,
+  onSuccess,
+}: RecordHealthIssueDialogProps) {
+  const { toast } = useToast();
+  const [assets, setAssets] = useState<
+    { id: number; name: string; reference_id: string }[]
+  >([]);
+  const [loadingAssets, setLoadingAssets] = useState(false);
   const [isMuzzelModalOpen, setIsMuzzelModalOpen] = useState(false);
-  const [muzzleResponse, setMuzzleResponse] = useState<MuzzleResponse | null>(null);
-  const [erromuzzleResponse, setErroMuzzleResponse] = useState<MuzzleResponse | null>(null);
+  const [muzzleResponse, setMuzzleResponse] = useState<MuzzleResponse | null>(
+    null
+  );
+  const [erromuzzleResponse, setErroMuzzleResponse] =
+    useState<MuzzleResponse | null>(null);
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [selectedAnimalId, setSelectedAnimalId] = useState<string | null>(null);
-  const [selectedReferenceId, setSelectedReferenceId] = useState<string | null>(null);
-  const [conditions, setConditions] = useState<{ id: number; name: string }[]>([]);
+  const [selectedReferenceId, setSelectedReferenceId] = useState<string | null>(
+    null
+  );
+  const [conditions, setConditions] = useState<{ id: number; name: string }[]>(
+    []
+  );
   // Add severities state
-  const [severities, setSeverities] = useState<{ id: number; name: string }[]>([]);
-
+  const [severities, setSeverities] = useState<{ id: number; name: string }[]>(
+    []
+  );
 
   const [form, setForm] = useState({
     condition_id: "",
@@ -64,10 +80,10 @@ export function RecordHealthIssueDialog({ open, onOpenChange, onSuccess }: Recor
     remarks: "",
     asset_id: "",
     current_status_id: "",
-  })
+  });
   const [isUploading, setIsUploading] = useState(false);
 
-  const [submitting, setSubmitting] = useState(false)
+  const [submitting, setSubmitting] = useState(false);
 
   const handleVideoUpload = async (file: File) => {
     // setModalOpen(false)
@@ -81,24 +97,22 @@ export function RecordHealthIssueDialog({ open, onOpenChange, onSuccess }: Recor
     //   claim_muzzle: file
     // }));
 
-
-
-
-
     try {
       setIsUploading(true);
-      const response = await fetch("https://rd1wmswr9eqhqh-8000.proxy.runpod.net/claim", {
-        method: "POST",
-        body: formData,
-        headers: {
-          // "Content-Type": "application/json",
-          Authorization: `Bearer ${jwt}`,
-        },
-      });
+      const response = await fetch(
+        "https://rd1wmswr9eqhqh-8000.proxy.runpod.net/claim",
+        {
+          method: "POST",
+          body: formData,
+          headers: {
+            // "Content-Type": "application/json",
+            Authorization: `Bearer ${jwt}`,
+          },
+        }
+      );
       // 3.110.218.87:8000
 
       // console.log(await response.json());
-
 
       if (response.status === 400) {
         const data = await response.json();
@@ -148,12 +162,14 @@ export function RecordHealthIssueDialog({ open, onOpenChange, onSuccess }: Recor
     }
   };
 
-
   // Fetch assets when dialog opens
   useEffect(() => {
     if (open) {
-      setLoadingAssets(true)
-      const token = typeof window !== "undefined" ? localStorage.getItem("access_token") : null
+      setLoadingAssets(true);
+      const token =
+        typeof window !== "undefined"
+          ? localStorage.getItem("access_token")
+          : null;
       fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/lms/assets-service`, {
         headers: {
           ...(token ? { Authorization: `Bearer ${token}` } : {}),
@@ -164,50 +180,64 @@ export function RecordHealthIssueDialog({ open, onOpenChange, onSuccess }: Recor
           console.log("Assets data:", data);
 
           // Assume data.list or data.data.list
-          const list = data?.data?.list || data?.list || []
-          setAssets(list.map((a: any) => ({
-            id: a.id,
-            name: a.name || a.asset_ref_id || `Asset ${a.id}`,
-            reference_id: a.reference_id
-          })))
+          const list = data?.data?.list || data?.list || [];
+          setAssets(
+            list.map((a: any) => ({
+              id: a.id,
+              name: a.name || a.asset_ref_id || `Asset ${a.id}`,
+              reference_id: a.reference_id,
+            }))
+          );
         })
         .catch(() => setAssets([]))
-        .finally(() => setLoadingAssets(false))
+        .finally(() => setLoadingAssets(false));
     }
-  }, [open])
+  }, [open]);
 
   // Fetch medical conditions when dialog opens
   useEffect(() => {
     if (open) {
-      const token = typeof window !== "undefined" ? localStorage.getItem("access_token") : null
+      const token =
+        typeof window !== "undefined"
+          ? localStorage.getItem("access_token")
+          : null;
 
-      fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/lms/medical-condition-service`, {
-        headers: {
-          "Content-Type": "application/json",
-          ...(token ? { Authorization: `Bearer ${token}` } : {}),
-        },
-      })
+      fetch(
+        `${process.env.NEXT_PUBLIC_API_BASE_URL}/lms/medical-condition-service`,
+        {
+          headers: {
+            "Content-Type": "application/json",
+            ...(token ? { Authorization: `Bearer ${token}` } : {}),
+          },
+        }
+      )
         .then((res) => res.json())
         .then((data) => {
           console.log(data);
 
-          if (data?.data) setConditions(data.data)
-          else setConditions([])
+          if (data?.data) setConditions(data.data);
+          else setConditions([]);
         })
-        .catch(() => setConditions([]))
+        .catch(() => setConditions([]));
     }
-  }, [open])
+  }, [open]);
 
   // Fetch severities from the API when dialog opens
   useEffect(() => {
     if (open) {
-      const token = typeof window !== "undefined" ? localStorage.getItem("access_token") : null;
-      fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/lms/medical-condition-severity-service`, {
-        headers: {
-          "Content-Type": "application/json",
-          ...(token ? { Authorization: `Bearer ${token}` } : {}),
-        },
-      })
+      const token =
+        typeof window !== "undefined"
+          ? localStorage.getItem("access_token")
+          : null;
+      fetch(
+        `${process.env.NEXT_PUBLIC_API_BASE_URL}/lms/medical-condition-severity-service`,
+        {
+          headers: {
+            "Content-Type": "application/json",
+            ...(token ? { Authorization: `Bearer ${token}` } : {}),
+          },
+        }
+      )
         .then((res) => res.json())
         .then((data) => {
           if (data?.data) setSeverities(data.data);
@@ -218,22 +248,30 @@ export function RecordHealthIssueDialog({ open, onOpenChange, onSuccess }: Recor
   }, [open]);
 
   // Handle input changes
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-    setForm({ ...form, [e.target.name]: e.target.value })
-  }
+  const handleChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+  ) => {
+    setForm({ ...form, [e.target.name]: e.target.value });
+  };
 
   // Handle select changes
   const handleSelect = (name: string, value: string) => {
-    setForm({ ...form, [name]: value })
-  }
+    setForm({ ...form, [name]: value });
+  };
 
   // Handle form submit
   const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault()
-    setSubmitting(true)
+    e.preventDefault();
+    setSubmitting(true);
     try {
-      const token = typeof window !== "undefined" ? localStorage.getItem("access_token") : null
-      const by_user_id = typeof window !== "undefined" ? Number(localStorage.getItem("user_id")) || 1001 : 1001
+      const token =
+        typeof window !== "undefined"
+          ? localStorage.getItem("access_token")
+          : null;
+      const by_user_id =
+        typeof window !== "undefined"
+          ? Number(localStorage.getItem("user_id")) || 1001
+          : 1001;
       const payload = {
         ...form,
         condition_id: Number(form.condition_id),
@@ -241,20 +279,26 @@ export function RecordHealthIssueDialog({ open, onOpenChange, onSuccess }: Recor
         asset_id: Number(form.asset_id),
         current_status_id: Number(form.current_status_id),
         by_user_id,
-      }
-      const res = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/lms/health-record-service/`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          ...(token ? { Authorization: `Bearer ${token}` } : {}),
-        },
-        body: JSON.stringify(payload),
-      })
-      const data = await res.json()
+      };
+      const res = await fetch(
+        `${process.env.NEXT_PUBLIC_API_BASE_URL}/lms/health-record-service/`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            ...(token ? { Authorization: `Bearer ${token}` } : {}),
+          },
+          body: JSON.stringify(payload),
+        }
+      );
+      const data = await res.json();
       if (data.status === "success") {
-        toast({ title: "Success", description: data.message || "Health record inserted successfully" })
-        onOpenChange(false)
-        if (onSuccess) onSuccess()
+        toast({
+          title: "Success",
+          description: data.message || "Health record inserted successfully",
+        });
+        onOpenChange(false);
+        if (onSuccess) onSuccess();
         setForm({
           condition_id: "",
           severity_id: "",
@@ -265,18 +309,19 @@ export function RecordHealthIssueDialog({ open, onOpenChange, onSuccess }: Recor
           remarks: "",
           asset_id: "",
           current_status_id: "",
-        })
+        });
       } else {
-        throw new Error(data.message || "Failed to insert health record")
+        throw new Error(data.message || "Failed to insert health record");
       }
     } catch (err: any) {
-      toast({ title: "Error", description: err.message || "Failed to insert health record" })
+      toast({
+        title: "Error",
+        description: err.message || "Failed to insert health record",
+      });
     } finally {
-      setSubmitting(false)
+      setSubmitting(false);
     }
-  }
-
-
+  };
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
@@ -287,68 +332,117 @@ export function RecordHealthIssueDialog({ open, onOpenChange, onSuccess }: Recor
         <div className="max-h-[70vh] overflow-y-auto pr-2">
           <form className="space-y-4" onSubmit={handleSubmit}>
             <div>
-              <label className="block text-sm font-medium mb-1">Condition</label>
-              <Select value={form.condition_id} onValueChange={(v) => handleSelect("condition_id", v)}>
+              <label className="block text-sm font-medium mb-1">
+                Condition
+              </label>
+              <Select
+                value={form.condition_id}
+                onValueChange={(v) => handleSelect("condition_id", v)}
+              >
                 <SelectTrigger className="w-full">
                   <SelectValue placeholder="Select condition" />
                 </SelectTrigger>
                 <SelectContent>
                   {conditions.map((c) => (
-                    <SelectItem key={c.id} value={String(c.id)}>{c.name}</SelectItem>
+                    <SelectItem key={c.id} value={String(c.id)}>
+                      {c.name}
+                    </SelectItem>
                   ))}
                 </SelectContent>
               </Select>
             </div>
             <div>
               <label className="block text-sm font-medium mb-1">Severity</label>
-              <Select value={form.severity_id} onValueChange={(v) => handleSelect("severity_id", v)}>
+              <Select
+                value={form.severity_id}
+                onValueChange={(v) => handleSelect("severity_id", v)}
+              >
                 <SelectTrigger className="w-full">
                   <SelectValue placeholder="Select severity" />
                 </SelectTrigger>
                 <SelectContent>
                   {severities.map((s) => (
-                    <SelectItem key={s.id} value={String(s.id)}>{s.name}</SelectItem>
+                    <SelectItem key={s.id} value={String(s.id)}>
+                      {s.name}
+                    </SelectItem>
                   ))}
                 </SelectContent>
               </Select>
             </div>
             <div>
               <label className="block text-sm font-medium mb-1">Symptoms</label>
-              <Input name="symptoms" value={form.symptoms} onChange={handleChange} required />
+              <Input
+                name="symptoms"
+                value={form.symptoms}
+                onChange={handleChange}
+                required
+              />
             </div>
             <div>
-              <label className="block text-sm font-medium mb-1">Treatment</label>
-              <Input name="treatment" value={form.treatment} onChange={handleChange} required />
+              <label className="block text-sm font-medium mb-1">
+                Treatment
+              </label>
+              <Input
+                name="treatment"
+                value={form.treatment}
+                onChange={handleChange}
+                required
+              />
             </div>
             <div>
-              <label className="block text-sm font-medium mb-1">Treatment Date</label>
-              <Input type="datetime-local" name="treatment_date" value={form.treatment_date} onChange={handleChange} required />
+              <label className="block text-sm font-medium mb-1">
+                Treatment Date
+              </label>
+              <Input
+                type="datetime-local"
+                name="treatment_date"
+                value={form.treatment_date}
+                onChange={handleChange}
+                required
+                className="w-full border border-red-700"
+              />
             </div>
             <div>
-              <label className="block text-sm font-medium mb-1">Veterinarian</label>
-              <Input name="veterinarian" value={form.veterinarian} onChange={handleChange} required />
+              <label className="block text-sm font-medium mb-1">
+                Veterinarian
+              </label>
+              <Input
+                name="veterinarian"
+                value={form.veterinarian}
+                onChange={handleChange}
+                required
+              />
             </div>
             <div>
               <label className="block text-sm font-medium mb-1">Remarks</label>
-              <Input name="remarks" value={form.remarks} onChange={handleChange} />
+              <Input
+                name="remarks"
+                value={form.remarks}
+                onChange={handleChange}
+              />
             </div>
             <div>
               <label className="block text-sm font-medium mb-1">Asset</label>
-              <Select value={form.asset_id} onValueChange={(v) => {
-                handleSelect("asset_id", v)
-                setSelectedAnimalId(v);
-                const animal = assets.find((a) => String(a.id) === v);
-                setSelectedReferenceId(animal ? animal.reference_id : null);
-              }
-
-
-              } disabled={loadingAssets}>
+              <Select
+                value={form.asset_id}
+                onValueChange={(v) => {
+                  handleSelect("asset_id", v);
+                  setSelectedAnimalId(v);
+                  const animal = assets.find((a) => String(a.id) === v);
+                  setSelectedReferenceId(animal ? animal.reference_id : null);
+                }}
+                disabled={loadingAssets}
+              >
                 <SelectTrigger className="w-full">
-                  <SelectValue placeholder={loadingAssets ? "Loading..." : "Select asset"} />
+                  <SelectValue
+                    placeholder={loadingAssets ? "Loading..." : "Select asset"}
+                  />
                 </SelectTrigger>
                 <SelectContent>
                   {assets.map((a) => (
-                    <SelectItem key={a.id} value={String(a.id)}>{a.reference_id}</SelectItem>
+                    <SelectItem key={a.id} value={String(a.id)}>
+                      {a.reference_id}
+                    </SelectItem>
                   ))}
                 </SelectContent>
               </Select>
@@ -365,13 +459,15 @@ export function RecordHealthIssueDialog({ open, onOpenChange, onSuccess }: Recor
               </div>
             </div> */}
             <div>
-              <label className="block text-sm font-medium mb-1">Muzzel Verification (optional)</label>
-              <UploadVideo onVideoCapture={(file) => {
-                console.log("Captured video file:", file);
-                setSelectedFile(file);
-
-              }} />
-
+              <label className="block text-sm font-medium mb-1">
+                Muzzel Verification (optional)
+              </label>
+              <UploadVideo
+                onVideoCapture={(file) => {
+                  console.log("Captured video file:", file);
+                  setSelectedFile(file);
+                }}
+              />
             </div>
             <Button
               type="button"
@@ -416,13 +512,18 @@ export function RecordHealthIssueDialog({ open, onOpenChange, onSuccess }: Recor
 
             <div>
               <label className="block text-sm font-medium mb-1">Status</label>
-              <Select value={form.current_status_id} onValueChange={(v) => handleSelect("current_status_id", v)}>
+              <Select
+                value={form.current_status_id}
+                onValueChange={(v) => handleSelect("current_status_id", v)}
+              >
                 <SelectTrigger className="w-full">
                   <SelectValue placeholder="Select status" />
                 </SelectTrigger>
                 <SelectContent>
                   {statuses.map((s) => (
-                    <SelectItem key={s.id} value={String(s.id)}>{s.name}</SelectItem>
+                    <SelectItem key={s.id} value={String(s.id)}>
+                      {s.name}
+                    </SelectItem>
                   ))}
                 </SelectContent>
               </Select>
@@ -432,12 +533,14 @@ export function RecordHealthIssueDialog({ open, onOpenChange, onSuccess }: Recor
                 {submitting ? "Submitting..." : "Submit"}
               </Button>
               <DialogClose asChild>
-                <Button type="button" variant="outline" className="w-full">Cancel</Button>
+                <Button type="button" variant="outline" className="w-full">
+                  Cancel
+                </Button>
               </DialogClose>
             </DialogFooter>
           </form>
         </div>
       </DialogContent>
     </Dialog>
-  )
-} 
+  );
+}

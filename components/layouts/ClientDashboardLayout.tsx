@@ -1,5 +1,5 @@
-"use client"
-import React, { useState } from "react"
+"use client";
+import React, { useState } from "react";
 import {
   Bell,
   DollarSign,
@@ -11,23 +11,27 @@ import {
   TrendingUp,
   Users,
   Zap,
-  X
-} from "lucide-react"
-import { Button } from "@/components/ui/button"
-import Link from "next/link"
-import { MobileOverlay } from "@/components/mobile-overlay"
-import { useAuth } from "@/hooks/useAuth"
-import Navigation from "./Navigation"
-import { set } from "date-fns"
+  X,
+} from "lucide-react";
+import { Button } from "@/components/ui/button";
+import Link from "next/link";
+import { MobileOverlay } from "@/components/mobile-overlay";
+import { useAuth } from "@/hooks/useAuth";
+import Navigation from "./Navigation";
+import { set } from "date-fns";
 
-export default function ClientDashboardLayout({ children }: { children: React.ReactNode }) {
-  const [sidebarOpen, setSidebarOpen] = useState(false)
-  const [activeModule, setActiveModule] = useState('/');
-  const { user, logout } = useAuth()
-   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-  const handleLogout = () => logout()
+export default function ClientDashboardLayout({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
+  const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [activeModule, setActiveModule] = useState("/");
+  const { user, logout } = useAuth();
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const handleLogout = () => logout();
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-[#edf7f4]">
       {/* Header */}
       <header className="bg-white shadow-lg border-b-4 border-green-600">
         <div className="w-full px-4 sm:px-6 lg:px-8">
@@ -37,11 +41,13 @@ export default function ClientDashboardLayout({ children }: { children: React.Re
                 <span className="text-white font-bold text-xl">🐄</span>
               </div>
               <div>
-                <h1 className="text-xl font-bold text-gray-900">LivestockPro ERP</h1>
+                <h1 className="text-xl font-bold text-gray-900">
+                  LivestockPro ERP
+                </h1>
                 <p className="text-sm text-gray-600">Farm Management System</p>
               </div>
             </div>
-            
+
             <div className="hidden md:flex items-center space-x-4">
               {/* <div className="relative">
                 <Bell className="w-6 h-6 text-gray-600 cursor-pointer hover:text-green-600" />
@@ -62,11 +68,15 @@ export default function ClientDashboardLayout({ children }: { children: React.Re
               </Button>
             </div>
 
-            <button 
+            <button
               className="md:hidden p-2"
               onClick={() => setSidebarOpen(!sidebarOpen)}
             >
-              {sidebarOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
+              {sidebarOpen ? (
+                <X className="w-6 h-6" />
+              ) : (
+                <Menu className="w-6 h-6" />
+              )}
             </button>
           </div>
         </div>
@@ -136,20 +146,25 @@ export default function ClientDashboardLayout({ children }: { children: React.Re
             </div>
           </nav>
         </aside> */}
-          <div className=" w-full px-4 sm:px-6 lg:px-8 py-6">
+        <div className=" w-full px-4 sm:px-6 lg:px-8 py-6">
           <div className="flex flex-col lg:flex-row">
-        <div className={`lg:w-64 flex-shrink-0 ${sidebarOpen ? 'block' : 'hidden lg:block'}`}>
-
-          <Navigation activeModule={activeModule} setActiveModule={setActiveModule} />
-        </div>
-                {/* Main Content */}
-        <main className="flex-1 lg:ml-4">{children}</main>
-        </div>
+            <div
+              className={`lg:w-64 flex-shrink-0 ${
+                sidebarOpen ? "block" : "hidden lg:block"
+              }`}
+            >
+              <Navigation
+                activeModule={activeModule}
+                setActiveModule={setActiveModule}
+              />
+            </div>
+            {/* Main Content */}
+            <main className="flex-1 lg:ml-4">{children}</main>
+          </div>
         </div>
 
         {/* <MobileOverlay isOpen={sidebarOpen} onClose={() => setSidebarOpen(false)} /> */}
-
       </div>
     </div>
-  )
-} 
+  );
+}

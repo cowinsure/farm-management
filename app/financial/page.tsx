@@ -40,6 +40,7 @@ import FinancialModal from "@/components/Finance/modal/FinancialModal";
 import { Span } from "next/dist/trace";
 import { GrMoney } from "react-icons/gr";
 import { FaPercent } from "react-icons/fa";
+import Heading from "@/components/ui/Heading";
 
 export default function FinancialManagement() {
   const [sidebarOpen, setSidebarOpen] = useState(false);
@@ -186,9 +187,7 @@ export default function FinancialManagement() {
         <main className="flex-1 lg:ml-0 px-4 ">
           {/* Page Header */}
           <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-6">
-            <h2 className="text-xl lg:text-3xl font-bold text-gray-900">
-              Financial Management
-            </h2>
+            <Heading heading="Financial Management" />
             <div className="flex flex-col sm:flex-row gap-2 sm:gap-3 w-full sm:w-auto">
               <FinancialModal type="income" />
               <FinancialModal type="expense" />
@@ -197,7 +196,10 @@ export default function FinancialManagement() {
 
           {/* Summary Cards */}
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 lg:gap-6 mb-6 lg:mb-8">
-            <Card>
+            <Card
+              className="animate__animated animate__fadeInRight"
+              style={{ animationDelay: "0s" }}
+            >
               <CardContent className="p-4">
                 <div className="flex items-center justify-between space-x-2">
                   <span className="text-3xl font-extrabold text-green-600">
@@ -218,7 +220,10 @@ export default function FinancialManagement() {
               </CardContent>
             </Card>
 
-            <Card>
+            <Card
+              className="animate__animated animate__fadeInRight"
+              style={{ animationDelay: "0.25s" }}
+            >
               <CardContent className="p-4">
                 <div className="flex items-center justify-between space-x-2">
                   <CreditCard className="w-8 h-8 text-red-600" />
@@ -239,7 +244,10 @@ export default function FinancialManagement() {
               </CardContent>
             </Card>
 
-            <Card>
+            <Card
+              className="animate__animated animate__fadeInRight"
+              style={{ animationDelay: "0.5s" }}
+            >
               <CardContent className="p-4">
                 <div className="flex items-center justify-between space-x-2">
                   <GrMoney className="w-8 h-8 text-blue-600" />
@@ -258,7 +266,10 @@ export default function FinancialManagement() {
               </CardContent>
             </Card>
 
-            <Card>
+            <Card
+              className="animate__animated animate__fadeInRight"
+              style={{ animationDelay: "0.75s" }}
+            >
               <CardContent className="p-4">
                 <div className="flex items-center justify-between space-x-2">
                   <div className="rounded-full flex items-center justify-center">
@@ -289,7 +300,7 @@ export default function FinancialManagement() {
           <div className="grid grid-cols-1 xl:grid-cols-3 gap-4 lg:gap-6">
             {/* Recent Transactions */}
             <div className="xl:col-span-2">
-              <Card>
+              <Card className="animate__animated animate__fadeIn">
                 <CardHeader>
                   <div className="flex flex-col lg:flex-row items-start lg:items-center justify-between gap-4">
                     <CardTitle className="flex items-center">
@@ -406,7 +417,7 @@ export default function FinancialManagement() {
                         No transactions found.
                       </div>
                     ) : (
-                      <table className="w-full">
+                      <table className="w-full animate__animated animate__fadeInUp">
                         <thead>
                           <tr className="border-b border-gray-200">
                             <th className="text-left py-3 px-2 font-medium text-gray-600 text-sm">
@@ -531,7 +542,7 @@ export default function FinancialManagement() {
                   <div className="text-gray-500 text-center py-8">Expense breakdown data not available.</div>
                 </CardContent>
               </Card> */}
-              <Card>
+              <Card className="animate__animated animate__fadeIn">
                 <CardHeader>
                   <CardTitle className="flex items-center">
                     <CreditCard className="w-5 h-5 mr-2 text-red-600" />

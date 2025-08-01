@@ -52,6 +52,15 @@ const Navigation = ({ activeModule, setActiveModule }: NavigationProps) => {
     // { id: 'reports', label: 'Reports & Analytics', icon: FileText, color: 'text-indigo-600' },
     // { id: '/farmsettings', label: 'Farm Settings', icon: Settings, color: 'text-gray-600' },
   ];
+  const handleMouseMove = (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
+    const target = e.currentTarget;
+    const rect = target.getBoundingClientRect();
+    const x = e.clientX - rect.left;
+    const y = e.clientY - rect.top;
+
+    target.style.setProperty("--mouse-x", `${x}px`);
+    target.style.setProperty("--mouse-y", `${y}px`);
+  };
 
   return (
     <div className="bg-white rounded-lg shadow-lg p-4 sticky top-5">
@@ -63,11 +72,12 @@ const Navigation = ({ activeModule, setActiveModule }: NavigationProps) => {
           return (
             <Link key={item.id} href={item.id}>
               <Button
+                onMouseMove={() => handleMouseMove}
                 variant={isActive ? "default" : "ghost"}
-                className={`w-full justify-start text-left h-auto p-3 outline-none ${
+                className={`w-full justify-start text-left h-auto p-3 outline-none ripple-effect relative z-10 ${
                   isActive
                     ? "bg-green-600 text-white shadow-md"
-                    : "scale-100 hover:scale-105 hover:bg-green-200 text-gray-700 transition-all duration-300 ease-in-out"
+                    : "scale-100 hover:scale-105 text-gray-700 transition-all duration-300 ease-in-out"
                 }`}
                 onClick={() => setActiveModule(item.id)}
               >

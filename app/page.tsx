@@ -66,14 +66,14 @@ export default function Dashboard() {
   };
   return (
     <AuthGuard requireAuth={true}>
-      <div className="min-h-screen bg-gradient-to-br from-[#edf7f4] to-[#f0f7ff]">
+      <div className="min-h-screen ">
         <div className="flex">
           {/* Mobile menu button */}
 
           {/* Main Content */}
           <main className="flex-1 lg:ml-4">
             {/* Welcome Banner */}
-            <div className="bg-gradient-to-r from-[#17a34a] to-blue-600 rounded-lg p-6 mb-6 text-white">
+            <div className="bg-gradient-to-r from-[#17a34a] to-blue-600 rounded-lg p-6 mb-6 text-white ">
               <h2 className="text-2xl font-bold mb-2">
                 Welcome back, {user?.role || "User"}!
               </h2>
@@ -84,7 +84,10 @@ export default function Dashboard() {
 
             {/* Metrics Cards */}
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 lg:gap-6 mb-6 lg:mb-8">
-              <Card className="border-0 shadow-lg hover:shadow-xl transition-shadow duration-300">
+              <Card
+                className="border-0 shadow-lg hover:shadow-xl transition-shadow duration-300 animate__animated animate__fadeInRight"
+                style={{ animationDelay: "0s" }}
+              >
                 <CardHeader className="flex flex-row items-center justify-between pb-2">
                   <CardTitle className="text-sm font-medium text-gray-600">
                     Total Cattle
@@ -102,7 +105,10 @@ export default function Dashboard() {
                 </CardContent>
               </Card>
 
-              <Card className="border-0 shadow-lg hover:shadow-xl transition-shadow duration-300">
+              <Card
+                className="border-0 shadow-lg hover:shadow-xl transition-shadow duration-300 animate__animated animate__fadeInRight"
+                style={{ animationDelay: "0.25s" }}
+              >
                 <CardHeader className="flex flex-row items-center justify-between pb-2">
                   <CardTitle className="text-sm font-medium text-gray-600">
                     Health Status
@@ -120,7 +126,10 @@ export default function Dashboard() {
                 </CardContent>
               </Card>
 
-              <Card className="border-0 shadow-lg hover:shadow-xl transition-shadow duration-300">
+              <Card
+                className="border-0 shadow-lg hover:shadow-xl transition-shadow duration-300 animate__animated animate__fadeInRight"
+                style={{ animationDelay: "0.5s" }}
+              >
                 <CardHeader className="flex flex-row items-center justify-between pb-2">
                   <CardTitle className="text-sm font-medium text-gray-600">
                     Monthly Revenue
@@ -140,7 +149,7 @@ export default function Dashboard() {
             </div>
 
             {/* Quick Actions */}
-            <div className="mb-8 bg-white p-7 rounded-lg shadow-lg">
+            <div className="mb-8 bg-white p-7 rounded-lg shadow-lg animate__animated animate__fadeIn">
               <h3 className="text-lg font-semibold text-gray-900 mb-4">
                 Quick Actions
               </h3>

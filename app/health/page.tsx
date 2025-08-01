@@ -49,6 +49,7 @@ import { RecordHealthIssueDialog } from "@/components/health/record-health-issue
 import { RecordVaccinationScheduleDialog } from "@/components/health/record-vaccination-schedule-dialog";
 import ViewVaccinationModal from "@/components/health/viewVaccinationModalProps";
 import ViewHealthModal from "@/components/health/viewHealthModalProps";
+import Heading from "@/components/ui/Heading";
 
 // Add type for health record
 interface HealthRecord {
@@ -264,9 +265,10 @@ export default function HealthVaccination() {
         <main className="flex-1 lg:ml-0 px-4">
           {/* Page Header */}
           <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-6">
-            <h2 className="text-3xl font-bold text-gray-900">
-              Health & Vaccination
-            </h2>
+            <Heading
+              heading="Health & Vaccination
+"
+            />
             <div className="flex flex-col sm:flex-row gap-2 sm:gap-3 w-full sm:w-auto">
               <Button
                 className="bg-blue-600 hover:bg-blue-700"
@@ -301,7 +303,10 @@ export default function HealthVaccination() {
 
           {/* Summary Cards */}
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-            <Card>
+            <Card
+              className="animate__animated animate__fadeInRight"
+              style={{ animationDelay: "0s" }}
+            >
               <CardContent className="p-4">
                 <div className="flex items-center space-x-2">
                   <Syringe className="w-8 h-8 text-blue-600" />
@@ -317,7 +322,10 @@ export default function HealthVaccination() {
               </CardContent>
             </Card>
 
-            <Card>
+            <Card
+              className="animate__animated animate__fadeInRight"
+              style={{ animationDelay: "0.25s" }}
+            >
               <CardContent className="p-4">
                 <div className="flex items-center space-x-2">
                   <Heart className="w-8 h-8 text-red-600" />
@@ -405,7 +413,7 @@ export default function HealthVaccination() {
           {/* Main Content Grid */}
           <div className="grid grid-cols-1 gap-4 lg:gap-6">
             {/* Vaccination Schedule */}
-            <Card>
+            <Card className="animate__animated animate__fadeIn">
               <CardHeader>
                 <div className="flex flex-col lg:flex-row items-start lg:items-center justify-between gap-4">
                   <CardTitle className="flex items-center">
@@ -447,7 +455,7 @@ export default function HealthVaccination() {
               <CardContent>
                 <div className="overflow-x-auto -mx-4 sm:mx-0">
                   <div className="inline-block min-w-full align-middle">
-                    <table className="min-w-full">
+                    <table className="w-full animate__animated animate__fadeInUp">
                       <thead>
                         <tr className="border-b border-gray-200">
                           <th className="text-left py-3 px-2 font-medium text-gray-600 text-sm">
@@ -546,7 +554,10 @@ export default function HealthVaccination() {
             </Card>
 
             {/* Health Records */}
-            <Card>
+            <Card
+              className="animate__animated animate__fadeIn"
+              style={{ animationDelay: "0.5s" }}
+            >
               <CardHeader>
                 <div className="flex flex-col lg:flex-row items-start lg:items-center justify-between gap-4">
                   <CardTitle className="flex items-center">
@@ -590,7 +601,7 @@ export default function HealthVaccination() {
               <CardContent>
                 <div className="overflow-x-auto -mx-4 sm:mx-0">
                   <div className="inline-block min-w-full align-middle">
-                    <table className="min-w-full">
+                    <table className="w-full animate__animated animate__fadeInUp">
                       <thead>
                         <tr className="border-b border-gray-200">
                           <th className="text-left py-3 px-2 font-medium text-gray-600 text-sm">

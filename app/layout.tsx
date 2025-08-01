@@ -5,6 +5,7 @@ import ClientDashboardLayout from "@/components/layouts/ClientDashboardLayout";
 import React from "react";
 import ClientRootLayout from "@/components/layouts/ClientRootLayout";
 import { CowRegistrationProvider } from "@/context/CowRegistrationContext";
+import 'animate.css';
 
 export const metadata: Metadata = {
   title: "LivestockPro",

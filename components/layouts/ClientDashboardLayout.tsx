@@ -31,7 +31,7 @@ export default function ClientDashboardLayout({
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const handleLogout = () => logout();
   return (
-    <div className="min-h-screen bg-[#edf7f4]">
+    <div className="min-h-screen bg-gradient-to-br from-[#edf7f4] to-[#f0f7ff]">
       {/* Header */}
       <header className="bg-white shadow-lg border-b-4 border-green-600">
         <div className="w-full px-4 sm:px-6 lg:px-8">

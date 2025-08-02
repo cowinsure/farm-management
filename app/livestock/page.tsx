@@ -173,9 +173,9 @@ export default function LivestockInventory() {
 
   return (
     <AuthGuard requireAuth={true}>
-      <div className="flex relative">
+      <div className="flex relative py-16 lg:py-0">
         {/* Main Content */}
-        <main className="flex-1 lg:ml-0 px-4">
+        <main className="flex-1 lg:ml-0 lg:px-4">
           {/* Page Header */}
           <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-6">
             <Heading
@@ -277,9 +277,9 @@ export default function LivestockInventory() {
                 </p>
 
                 {/* Search and Filters */}
-                <div className="w-full lg:w-auto space-y-3 lg:space-y-0 flex gap-3">
+                <div className="w-full lg:w-auto space-y-3 xl:space-y-0 xl:flex gap-3">
                   {/* Search Bar */}
-                  <div className="relative w-full lg:w-64">
+                  <div className="relative w-full xl:w-64">
                     <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
                     <Input
                       placeholder="Search animals..."

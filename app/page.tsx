@@ -66,7 +66,7 @@ export default function Dashboard() {
   };
   return (
     <AuthGuard requireAuth={true}>
-      <div className="min-h-screen ">
+      <div className=" py-16 lg:py-0 ">
         <div className="flex">
           {/* Mobile menu button */}
 

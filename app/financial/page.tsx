@@ -182,9 +182,9 @@ export default function FinancialManagement() {
 
   return (
     <AuthGuard requireAuth={true}>
-      <div className="min-h-screen ">
+      <div className="relative py-16 lg:py-0 ">
         {/* Main Content */}
-        <main className="flex-1 lg:ml-0 px-4 ">
+        <main className="flex-1 lg:ml-0 lg:px-4">
           {/* Page Header */}
           <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-6">
             <Heading heading="Financial Management" />

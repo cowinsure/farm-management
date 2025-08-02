@@ -5,7 +5,15 @@ import ClientDashboardLayout from "@/components/layouts/ClientDashboardLayout";
 import React from "react";
 import ClientRootLayout from "@/components/layouts/ClientRootLayout";
 import { CowRegistrationProvider } from "@/context/CowRegistrationContext";
-import 'animate.css';
+import "animate.css";
+import { Urbanist } from "next/font/google";
+
+export const urbanist = Urbanist({
+  subsets: ["latin"],
+  weight: ["400", "500", "600", "700", "800", "900"],
+  variable: "--font-urbanist",
+  display: "swap",
+});
 
 export const metadata: Metadata = {
   title: "LivestockPro",
@@ -24,7 +32,7 @@ export default function RootLayout({
       <head>
         <link rel="icon" href="/favicon.ico" />
       </head>
-      <body>
+      <body className={`${urbanist.className}`}>
         <CowRegistrationProvider>
           <ClientRootLayout>{children}</ClientRootLayout>
         </CowRegistrationProvider>

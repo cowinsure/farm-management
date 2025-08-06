@@ -13,6 +13,49 @@ import { log } from 'console';
 interface FinancialModalProps {
   type: 'income' | 'expense';
 }
+const farmerName = [
+  {
+    "name": "Md. Hafizur Rahman",
+    "id": 1
+  },
+  {
+    "name": "Abdul Kader",
+    "id": 2
+  },
+  {
+    "name": "Md. Saiful Islam",
+    "id": 3
+  },
+  {
+    "name": "Rafiqul Islam",
+    "id": 4
+  },
+  {
+    "name": "Abu Taher",
+    "id": 5
+  },
+  {
+    "name": "Sabina Yasmin",
+    "id": 6
+  },
+  {
+    "name": "Mst. Rahela Khatun",
+    "id": 7
+  },
+  {
+    "name": "Md. Anwar Hossain",
+    "id": 8
+  },
+  {
+    "name": "Hasanuzzaman Babu",
+    "id": 9
+  },
+  {
+    "name": "Nurul Islam",
+    "id": 10
+  }
+]
+
 
 const FinancialModal = ({ type }: FinancialModalProps) => {
   const [open, setOpen] = useState(false);
@@ -20,7 +63,8 @@ const FinancialModal = ({ type }: FinancialModalProps) => {
     category: '',
     amount: '',
     date: '',
-    description: ''
+    description: '',
+    farmerName: ''
   });
   const { toast } = useToast();
   const [ledgerOptions, setLedgerOptions] = useState<{ label: string; value: string }[]>([]);
@@ -89,7 +133,7 @@ const FinancialModal = ({ type }: FinancialModalProps) => {
     console.log('Submitting financial record:', payload);
     try {
       const token = typeof window !== 'undefined' ? localStorage.getItem('access_token') : null;
-      const res = await fetch('http://127.0.0.1:8000/api/gls/income-expense-service/', {
+      const res = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/gls/income-expense-service/`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -107,7 +151,8 @@ const FinancialModal = ({ type }: FinancialModalProps) => {
           category: '',
           amount: '',
           date: '',
-          description: ''
+          description: '',
+          farmerName: ''
         });
         setOpen(false);
       } else {
@@ -162,6 +207,32 @@ const FinancialModal = ({ type }: FinancialModalProps) => {
               </SelectContent>
             </Select>
           </div>
+
+          {formData.category && formData.category.toString() === "2" ?    <div>
+            <Label htmlFor="category">Transfer To</Label>
+            <Select value={formData.farmerName} onValueChange={(value) => setFormData({ ...formData, farmerName: value })}>
+              <SelectTrigger>
+                <SelectValue placeholder={loadingLedgers ? 'Loading...' : 'Select category'} />
+              </SelectTrigger>
+              <SelectContent>
+                {loadingLedgers ? (
+                  <div className="px-4 py-2 text-gray-500">Loading...</div>
+                ) : ledgerError ? (
+                  <div className="px-4 py-2 text-red-500">{ledgerError}</div>
+                ) : ledgerOptions.length === 0 ? (
+                  <div className="px-4 py-2 text-gray-500">No categories found</div>
+                ) : (
+                  farmerName.map((farmer) => (
+                    <SelectItem key={farmer.id} value={farmer.name}>{farmer.name}</SelectItem>
+                  ))
+                )}
+              </SelectContent>
+            </Select>
+          </div>: (
+            ""
+      
+          )}
+         
           
           <div className="grid grid-cols-2 gap-4">
             <div>

@@ -111,7 +111,7 @@ const ViewAnimalModal = ({ open, onOpenChange, animal }: ViewAnimalModalProps) =
             </Card>
           </div>
 
-          {/* Location */}
+          {/* Location
           <Card>
             <CardContent className="p-4 flex items-center space-x-3">
               <div className="w-10 h-10 bg-green-100 rounded-full flex items-center justify-center">
@@ -122,7 +122,7 @@ const ViewAnimalModal = ({ open, onOpenChange, animal }: ViewAnimalModalProps) =
                 <p className="font-semibold">{animal.location}</p>
               </div>
             </CardContent>
-          </Card>
+          </Card> */}
 
           {/* Quick Stats */}
           <div className="bg-gradient-to-r from-green-50 to-blue-50 rounded-lg p-4">

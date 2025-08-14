@@ -100,7 +100,7 @@ export function RecordHealthIssueDialog({
     try {
       setIsUploading(true);
       const response = await fetch(
-        "https://gtbmh1115k5v44-8000.proxy.runpod.net/claim",
+        `${process.env.NEXT_PUBLIC_API_BASE_URL_AI}/claim`,
         {
           method: "POST",
           body: formData,

@@ -133,6 +133,7 @@ export default function LivestockInventory() {
       return matchesSearch && matchesStatus && matchesBreed && matchesGender;
     }
   );
+  console.log(filteredAnimals)
 
   const getStatusBadge = (status: string) => {
     switch (status?.toLowerCase()) {

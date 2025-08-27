@@ -1,9 +1,15 @@
-
-import React from 'react';
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
-import { Badge } from '@/components/ui/badge';
-import { Card, CardContent } from '@/components/ui/card';
-import { Calendar, MapPin, Weight, Heart, User } from 'lucide-react';
+import React, { useState } from "react";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
+import { Badge } from "@/components/ui/badge";
+import { Card, CardContent } from "@/components/ui/card";
+import { Calendar, MapPin, Weight, Heart, User } from "lucide-react";
+import placeholder from "../../public/document_placeholder.jpg";
+import Image from "next/image";
 
 interface ViewAnimalModalProps {
   open: boolean;
@@ -20,17 +26,31 @@ interface ViewAnimalModalProps {
   } | null;
 }
 
-const ViewAnimalModal = ({ open, onOpenChange, animal }: ViewAnimalModalProps) => {
+const ViewAnimalModal = ({
+  open,
+  onOpenChange,
+  animal,
+}: ViewAnimalModalProps) => {
+  const [imgSrc, setImgSrc] = useState(
+    `https://insuranceportal-backend.insurecow.com/media/${animal?.location}` ||
+      placeholder
+  );
   if (!animal) return null;
 
   const getStatusColor = (status: string) => {
     switch (status) {
-      case 'Active': return 'bg-green-100 text-green-800';
-      case 'Sick': return 'bg-red-100 text-red-800';
-      case 'Sold': return 'bg-blue-100 text-blue-800';
-      default: return 'bg-gray-100 text-gray-800';
+      case "Active":
+        return "bg-green-100 text-green-800";
+      case "Sick":
+        return "bg-red-100 text-red-800";
+      case "Sold":
+        return "bg-blue-100 text-blue-800";
+      default:
+        return "bg-gray-100 text-gray-800";
     }
   };
+
+  console.log(animal);
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
@@ -43,8 +63,26 @@ const ViewAnimalModal = ({ open, onOpenChange, animal }: ViewAnimalModalProps) =
             {animal.name}
           </DialogTitle>
         </DialogHeader>
-        
+
         <div className="space-y-6">
+          {/* Quick Stats */}
+          <div className="bg-gradient-to-r from-green-50 to-blue-50 rounded-lg p-4">
+            <h3 className="font-semibold text-gray-900 mb-2">Quick Stats</h3>
+            <div className="grid grid-cols-3 gap-4 text-center">
+              <div>
+                <p className="text-2xl font-bold text-green-600">92%</p>
+                <p className="text-xs text-gray-600">Health Score</p>
+              </div>
+              <div>
+                <p className="text-2xl font-bold text-blue-600">1.2yr</p>
+                <p className="text-xs text-gray-600">On Farm</p>
+              </div>
+              <div>
+                <p className="text-2xl font-bold text-purple-600">8.5L</p>
+                <p className="text-xs text-gray-600">Daily Avg</p>
+              </div>
+            </div>
+          </div>
           {/* Status and ID Card */}
           <Card className="border-l-4 border-l-green-500">
             <CardContent className="p-4">
@@ -113,35 +151,25 @@ const ViewAnimalModal = ({ open, onOpenChange, animal }: ViewAnimalModalProps) =
 
           {/* Location */}
           <Card>
-            <CardContent className="p-4 flex items-center space-x-3">
-              <div className="w-10 h-10 bg-green-100 rounded-full flex items-center justify-center">
-                <MapPin className="w-5 h-5 text-green-600" />
-              </div>
-              <div>
+            <CardContent className="p-4 flex flex-col">
+              <div className="flex gap-2 items-center">
+                <div className="w-10 h-10 bg-green-100 rounded-full flex items-center justify-center">
+                  <MapPin className="w-5 h-5 text-green-600" />
+                </div>
                 <p className="text-sm text-gray-600">Current Location</p>
-                <p className="font-semibold">{animal.location}</p>
+              </div>
+              <div className="mt-5">
+                <Image
+                  src={imgSrc}
+                  alt={"Image"}
+                  width={256}
+                  height={256}
+                  className="object-cover w-full h-72 rounded-lg"
+                  onError={() => setImgSrc(placeholder)}
+                />
               </div>
             </CardContent>
           </Card>
-
-          {/* Quick Stats */}
-          <div className="bg-gradient-to-r from-green-50 to-blue-50 rounded-lg p-4">
-            <h3 className="font-semibold text-gray-900 mb-2">Quick Stats</h3>
-            <div className="grid grid-cols-3 gap-4 text-center">
-              <div>
-                <p className="text-2xl font-bold text-green-600">92%</p>
-                <p className="text-xs text-gray-600">Health Score</p>
-              </div>
-              <div>
-                <p className="text-2xl font-bold text-blue-600">1.2yr</p>
-                <p className="text-xs text-gray-600">On Farm</p>
-              </div>
-              <div>
-                <p className="text-2xl font-bold text-purple-600">8.5L</p>
-                <p className="text-xs text-gray-600">Daily Avg</p>
-              </div>
-            </div>
-          </div>
         </div>
       </DialogContent>
     </Dialog>

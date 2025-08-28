@@ -19,6 +19,7 @@ import { MobileOverlay } from "@/components/mobile-overlay";
 import { useAuth } from "@/hooks/useAuth";
 import Navigation from "./Navigation";
 import { set } from "date-fns";
+import MobileNav from "./MobileNav";
 
 export default function ClientDashboardLayout({
   children,
@@ -31,17 +32,17 @@ export default function ClientDashboardLayout({
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const handleLogout = () => logout();
   return (
-    <div className="min-h-screen bg-[#edf7f4]">
+    <div className="min-h-screen bg-gradient-to-br from-[#edf7f4] to-[#f0f7ff]">
       {/* Header */}
-      <header className="bg-white shadow-lg border-b-4 border-green-600">
+      <header className="bg-green-50 border-b-4 border-green-400 shadow-[5px_1px_20px_rgba(34,197,94,0.7)] overflow-hidden hidden lg:block">
         <div className="w-full px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center h-16">
             <div className="flex items-center space-x-3">
               <div className="w-10 h-10 bg-green-600 rounded-lg flex items-center justify-center">
                 <span className="text-white font-bold text-xl">🐄</span>
               </div>
-              <div>
-                <h1 className="text-xl font-bold text-gray-900">
+              <div className="hidden md:block">
+                <h1 className="text-lg lg:text-xl font-bold text-gray-900">
                   LivestockPro ERP
                 </h1>
                 <p className="text-sm text-gray-600">Farm Management System</p>
@@ -68,7 +69,7 @@ export default function ClientDashboardLayout({
               </Button>
             </div>
 
-            <button
+            {/* <button
               className="md:hidden p-2"
               onClick={() => setSidebarOpen(!sidebarOpen)}
             >
@@ -77,11 +78,11 @@ export default function ClientDashboardLayout({
               ) : (
                 <Menu className="w-6 h-6" />
               )}
-            </button>
+            </button> */}
           </div>
         </div>
       </header>
-      <div className="flex">
+      <div className="flex w-full">
         {/* Mobile menu button */}
         {/* <div className="lg:hidden fixed top-4 left-4 z-50">
           <Button variant="outline" size="sm" onClick={() => setSidebarOpen(!sidebarOpen)} className="bg-white">
@@ -146,21 +147,27 @@ export default function ClientDashboardLayout({
             </div>
           </nav>
         </aside> */}
-        <div className=" w-full px-4 sm:px-6 lg:px-8 py-6">
-          <div className="flex flex-col lg:flex-row">
-            <div
-              className={`lg:w-64 flex-shrink-0 ${
-                sidebarOpen ? "block" : "hidden lg:block"
-              }`}
-            >
+
+        <div className="w-full mx-auto p-4">
+          <div className="lg:flex relative">
+            {/* Desktop Nav */}
+            <div className="hidden lg:block">
               <Navigation
                 activeModule={activeModule}
                 setActiveModule={setActiveModule}
               />
             </div>
+
             {/* Main Content */}
-            <main className="flex-1 lg:ml-4">{children}</main>
+            <main className="flex-1 pb-20">
+              {" "}
+              {/* Added bottom padding */}
+              {children}
+            </main>
           </div>
+
+          {/* Mobile Nav rendered outside flow */}
+          <MobileNav />
         </div>
 
         {/* <MobileOverlay isOpen={sidebarOpen} onClose={() => setSidebarOpen(false)} /> */}

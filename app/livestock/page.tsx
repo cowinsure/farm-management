@@ -37,6 +37,7 @@ import { useRouter } from "next/navigation";
 import { useAuth } from "@/hooks/useAuth";
 import { AuthGuard } from "@/components/auth-guard";
 import ViewAnimalModal from "@/components/Livestock/ViewAnimalModal";
+import Heading from "@/components/ui/Heading";
 
 export default function LivestockInventory() {
   const [animals, setAnimals] = useState<any[]>([]);
@@ -132,6 +133,7 @@ export default function LivestockInventory() {
       return matchesSearch && matchesStatus && matchesBreed && matchesGender;
     }
   );
+  console.log(filteredAnimals)
 
   const getStatusBadge = (status: string) => {
     switch (status?.toLowerCase()) {
@@ -172,14 +174,15 @@ export default function LivestockInventory() {
 
   return (
     <AuthGuard requireAuth={true}>
-      <div className="flex relative">
+      <div className="flex relative py-16 lg:py-0">
         {/* Main Content */}
-        <main className="flex-1 lg:ml-0 px-4">
+        <main className="flex-1 lg:ml-0 lg:px-4">
           {/* Page Header */}
           <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-6">
-            <h2 className="text-3xl font-bold text-gray-900">
-              Livestock Inventory
-            </h2>
+            <Heading
+              heading="Livestock Inventory
+"
+            />
             <Button
               onClick={() => {
                 router.push("/livestock/add_cow");
@@ -202,7 +205,10 @@ export default function LivestockInventory() {
                   <div className="text-xs lg:text-sm text-gray-600">Total Animals</div>
                 </CardContent>
               </Card> */}
-            <Card>
+            <Card
+              className="animate__animated animate__fadeInRight"
+              style={{ animationDelay: "0s" }}
+            >
               <CardContent className="p-4">
                 <div className="flex items-center space-x-3">
                   <div className="p-2 bg-green-100 rounded-lg">
@@ -219,7 +225,10 @@ export default function LivestockInventory() {
               </CardContent>
             </Card>
 
-            <Card>
+            <Card
+              className="animate__animated animate__fadeInRight"
+              style={{ animationDelay: "0.25s" }}
+            >
               <CardContent className="p-4">
                 <div className="flex items-center space-x-3">
                   <div className="p-2 bg-blue-100 rounded-lg">
@@ -234,7 +243,10 @@ export default function LivestockInventory() {
                 </div>
               </CardContent>
             </Card>
-            <Card>
+            <Card
+              className="animate__animated animate__fadeInRight"
+              style={{ animationDelay: "0.5s" }}
+            >
               <CardContent className="p-4">
                 <div className="flex items-center space-x-3">
                   <div className="p-2 bg-red-100 rounded-lg">
@@ -254,7 +266,7 @@ export default function LivestockInventory() {
           </div>
 
           {/* Animal Registry */}
-          <Card>
+          <Card className="animate__animated animate__fadeIn">
             <CardHeader>
               <CardTitle className="text-lg lg:text-xl">
                 Animal Registry
@@ -266,9 +278,9 @@ export default function LivestockInventory() {
                 </p>
 
                 {/* Search and Filters */}
-                <div className="w-full lg:w-auto space-y-3 lg:space-y-0 flex gap-3">
+                <div className="w-full lg:w-auto space-y-3 xl:space-y-0 xl:flex gap-3">
                   {/* Search Bar */}
-                  <div className="relative w-full lg:w-64">
+                  <div className="relative w-full xl:w-64">
                     <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
                     <Input
                       placeholder="Search animals..."
@@ -396,7 +408,7 @@ export default function LivestockInventory() {
                     className="hidden lg:block overflow-x-auto"
                     style={{ maxHeight: 300, overflowY: "auto" }}
                   >
-                    <table className="w-full">
+                    <table className="w-full animate__animated animate__fadeInUp">
                       <thead>
                         <tr className="border-b border-gray-200 text-sm">
                           <th className="text-left py-3 px-4 font-medium text-gray-600">
@@ -432,12 +444,18 @@ export default function LivestockInventory() {
                             <td className="text-left py-3 px-4 font-medium">
                               {animal.reference_id}
                             </td>
-                            <td className="text-center py-3 px-4">{animal.name}</td>
-                            <td className="text-center py-3 px-4">{animal.asset_type}</td>
+                            <td className="text-center py-3 px-4">
+                              {animal.name}
+                            </td>
+                            <td className="text-center py-3 px-4">
+                              {animal.asset_type}
+                            </td>
                             <td className="text-center py-3 px-4">
                               {animal.age_in_months}
                             </td>
-                            <td className="text-center py-3 px-4">{animal.weight_kg}</td>
+                            <td className="text-center py-3 px-4">
+                              {animal.weight_kg}
+                            </td>
                             <td className="text-center py-3 px-4">
                               {getStatusBadge(animal.current_status)}
                             </td>

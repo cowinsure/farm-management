@@ -149,7 +149,7 @@ const ViewAnimalModal = ({
             </Card>
           </div>
 
-          {/* Location
+          {/* Location */}
           <Card>
             <CardContent className="p-4 flex flex-col">
               <div className="flex gap-2 items-center">

@@ -478,7 +478,7 @@ export default function FinancialManagement() {
                                   <Button
                                     size="sm"
                                     variant="ghost"
-                                    className="h-7 w-7 p-0"
+                                    className="h-7 w-7 p-0 border hover:bg-green-400 hover:text-white hover:scale-105 hover:-translate-y-1 hover:drop-shadow-xl transition-all duration-300 ease-in-out active:scale-90"
                                     onClick={() => {
                                       setSelectedTransaction(
                                         mapTransactionForModal(transaction)

@@ -40,7 +40,7 @@ import ViewVaccinationModal from "@/components/health/viewVaccinationModalProps"
 import ViewHealthModal from "@/components/health/viewHealthModalProps";
 import Heading from "@/components/ui/Heading";
 import HealthRecordUpdateModal from "@/components/health/HealthRecordUpdateModal";
-
+import { GrUpdate } from "react-icons/gr";
 // Add type for health record
 export interface HealthRecord {
   id: number;
@@ -171,7 +171,7 @@ export default function HealthVaccination() {
       }
     }
     fetchHealthRecords();
-  }, [currentPage, pageSize]);
+  }, [currentPage, pageSize, isHealthRecordModal]);
 
   useEffect(() => {
     async function fetchVaccinationSchedules() {
@@ -529,7 +529,7 @@ export default function HealthVaccination() {
                               <Button
                                 size="sm"
                                 variant="ghost"
-                                className="h-7 w-7 p-0"
+                                className="h-7 w-7 p-0 border hover:bg-green-400 hover:text-white hover:scale-105 hover:-translate-y-1 hover:drop-shadow-xl transition-all duration-300 ease-in-out active:scale-90"
                                 onClick={() => {
                                   setSelectedVaccination(vaccination);
                                   setIsVaccinationDialogOpen(true);
@@ -577,8 +577,8 @@ export default function HealthVaccination() {
 
             {/* Health Records */}
             <Card
-              // className="animate__animated animate__fadeIn"
-              // style={{ animationDelay: "0.5s" }}
+            // className="animate__animated animate__fadeIn"
+            // style={{ animationDelay: "0.5s" }}
             >
               <CardHeader>
                 <div className="flex flex-col lg:flex-row items-start lg:items-center justify-between gap-4">
@@ -678,7 +678,7 @@ export default function HealthVaccination() {
                                 <Button
                                   size="sm"
                                   variant="ghost"
-                                  className="h-7 w-7 p-0"
+                                  className="h-7 w-7 p-0 border hover:bg-green-400 hover:text-white hover:scale-105 hover:-translate-y-1 hover:drop-shadow-xl transition-all duration-300 ease-in-out active:scale-90"
                                   onClick={() => {
                                     setViewRecord(record);
                                     setIsDialogOpen(true);
@@ -689,12 +689,13 @@ export default function HealthVaccination() {
                                 <Button
                                   size="sm"
                                   variant="ghost"
-                                  className="h-7 w-7 p-0"
+                                  className="h-7 w-7 p-0 border hover:bg-blue-400 hover:text-white hover:scale-105 hover:-translate-y-1 hover:drop-shadow-xl transition-all duration-300 ease-in-out active:scale-90"
                                   onClick={() => {
                                     handleHealthRecrodStatus(record);
                                   }}
+                                  title="Update health status"
                                 >
-                                  <Edit className="h-3 w-3" />
+                                  <GrUpdate className="h-3 w-3" />
                                 </Button>
                                 {/* <Button size="sm" variant="ghost" className="h-7 w-7 p-0 text-red-600 hover:text-red-700">
                                     <Trash2 className="h-3 w-3" />

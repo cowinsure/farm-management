@@ -5,7 +5,7 @@ import ClientDashboardLayout from "@/components/layouts/ClientDashboardLayout";
 import React from "react";
 import ClientRootLayout from "@/components/layouts/ClientRootLayout";
 import { CowRegistrationProvider } from "@/context/CowRegistrationContext";
-import "animate.css";
+// import "animate.css";
 import { Urbanist } from "next/font/google";
 
 export const urbanist = Urbanist({
@@ -17,7 +17,7 @@ export const urbanist = Urbanist({
 
 export const metadata: Metadata = {
   title: "LivestockPro",
-  description: "Created with v0",
+  description: "Your Trusted Partner in Livestock Insurance",
   generator: "v0.dev",
   icons: { icon: "/favicon.ico" },
 };

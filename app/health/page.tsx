@@ -276,6 +276,8 @@ export default function HealthVaccination() {
       )
     );
   };
+
+  console.log(summary);
   return (
     <AuthGuard requireAuth={true}>
       <div className="flex relative py-16 lg:py-0">
@@ -283,10 +285,7 @@ export default function HealthVaccination() {
         <main className="flex-1 lg:ml-0 lg:px-4">
           {/* Page Header */}
           <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-6">
-            <Heading
-              heading="Health & Vaccination
-"
-            />
+            <Heading heading="Health & Vaccination" />
             <div className="flex flex-col sm:flex-row gap-2 sm:gap-3 w-full sm:w-auto">
               <Button
                 className="bg-blue-600 hover:bg-blue-700"
@@ -349,7 +348,7 @@ export default function HealthVaccination() {
                   <Heart className="w-8 h-8 text-red-600" />
                   <div>
                     <div className="text-2xl font-bold text-red-600">
-                      {summary.Sick}
+                      {summary.Sick > 0 ? summary.Sick : 0}
                     </div>
                     <div className="text-sm text-gray-600">Sick Animals</div>
                   </div>
@@ -762,7 +761,7 @@ export default function HealthVaccination() {
             />
           )}
         </main>
-        <Toaster position="top-center" richColors  />
+        <Toaster position="top-center" richColors />
       </div>
     </AuthGuard>
   );

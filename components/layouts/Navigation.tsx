@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import { useAuth } from "@/hooks/useAuth";
 import { usePathname } from "next/navigation";
+import { MdOutlineCalendarToday } from "react-icons/md";
 
 interface NavigationProps {
   activeModule: string;
@@ -30,6 +31,12 @@ const Navigation = ({ activeModule, setActiveModule }: NavigationProps) => {
       label: "Health & Vaccination",
       icon: Heart,
       color: "text-red-600",
+    },
+    {
+      id: "/production",
+      label: "Production Tracking",
+      icon: MdOutlineCalendarToday,
+      color: "text-orange-600",
     },
     {
       id: "/financial",

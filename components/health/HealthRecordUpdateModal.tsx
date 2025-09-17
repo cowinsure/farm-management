@@ -13,6 +13,8 @@ import {
 } from "../ui/select";
 import { Input } from "../ui/input"; // Add if you use custom styled input
 import { Button } from "../ui/button";
+import { IoCheckmarkCircle } from "react-icons/io5";
+import { toast } from "sonner";
 
 interface HealthRecordModalProps {
   closeModal: () => void;
@@ -70,8 +72,6 @@ const HealthRecordUpdateModal = ({
     };
   }, []);
 
-//   console.log(data);
-
   const getHealthStatusBadge = (status: string) => {
     switch (status.toLowerCase()) {
       case "healthy":
@@ -114,7 +114,7 @@ const HealthRecordUpdateModal = ({
       const selectedStatusObj = allHealthStatus.find(
         (status) => status.name === selectedStatus
       );
-    //   console.log(selectedStatusObj);
+      //   console.log(selectedStatusObj);
 
       if (!selectedStatusObj) {
         console.error("Selected status not found.");
@@ -122,12 +122,12 @@ const HealthRecordUpdateModal = ({
       }
 
       const payload = {
-        current_status_id: selectedStatusObj.asset_status_id,
-        remarks: remarks,
+        current_status_id: selectedStatusObj.id,
+        // remarks: remarks,
         id: data.id,
       };
 
-    //   console.log(payload);
+      console.log(payload);
 
       const response = await fetch(
         `${process.env.NEXT_PUBLIC_API_BASE_URL}/lms/health-record-status-history-service/`,
@@ -146,14 +146,16 @@ const HealthRecordUpdateModal = ({
       }
 
       const updatedData = await response.json();
-      console.log("Update successful:", updatedData);
+      // console.log("Update successful:", updatedData);
 
       if (onUpdate) {
         console.log("Calling onUpdate with:", updatedData);
         onUpdate(updatedData.data);
       }
-      // Optionally show a toast/notification
-      closeModal();
+      if (updatedData.data.id) {
+        toast.success("Status sucessfully changed");
+        closeModal();
+      }
     } catch (error) {
       console.error("Error during update:", error);
       // Optionally show error toast
@@ -222,8 +224,9 @@ const HealthRecordUpdateModal = ({
           {/* Remarks Input */}
           <div className="flex flex-col gap-2">
             <label className="text-sm font-medium text-gray-700">Remarks</label>
-            <Input
-              type="text"
+            <textarea
+              className="border rounded-md p-3 hover:cursor-not-allowed"
+              disabled
               value={remarks}
               onChange={(e) => setRemarks(e.target.value)}
               placeholder="Enter remarks..."
@@ -232,7 +235,13 @@ const HealthRecordUpdateModal = ({
 
           {/* Submit Button */}
           <div className="flex justify-end">
-            <Button onClick={handleHealthStatusChange}>Update</Button>
+            <Button
+              onClick={handleHealthStatusChange}
+              className="bg-green-700 hover:bg-green-800"
+            >
+              <IoCheckmarkCircle />
+              Update Status
+            </Button>
           </div>
         </div>
       </div>

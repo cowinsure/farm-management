@@ -41,6 +41,7 @@ import ViewHealthModal from "@/components/health/viewHealthModalProps";
 import Heading from "@/components/ui/Heading";
 import HealthRecordUpdateModal from "@/components/health/HealthRecordUpdateModal";
 import { GrUpdate } from "react-icons/gr";
+import { Toaster } from "sonner";
 // Add type for health record
 export interface HealthRecord {
   id: number;
@@ -761,6 +762,7 @@ export default function HealthVaccination() {
             />
           )}
         </main>
+        <Toaster position="top-center" richColors  />
       </div>
     </AuthGuard>
   );

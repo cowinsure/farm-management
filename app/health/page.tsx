@@ -2,25 +2,14 @@
 
 import { useState } from "react";
 import {
-  Bell,
   Calendar,
-  DollarSign,
   Edit,
   Eye,
   Filter,
   Heart,
-  Home,
   Plus,
   Search,
-  Settings,
   Syringe,
-  TrendingUp,
-  Trash2,
-  Users,
-  Zap,
-  Menu,
-  LogOut,
-  TriangleAlert,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -50,9 +39,11 @@ import { RecordVaccinationScheduleDialog } from "@/components/health/record-vacc
 import ViewVaccinationModal from "@/components/health/viewVaccinationModalProps";
 import ViewHealthModal from "@/components/health/viewHealthModalProps";
 import Heading from "@/components/ui/Heading";
-
+import HealthRecordUpdateModal from "@/components/health/HealthRecordUpdateModal";
+import { GrUpdate } from "react-icons/gr";
+import { Toaster } from "sonner";
 // Add type for health record
-interface HealthRecord {
+export interface HealthRecord {
   id: number;
   remarks: string;
   asset_id: number;
@@ -73,6 +64,14 @@ interface HealthRecord {
   treatment_date: string;
   current_status_id: number;
 }
+
+// export interface HealthStatusChangeData {
+//   id: number;
+//   asset_ref_id: string;
+//   status_name: string;
+//   current_status_id: number;
+//   remarks: string;
+// }
 
 export default function HealthVaccination() {
   const [vaccinationSearch, setVaccinationSearch] = useState("");
@@ -135,6 +134,10 @@ export default function HealthVaccination() {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [recordDialogOpen, setRecordDialogOpen] = useState(false);
   const [vaccinationDialogOpen, setVaccinationDialogOpen] = useState(false);
+  const [isHealthRecordModal, setIsHealthRecordModal] = useState(false);
+  const [selectedRecordData, setSelectedRecordData] = useState<
+    HealthRecord | undefined
+  >(undefined);
 
   useEffect(() => {
     async function fetchHealthRecords() {
@@ -158,7 +161,7 @@ export default function HealthVaccination() {
         );
         const data = await res.json();
         if (data.status === "success") {
-          console.log(data.data.summary);
+          // console.log(data.data.summary);
 
           setHealthRecords(data.data.list);
           setSummary(data.data.summary);
@@ -169,7 +172,7 @@ export default function HealthVaccination() {
       }
     }
     fetchHealthRecords();
-  }, [currentPage, pageSize]);
+  }, [currentPage, pageSize, isHealthRecordModal]);
 
   useEffect(() => {
     async function fetchVaccinationSchedules() {
@@ -258,6 +261,23 @@ export default function HealthVaccination() {
     }
   };
 
+  const handleHealthRecrodStatus = (record: HealthRecord) => {
+    setSelectedRecordData(record);
+    setIsHealthRecordModal(true);
+  };
+
+  const handleUpdate = (updatedRecord: HealthRecord) => {
+    console.log(updatedRecord);
+    setHealthRecords((prevRecords) =>
+      prevRecords.map((record) =>
+        record.id === updatedRecord.id
+          ? { ...record, ...updatedRecord } // <-- merge in case structure differs
+          : record
+      )
+    );
+  };
+
+  console.log(summary);
   return (
     <AuthGuard requireAuth={true}>
       <div className="flex relative py-16 lg:py-0">
@@ -265,10 +285,7 @@ export default function HealthVaccination() {
         <main className="flex-1 lg:ml-0 lg:px-4">
           {/* Page Header */}
           <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-6">
-            <Heading
-              heading="Health & Vaccination
-"
-            />
+            <Heading heading="Health & Vaccination" />
             <div className="flex flex-col sm:flex-row gap-2 sm:gap-3 w-full sm:w-auto">
               <Button
                 className="bg-blue-600 hover:bg-blue-700"
@@ -331,7 +348,7 @@ export default function HealthVaccination() {
                   <Heart className="w-8 h-8 text-red-600" />
                   <div>
                     <div className="text-2xl font-bold text-red-600">
-                      {summary.Sick}
+                      {summary.Sick > 0 ? summary.Sick : 0}
                     </div>
                     <div className="text-sm text-gray-600">Sick Animals</div>
                   </div>
@@ -491,15 +508,20 @@ export default function HealthVaccination() {
                             <td className="py-3 px-2">
                               {vaccination.vaccine_name}
                             </td>
-                            <td
-                              className={`inline-block font-semibold rounded-full ${
-                                vaccination.status === "Due"
-                                  ? "bg-yellow-100 py-1 px-5 text-yellow-900"
-                                  : "bg-red-100 py-1 px-3 text-red-900"
-                              }`}
-                            >
-                              {vaccination.status}
+                            <td className="py-3 px-2">
+                              <span
+                                className={`inline-flex items-center justify-center font-semibold rounded-full text-sm px-3 py-1 ${
+                                  vaccination.status === "Due"
+                                    ? "bg-yellow-100 text-yellow-900"
+                                    : vaccination.status === "Complete"
+                                    ? "bg-green-100 text-green-900"
+                                    : "bg-red-100 text-red-900"
+                                }`}
+                              >
+                                {vaccination.status}
+                              </span>
                             </td>
+
                             <td className="py-3 px-2">
                               {vaccination.due_date || "-"}
                             </td>
@@ -507,7 +529,7 @@ export default function HealthVaccination() {
                               <Button
                                 size="sm"
                                 variant="ghost"
-                                className="h-7 w-7 p-0"
+                                className="h-7 w-7 p-0 border hover:bg-green-400 hover:text-white hover:scale-105 hover:-translate-y-1 hover:drop-shadow-xl transition-all duration-300 ease-in-out active:scale-90"
                                 onClick={() => {
                                   setSelectedVaccination(vaccination);
                                   setIsVaccinationDialogOpen(true);
@@ -555,8 +577,8 @@ export default function HealthVaccination() {
 
             {/* Health Records */}
             <Card
-              className="animate__animated animate__fadeIn"
-              style={{ animationDelay: "0.5s" }}
+            // className="animate__animated animate__fadeIn"
+            // style={{ animationDelay: "0.5s" }}
             >
               <CardHeader>
                 <div className="flex flex-col lg:flex-row items-start lg:items-center justify-between gap-4">
@@ -652,11 +674,11 @@ export default function HealthVaccination() {
                               {getHealthStatusBadge(record.status_name)}
                             </td>
                             <td className="py-3 px-2">
-                              <div className="flex items-center space-x-1">
+                              <div className="flex items-center space-x-5">
                                 <Button
                                   size="sm"
                                   variant="ghost"
-                                  className="h-7 w-7 p-0"
+                                  className="h-7 w-7 p-0 border hover:bg-green-400 hover:text-white hover:scale-105 hover:-translate-y-1 hover:drop-shadow-xl transition-all duration-300 ease-in-out active:scale-90"
                                   onClick={() => {
                                     setViewRecord(record);
                                     setIsDialogOpen(true);
@@ -664,10 +686,18 @@ export default function HealthVaccination() {
                                 >
                                   <Eye className="h-3 w-3" />
                                 </Button>
-                                {/* <Button size="sm" variant="ghost" className="h-7 w-7 p-0">
-                                    <Edit className="h-3 w-3" />
-                                  </Button>
-                                  <Button size="sm" variant="ghost" className="h-7 w-7 p-0 text-red-600 hover:text-red-700">
+                                <Button
+                                  size="sm"
+                                  variant="ghost"
+                                  className="h-7 w-7 p-0 border hover:bg-blue-400 hover:text-white hover:scale-105 hover:-translate-y-1 hover:drop-shadow-xl transition-all duration-300 ease-in-out active:scale-90"
+                                  onClick={() => {
+                                    handleHealthRecrodStatus(record);
+                                  }}
+                                  title="Update health status"
+                                >
+                                  <GrUpdate className="h-3 w-3" />
+                                </Button>
+                                {/* <Button size="sm" variant="ghost" className="h-7 w-7 p-0 text-red-600 hover:text-red-700">
                                     <Trash2 className="h-3 w-3" />
                                   </Button> */}
                               </div>
@@ -723,7 +753,15 @@ export default function HealthVaccination() {
                 : null
             }
           />
+          {isHealthRecordModal && (
+            <HealthRecordUpdateModal
+              closeModal={() => setIsHealthRecordModal(false)}
+              data={selectedRecordData}
+              onUpdate={handleUpdate}
+            />
+          )}
         </main>
+        <Toaster position="top-center" richColors />
       </div>
     </AuthGuard>
   );

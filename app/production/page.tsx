@@ -1,4 +1,6 @@
+"use client";
 import { AuthGuard } from "@/components/auth-guard";
+import { RecordProductionTrackingModal } from "@/components/Production/ProductionTrackingModal";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import Heading from "@/components/ui/Heading";
@@ -10,16 +12,58 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { CreditCard, Eye, Search, TrendingUp } from "lucide-react";
-import React from "react";
+import {
+  Calendar,
+  CreditCard,
+  Eye,
+  Plus,
+  Search,
+  TrendingUp,
+} from "lucide-react";
+import React, { useEffect, useState } from "react";
 import { FaPercent } from "react-icons/fa";
 import { GrMoney } from "react-icons/gr";
+import { IoDocuments } from "react-icons/io5";
 import { LuMilk } from "react-icons/lu";
 import { TbMeat } from "react-icons/tb";
 
 const ProductionTracking = () => {
-  // Temporary var
-  const loading = false;
+  const [isRecordProductionModal, setRecordProductionModal] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [productionRecords, setProductionRecords] = useState<any[]>([]);
+
+  useEffect(() => {
+    setLoading(true);
+    const token =
+      typeof window !== "undefined"
+        ? localStorage.getItem("access_token")
+        : null;
+    fetch(
+      `${process.env.NEXT_PUBLIC_API_BASE_URL}/lms/production-record-service/?start_record=1&page_size=10`,
+      {
+        headers: {
+          ...(token ? { Authorization: `Bearer ${token}` } : {}),
+        },
+      }
+    )
+      .then(async (res: Response) => {
+        if (!res.ok) {
+          const text = await res.text();
+          console.log(text);
+          throw new Error(text || `HTTP ${res.status}`);
+        }
+        return res.json();
+      })
+      .then((data: any) => {
+        setProductionRecords(data.data);
+        console.log("Fetched data:", data);
+      })
+      .catch((err: any) => {
+        console.error("Fetch error:", err);
+      })
+      .finally(() => setLoading(false));
+  }, [isRecordProductionModal]);
+
   //   Temporary Fake data
   const fakeData = [
     {
@@ -45,6 +89,7 @@ const ProductionTracking = () => {
     },
   ];
 
+  console.log(productionRecords);
   return (
     <AuthGuard requireAuth={true}>
       <div className="relative py-16 lg:py-0 ">
@@ -53,10 +98,26 @@ const ProductionTracking = () => {
           {/* Page Header */}
           <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-6">
             <Heading heading="Production Tracking" />
-            {/* <div className="flex flex-col sm:flex-row gap-2 sm:gap-3 w-full sm:w-auto">
-              <FinancialModal type="income" />
-              <FinancialModal type="expense" />
-            </div> */}
+            <div className="flex flex-col sm:flex-row gap-2 sm:gap-3 w-full sm:w-auto">
+              <Button
+                className="bg-purple-600 hover:bg-purple-700"
+                onClick={() => setRecordProductionModal(true)}
+              >
+                <IoDocuments className="w-4 h-4 mr-2" />
+                Record Production
+              </Button>
+              <Button
+                className="bg-green-600 hover:bg-green-700"
+                // onClick={() => setRecordDialogOpen(true)}
+              >
+                <Plus className="w-4 h-4 mr-2" />
+                Add Feed Log
+              </Button>
+            </div>
+            <RecordProductionTrackingModal
+              open={isRecordProductionModal}
+              onOpenChange={setRecordProductionModal}
+            />
           </div>
 
           {/* Summary Cards */}
@@ -106,7 +167,9 @@ const ProductionTracking = () => {
                   <TbMeat className="w-8 h-8 text-orange-600" />
 
                   <div>
-                    <div className="text-2xl font-bold text-orange-600">16.5</div>
+                    <div className="text-2xl font-bold text-orange-600">
+                      16.5
+                    </div>
                     <div className="text-sm text-gray-600">Avg L/animal</div>
                   </div>
                 </div>
@@ -134,7 +197,6 @@ const ProductionTracking = () => {
 
           {/* Main Content Grid */}
           <div className="grid grid-cols-1 xl:grid-cols-3 gap-4 lg:gap-6">
-            {/* Recent Transactions */}
             <div className="xl:col-span-2">
               <Card className="animate__animated animate__fadeIn">
                 <CardHeader>
@@ -250,7 +312,7 @@ const ProductionTracking = () => {
                       </div>
                     ) : [1, 2, 3, 4, 5, 6].length === 0 ? (
                       <div className="text-center py-8 text-gray-500">
-                        No transactions found.
+                        No data found
                       </div>
                     ) : (
                       <table className="w-full animate__animated animate__fadeInUp">
@@ -260,16 +322,16 @@ const ProductionTracking = () => {
                               Animal
                             </th>
                             <th className="text-left py-3 px-2 font-medium text-gray-600 text-sm">
-                              Morning
+                              Quantity
                             </th>
-                            <th className="text-left py-3 px-2 font-medium text-gray-600 text-sm">
+                            {/* <th className="text-left py-3 px-2 font-medium text-gray-600 text-sm">
                               Evening
                             </th>
                             <th className="text-left py-3 px-2 font-medium text-gray-600 text-sm">
                               Total
-                            </th>
+                            </th> */}
                             <th className="text-left py-3 px-2 font-medium text-gray-600 text-sm">
-                              Quality
+                              Production
                             </th>
                             <th className="text-left py-3 px-2 font-medium text-gray-600 text-sm">
                               Actions
@@ -277,21 +339,24 @@ const ProductionTracking = () => {
                           </tr>
                         </thead>
                         <tbody>
-                          {[1].map(() => (
+                          {productionRecords.map((record, idx) => (
                             <tr
-                              key={""}
+                              key={idx}
                               className="border-b border-gray-100 hover:bg-gray-50"
                             >
                               <td className="py-3 px-2 flex flex-col">
-                                <span className="font-semibold">Bella</span>
-                                <span className="text-sm">COW001</span>
+                                <span className="font-semibold">
+                                  {record.asset_ref_id}
+                                </span>
                               </td>
-                              <td className="py-3 px-2 text-sm">12.5 L</td>
-                              <td className="py-3 px-2 text-sm">11.2 L</td>
+                              <td className="py-3 px-2 text-sm">
+                                {record.quantity}
+                              </td>
+                              {/* <td className="py-3 px-2 text-sm">11.2 L</td>
                               <td className="py-3 px-2 text-sm font-semibold">
                                 23.7 L
-                              </td>
-                              <td>A+</td>
+                              </td> */}
+                              <td>{record.type_name}</td>
                               <td className="py-3 px-2">
                                 <div className="flex items-center space-x-1">
                                   <Button

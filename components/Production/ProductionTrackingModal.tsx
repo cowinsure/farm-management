@@ -209,7 +209,7 @@ export function RecordProductionTrackingModal({
       setSubmitting(false);
     }
   };
-  
+
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent>

@@ -119,7 +119,7 @@ export function RecordProductionTrackingModal({
     }));
   };
 
-  const handleSelectChange = (name: string, value: string) => {
+  const handleSelectChange = (name: string, value: string | number) => {
     setFormData((prev) => ({
       ...prev,
       [name]: value,
@@ -131,40 +131,11 @@ export function RecordProductionTrackingModal({
     e.preventDefault();
     setSubmitting(true);
 
-    // Find the selected cattle by reference_id
-    const selectedCattle = isAnimals.find(
-      (animal) => animal.reference_id === formData.asset_id
-    );
-
-    // Find the selected production type by type_name
-    const selectedProductionType = productionType.find(
-      (product) => product.type_name === formData.production_type_id
-    );
-
-    // Check if both selectedCattle and selectedProductionType were found
-    if (!selectedCattle) {
-      toast({
-        title: "Error",
-        description: "Animal ID not found",
-      });
-      setSubmitting(false);
-      return;
-    }
-
-    if (!selectedProductionType) {
-      toast({
-        title: "Error",
-        description: "Production Type not found",
-      });
-      setSubmitting(false);
-      return;
-    }
-
     const payload = {
-      production_type_id: selectedProductionType.id,
+      production_type_id: formData.production_type_id,
       quantity: formData.quantity,
       date: formData.date,
-      asset_id: selectedCattle.id,
+      asset_id: formData.asset_id,
     };
 
     console.log("Payload", payload);
@@ -190,10 +161,6 @@ export function RecordProductionTrackingModal({
       const data = await res.json();
 
       if (res.ok) {
-        toast({
-          title: "Success",
-          description: data.message || "Form submitted successfully",
-        });
         // Optionally close the form or perform any other actions
         onOpenChange(false);
         if (onSuccess) onSuccess();
@@ -210,6 +177,16 @@ export function RecordProductionTrackingModal({
     }
   };
 
+  const selectedCattle = isAnimals.find(
+    (animal) => animal.id === formData.asset_id
+  );
+
+  const selectedProductionType = productionType.find(
+    (product) => product.type_name === formData.production_type_id
+  );
+
+  console.log(isAnimals);
+
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent>
@@ -225,21 +202,27 @@ export function RecordProductionTrackingModal({
                   Animal ID
                 </label>
                 <Select
-                  value={formData.asset_id.toString()}
+                  value={formData.asset_id?.toString() || ""}
                   onValueChange={(value) =>
-                    handleSelectChange("asset_id", value)
+                    handleSelectChange("asset_id", Number(value))
                   }
                 >
                   <SelectTrigger className="w-full">
-                    <SelectValue placeholder="Select Cattle" />
+                    <SelectValue placeholder="Select Cattle">
+                      {selectedCattle?.reference_id}
+                    </SelectValue>
                   </SelectTrigger>
                   <SelectContent>
                     {isAnimals.map((animal) => (
-                      <SelectItem
-                        value={animal.reference_id}
-                        key={animal.reference_id}
-                      >
-                        {animal.reference_id}
+                      <SelectItem value={animal.id.toString()} key={animal.id}>
+                        <div className="flex items-center gap-2 cursor-pointer">
+                          <img
+                            src={"/placeholder.png"}
+                            alt=""
+                            className="w-10 h-10 rounded-full"
+                          />
+                          {animal.reference_id}
+                        </div>
                       </SelectItem>
                     ))}
                   </SelectContent>
@@ -254,15 +237,17 @@ export function RecordProductionTrackingModal({
                 <Select
                   value={formData.production_type_id}
                   onValueChange={(value) =>
-                    handleSelectChange("production_type_id", value)
+                    handleSelectChange("production_type_id", Number(value))
                   }
                 >
                   <SelectTrigger className="w-full">
-                    <SelectValue placeholder="Select type" />
+                    <SelectValue placeholder="Select type">
+                      {selectedProductionType?.type_name}
+                    </SelectValue>
                   </SelectTrigger>
                   <SelectContent>
                     {productionType.map((type) => (
-                      <SelectItem value={type.type_name} key={type.type_name}>
+                      <SelectItem value={type.id} key={type.id}>
                         {type.type_name}
                       </SelectItem>
                     ))}

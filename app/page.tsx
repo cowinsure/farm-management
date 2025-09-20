@@ -28,6 +28,7 @@ import { AuthGuard } from "@/components/auth-guard";
 import { useRouter } from "next/navigation";
 import { RecordVaccinationScheduleDialog } from "@/components/health/record-vaccination-schedule-dialog";
 import { RecordHealthIssueDialog } from "@/components/health/record-health-issue-dialog";
+import { Toaster } from "sonner";
 
 export default function Dashboard() {
   const [sidebarOpen, setSidebarOpen] = useState(false);
@@ -299,6 +300,7 @@ export default function Dashboard() {
                 </Card>
               </div> */}
             </div>
+            <Toaster richColors />
           </main>
         </div>
       </div>

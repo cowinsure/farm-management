@@ -26,6 +26,7 @@ import { GrMoney } from "react-icons/gr";
 import { IoDocuments } from "react-icons/io5";
 import { LuMilk } from "react-icons/lu";
 import { TbMeat } from "react-icons/tb";
+import { toast, Toaster } from "sonner";
 
 const ProductionTracking = () => {
   const [isRecordProductionModal, setRecordProductionModal] = useState(false);
@@ -64,6 +65,11 @@ const ProductionTracking = () => {
       .finally(() => setLoading(false));
   }, [isRecordProductionModal]);
 
+  const refreshDataTable = () => {
+    setRecordProductionModal(false);
+    toast.success("Data added successfully");
+  };
+
   //   Temporary Fake data
   const fakeData = [
     {
@@ -89,7 +95,7 @@ const ProductionTracking = () => {
     },
   ];
 
-  console.log(productionRecords);
+  // console.log(productionRecords);
   return (
     <AuthGuard requireAuth={true}>
       <div className="relative py-16 lg:py-0 ">
@@ -117,6 +123,7 @@ const ProductionTracking = () => {
             <RecordProductionTrackingModal
               open={isRecordProductionModal}
               onOpenChange={setRecordProductionModal}
+              onSuccess={refreshDataTable}
             />
           </div>
 
@@ -304,7 +311,7 @@ const ProductionTracking = () => {
                   {/* Desktop Table View */}
                   <div
                     className="hidden lg:block overflow-x-auto"
-                    style={{ maxHeight: 300, overflowY: "auto" }}
+                    style={{ maxHeight: 375, overflowY: "auto" }}
                   >
                     {loading ? (
                       <div className="text-center py-8 text-gray-500">
@@ -477,6 +484,7 @@ const ProductionTracking = () => {
             </div>
           </div>
         </main>
+        <Toaster richColors />
       </div>
     </AuthGuard>
   );

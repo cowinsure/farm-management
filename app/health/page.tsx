@@ -42,6 +42,8 @@ import Heading from "@/components/ui/Heading";
 import HealthRecordUpdateModal from "@/components/health/HealthRecordUpdateModal";
 import { GrUpdate } from "react-icons/gr";
 import { Toaster } from "sonner";
+import { LuPawPrint } from "react-icons/lu";
+import { TiWarningOutline } from "react-icons/ti";
 // Add type for health record
 export interface HealthRecord {
   id: number;
@@ -320,15 +322,33 @@ export default function HealthVaccination() {
 
           {/* Summary Cards */}
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+            {/* Total animals */}
             <Card
               className="animate__animated animate__fadeInRight"
               style={{ animationDelay: "0s" }}
             >
               <CardContent className="p-4">
-                <div className="flex items-center space-x-2">
+                <div className="flex items-center justify-between space-x-2">
+                  <LuPawPrint className="w-8 h-8 text-purple-600" />
+                  <div>
+                    <div className="text-2xl font-bold text-right text-purple-600">
+                      {summary.Total}
+                    </div>
+                    <div className="text-sm text-gray-600">Total Animals</div>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+            {/* Due Vaccination */}
+            <Card
+              className="animate__animated animate__fadeInRight"
+              style={{ animationDelay: "0s" }}
+            >
+              <CardContent className="p-4">
+                <div className="flex items-center justify-between space-x-2">
                   <Syringe className="w-8 h-8 text-blue-600" />
                   <div>
-                    <div className="text-2xl font-bold text-blue-600">
+                    <div className="text-2xl font-bold text-right text-blue-600">
                       {vaccinationDue}
                     </div>
                     <div className="text-sm text-gray-600">
@@ -338,19 +358,38 @@ export default function HealthVaccination() {
                 </div>
               </CardContent>
             </Card>
-
+            {/* Sick animals */}
             <Card
               className="animate__animated animate__fadeInRight"
               style={{ animationDelay: "0.25s" }}
             >
               <CardContent className="p-4">
-                <div className="flex items-center space-x-2">
+                <div className="flex items-center justify-between space-x-2">
                   <Heart className="w-8 h-8 text-red-600" />
                   <div>
-                    <div className="text-2xl font-bold text-red-600">
+                    <div className="text-2xl font-bold text-right text-red-600">
                       {summary.Sick > 0 ? summary.Sick : 0}
                     </div>
                     <div className="text-sm text-gray-600">Sick Animals</div>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+            {/* Critical Animals */}
+            <Card
+              className="animate__animated animate__fadeInRight"
+              style={{ animationDelay: "0.25s" }}
+            >
+              <CardContent className="p-4">
+                <div className="flex items-center justify-between space-x-2">
+                  <TiWarningOutline className="w-8 h-8 text-amber-600" />
+                  <div>
+                    <div className="text-2xl font-bold text-right text-amber-600">
+                      {summary.Critical > 0 ? summary.Critical : 0}
+                    </div>
+                    <div className="text-sm text-gray-600">
+                      Critical Animals
+                    </div>
                   </div>
                 </div>
               </CardContent>

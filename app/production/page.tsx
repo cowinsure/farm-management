@@ -140,7 +140,7 @@ const ProductionTracking = () => {
                   </span>
 
                   <div>
-                    <div className="text-2xl font-bold text-blue-600">
+                    <div className="text-2xl font-bold text-right text-blue-600">
                       500 L
                     </div>
                     <div className="text-sm text-gray-600">Today's Milk</div>
@@ -158,7 +158,9 @@ const ProductionTracking = () => {
                   <TrendingUp className="w-8 h-8 text-green-600" />
 
                   <div>
-                    <div className="text-2xl font-bold text-green-600">5%</div>
+                    <div className="text-2xl font-bold text-right text-green-600">
+                      5%
+                    </div>
                     <div className="text-sm text-gray-600">Weekly Growth</div>
                   </div>
                 </div>
@@ -174,7 +176,7 @@ const ProductionTracking = () => {
                   <TbMeat className="w-8 h-8 text-orange-600" />
 
                   <div>
-                    <div className="text-2xl font-bold text-orange-600">
+                    <div className="text-2xl font-bold text-right text-orange-600">
                       16.5
                     </div>
                     <div className="text-sm text-gray-600">Avg L/animal</div>
@@ -194,7 +196,9 @@ const ProductionTracking = () => {
                   </div>
 
                   <div>
-                    <div className="text-2xl font-bold text-purple-600">89</div>
+                    <div className="text-2xl font-bold text-right text-purple-600">
+                      89
+                    </div>
                     <div className="text-sm text-gray-600">Quality Rate</div>
                   </div>
                 </div>

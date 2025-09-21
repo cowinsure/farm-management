@@ -6,6 +6,7 @@ import Link from "next/link";
 import { useAuth } from "@/hooks/useAuth";
 import { usePathname } from "next/navigation";
 import { MdOutlineCalendarToday } from "react-icons/md";
+import { LuPin, LuPinOff } from "react-icons/lu";
 
 interface NavigationProps {
   activeModule: string;
@@ -67,9 +68,21 @@ const Navigation = ({ activeModule, setActiveModule }: NavigationProps) => {
         <div className="flex justify-end mb-4">
           <button
             onClick={() => setPinned((prev) => !prev)}
-            className="text-xs bg-gray-200 px-2 py-1 rounded hover:bg-gray-300 transition"
+            className="px-2 py-1 rounded hover:bg-orange-100 transition"
           >
-            {pinned ? "Unlock" : "Pin"}
+            {pinned ? (
+              <LuPinOff
+                size={18}
+                className=" text-orange-600 "
+                title="Unpin Menu"
+              />
+            ) : (
+              <LuPin
+                size={18}
+                className="rotate-45 text-orange-600 opacity-0 group-hover:opacity-100 transition-opacity duration-300 ease-in-out"
+                title="Pin Menu"
+              />
+            )}
           </button>
         </div>
 

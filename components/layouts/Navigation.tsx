@@ -7,6 +7,7 @@ import { useAuth } from "@/hooks/useAuth";
 import { usePathname } from "next/navigation";
 import { MdOutlineCalendarToday } from "react-icons/md";
 import { LuPin, LuPinOff } from "react-icons/lu";
+import { FaArrowTrendUp } from "react-icons/fa6";
 
 interface NavigationProps {
   activeModule: string;
@@ -33,6 +34,13 @@ const Navigation = ({ activeModule, setActiveModule }: NavigationProps) => {
       icon: Heart,
       color: "text-red-600",
     },
+    // This page has been made. Commenting out for now
+    // {
+    //   id: "/breeding",
+    //   label: "Breeding & Reproduction",
+    //   icon: FaArrowTrendUp,
+    //   color: "text-purple-600",
+    // },
     {
       id: "/production",
       label: "Production Tracking",

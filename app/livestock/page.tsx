@@ -133,7 +133,7 @@ export default function LivestockInventory() {
       return matchesSearch && matchesStatus && matchesBreed && matchesGender;
     }
   );
-  console.log(filteredAnimals)
+  console.log(filteredAnimals);
 
   const getStatusBadge = (status: string) => {
     switch (status?.toLowerCase()) {
@@ -210,13 +210,13 @@ export default function LivestockInventory() {
               style={{ animationDelay: "0s" }}
             >
               <CardContent className="p-4">
-                <div className="flex items-center space-x-3">
-                  <div className="p-2 bg-green-100 rounded-lg">
+                <div className="flex items-center justify-between space-x-3">
+                  <div className="p-2 rounded-lg">
                     {/* <Users className="w-6 h-6 text-green-600" /> */}
                     <PawPrint className="w-6 h-6 text-green-600" />
                   </div>
                   <div>
-                    <div className="text-2xl font-bold text-green-600">
+                    <div className="text-2xl font-bold text-right text-green-600">
                       {total}
                     </div>
                     <div className="text-sm text-gray-600">Total Animals</div>
@@ -230,12 +230,12 @@ export default function LivestockInventory() {
               style={{ animationDelay: "0.25s" }}
             >
               <CardContent className="p-4">
-                <div className="flex items-center space-x-3">
-                  <div className="p-2 bg-blue-100 rounded-lg">
+                <div className="flex items-center justify-between space-x-3">
+                  <div className="p-2 rounded-lg">
                     <Heart className="w-6 h-6 text-blue-600" />
                   </div>
                   <div>
-                    <div className="text-2xl font-bold text-blue-600">
+                    <div className="text-2xl font-bold text-right text-blue-600">
                       {active}
                     </div>
                     <div className="text-sm text-gray-600">Active</div>
@@ -248,12 +248,12 @@ export default function LivestockInventory() {
               style={{ animationDelay: "0.5s" }}
             >
               <CardContent className="p-4">
-                <div className="flex items-center space-x-3">
-                  <div className="p-2 bg-red-100 rounded-lg">
+                <div className="flex items-center justify-between space-x-3">
+                  <div className="p-2 rounded-lg">
                     <AlertTriangle className="w-6 h-6 text-red-600" />
                   </div>
                   <div>
-                    <div className="text-2xl font-bold text-red-600">
+                    <div className="text-2xl font-bold text-right text-red-600">
                       {sick}
                     </div>
                     <div className="text-sm text-gray-600">Sick</div>

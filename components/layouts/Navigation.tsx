@@ -35,12 +35,12 @@ const Navigation = ({ activeModule, setActiveModule }: NavigationProps) => {
       color: "text-red-600",
     },
     // This page has been made. Commenting out for now
-    // {
-    //   id: "/breeding",
-    //   label: "Breeding & Reproduction",
-    //   icon: FaArrowTrendUp,
-    //   color: "text-purple-600",
-    // },
+    {
+      id: "/breeding",
+      label: "Breeding & Reproduction",
+      icon: FaArrowTrendUp,
+      color: "text-purple-600",
+    },
     {
       id: "/production",
       label: "Production Tracking",

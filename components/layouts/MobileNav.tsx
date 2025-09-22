@@ -1,10 +1,11 @@
 "use client";
 
 import React from "react";
-import { Users, Heart, DollarSign, Home } from "lucide-react";
+import { Users, Heart, DollarSign, Home, Calendar } from "lucide-react";
 import Link from "next/link";
 import { useAuth } from "@/hooks/useAuth";
 import { usePathname } from "next/navigation";
+import { MdOutlineCalendarToday } from "react-icons/md";
 
 const MobileNav = () => {
   const { logout } = useAuth();
@@ -33,6 +34,12 @@ const MobileNav = () => {
       color: "text-red-600",
     },
     {
+      id: "/production",
+      smallLabel: "Production",
+      icon: Calendar,
+      color: "text-orange-600",
+    },
+    {
       id: "/financial",
       label: "Financial Management",
       smallLabel: "Finances",
@@ -43,7 +50,7 @@ const MobileNav = () => {
 
   return (
     <div className="fixed -bottom-0.5 inset-x-0 z-50 bg-green-100 shadow-2xl lg:hidden px-2 py-2 transition-colors duration-300">
-      <div className="grid grid-cols-4 md:gap-6 items-center">
+      <div className="grid grid-cols-5 md:gap-6 items-center">
         {menuItems.map((item) => {
           const Icon = item.icon;
           const isActive = pathname === item.id;

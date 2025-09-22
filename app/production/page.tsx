@@ -32,45 +32,95 @@ const ProductionTracking = () => {
   const [isRecordProductionModal, setRecordProductionModal] = useState(false);
   const [loading, setLoading] = useState(false);
   const [productionRecords, setProductionRecords] = useState<any[]>([]);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [pageSize] = useState(10);
 
-  useEffect(() => {
+  // useEffect(() => {
+  //   setLoading(true);
+  //   const token =
+  //     typeof window !== "undefined"
+  //       ? localStorage.getItem("access_token")
+  //       : null;
+  //   fetch(
+  //     `${process.env.NEXT_PUBLIC_API_BASE_URL}/lms/production-record-service/?start_record=1&page_size=10`,
+  //     {
+  //       headers: {
+  //         ...(token ? { Authorization: `Bearer ${token}` } : {}),
+  //       },
+  //     }
+  //   )
+  //     .then(async (res: Response) => {
+  //       if (!res.ok) {
+  //         const text = await res.text();
+  //         console.log(text);
+  //         throw new Error(text || `HTTP ${res.status}`);
+  //       }
+  //       return res.json();
+  //     })
+  //     .then((data: any) => {
+  //       setProductionRecords(data.data);
+  //       console.log("Fetched data:", data);
+  //     })
+  //     .catch((err: any) => {
+  //       console.error("Fetch error:", err);
+  //     })
+  //     .finally(() => setLoading(false));
+  // }, []);
+
+  // const refreshDataTable = () => {
+  //   setRecordProductionModal(false);
+  //   toast.success("Data added successfully");
+  // };
+
+  //   Temporary Fake data
+
+  const fetchData = async () => {
     setLoading(true);
     const token =
       typeof window !== "undefined"
         ? localStorage.getItem("access_token")
         : null;
-    fetch(
-      `${process.env.NEXT_PUBLIC_API_BASE_URL}/lms/production-record-service/?start_record=1&page_size=10`,
-      {
-        headers: {
-          ...(token ? { Authorization: `Bearer ${token}` } : {}),
-        },
-      }
-    )
-      .then(async (res: Response) => {
-        if (!res.ok) {
-          const text = await res.text();
-          console.log(text);
-          throw new Error(text || `HTTP ${res.status}`);
+
+    try {
+      const res = await fetch(
+        `${process.env.NEXT_PUBLIC_API_BASE_URL}/lms/production-record-service/?start_record=1&page_size=10`,
+        {
+          headers: {
+            ...(token ? { Authorization: `Bearer ${token}` } : {}),
+          },
         }
-        return res.json();
-      })
-      .then((data: any) => {
-        setProductionRecords(data.data);
-        console.log("Fetched data:", data);
-      })
-      .catch((err: any) => {
-        console.error("Fetch error:", err);
-      })
-      .finally(() => setLoading(false));
-  }, [isRecordProductionModal]);
+      );
+
+      if (!res.ok) {
+        const text = await res.text();
+        throw new Error(text || `HTTP ${res.status}`);
+      }
+
+      const data = await res.json();
+      setProductionRecords(data.data);
+      console.log("Fetched data:", data);
+    } catch (err) {
+      console.error("Fetch error:", err);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchData();
+  }, []);
 
   const refreshDataTable = () => {
     setRecordProductionModal(false);
     toast.success("Data added successfully");
+    fetchData();
   };
 
-  //   Temporary Fake data
+  const recordsToShow = productionRecords.slice(
+    (currentPage - 1) * pageSize,
+    currentPage * pageSize
+  );
+
   const fakeData = [
     {
       name: "Hay",
@@ -128,7 +178,7 @@ const ProductionTracking = () => {
           </div>
 
           {/* Summary Cards */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 lg:gap-6 mb-6 lg:mb-8">
+          <div className="grid xs:grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 lg:gap-6 mb-6 lg:mb-8">
             <Card
               className="animate__animated animate__fadeInRight"
               style={{ animationDelay: "0s" }}
@@ -222,7 +272,7 @@ const ProductionTracking = () => {
                         <Input
                           placeholder="Search animal..."
                           value={""}
-                            onChange={(e) => console.log(e)}
+                          onChange={(e) => console.log(e)}
                           className="pl-10 w-full sm:w-48"
                         />
                       </div>
@@ -314,7 +364,7 @@ const ProductionTracking = () => {
 
                   {/* Desktop Table View */}
                   <div
-                    className="hidden lg:block overflow-x-auto"
+                    className=" lg:block overflow-x-auto"
                     style={{ maxHeight: 375, overflowY: "auto" }}
                   >
                     {loading ? (
@@ -350,7 +400,7 @@ const ProductionTracking = () => {
                           </tr>
                         </thead>
                         <tbody>
-                          {productionRecords.map((record, idx) => (
+                          {recordsToShow.map((record, idx) => (
                             <tr
                               key={idx}
                               className="border-b border-gray-100 hover:bg-gray-50"
@@ -403,24 +453,30 @@ const ProductionTracking = () => {
                   </div>
 
                   {/* Pagination Controls */}
-                  {/* <div className="flex justify-end gap-2 mt-4">
+                  <div className="flex justify-end items-center gap-2 mt-4">
                     <Button
-                      onClick={() => setPage((p) => Math.max(1, p - 1))}
-                      disabled={page === 1 || loading}
+                      size="sm"
                       variant="outline"
+                      onClick={() => setCurrentPage((p) => Math.max(1, p - 1))}
+                      disabled={currentPage === 1}
                     >
-                      Previous
+                      Prev
                     </Button>
+                    <span>
+                      Page {currentPage} of{" "}
+                      {Math.ceil(productionRecords.length / pageSize)}
+                    </span>
                     <Button
-                      onClick={() => setPage((p) => p + 1)}
-                      disabled={
-                        loading || filteredTransactions.length < pageSize
-                      }
+                      size="sm"
                       variant="outline"
+                      onClick={() => setCurrentPage((p) => p + 1)}
+                      disabled={
+                        currentPage * pageSize >= productionRecords.length
+                      }
                     >
                       Next
                     </Button>
-                  </div> */}
+                  </div>
                 </CardContent>
               </Card>
             </div>

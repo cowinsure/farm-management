@@ -2,21 +2,10 @@
 
 import { useState, useEffect } from "react";
 import {
-  Bell,
-  Edit,
   Eye,
   Heart,
-  Home,
   Plus,
   Search,
-  Settings,
-  Trash2,
-  TrendingUp,
-  Users,
-  DollarSign,
-  Zap,
-  Menu,
-  LogOut,
   PawPrint,
   AlertTriangle,
 } from "lucide-react";

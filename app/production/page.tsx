@@ -27,9 +27,11 @@ import { IoDocuments } from "react-icons/io5";
 import { LuMilk } from "react-icons/lu";
 import { TbMeat } from "react-icons/tb";
 import { toast, Toaster } from "sonner";
+import { FeedLogDialog } from "@/components/Production/FeedLogDialog";
 
 const ProductionTracking = () => {
   const [isRecordProductionModal, setRecordProductionModal] = useState(false);
+  const [isFeedLogDialogOpen, setIsFeedLogDialogOpen] = useState(false);
   const [loading, setLoading] = useState(false);
   const [productionRecords, setProductionRecords] = useState<any[]>([]);
   const [currentPage, setCurrentPage] = useState(1);
@@ -121,29 +123,32 @@ const ProductionTracking = () => {
     currentPage * pageSize
   );
 
-  const fakeData = [
-    {
-      name: "Hay",
-      farm: "Green Valley Farm",
-      date: "2024-05-25",
-      quantity: "250 kg",
-      price: "125",
-    },
-    {
-      name: "Straw",
-      farm: "Sunny Acres Farm",
-      date: "2024-06-10",
-      quantity: "300 kg",
-      price: "150",
-    },
-    {
-      name: "Alfalfa",
-      farm: "Red Barn Farm",
-      date: "2024-07-15",
-      quantity: "150 kg",
-      price: "75",
-    },
-  ];
+  const [feedLogs, setFeedLogs] = useState<any[]>([]);
+
+  // Function to load feed logs from localStorage
+  const loadFeedLogs = () => {
+    const logs = localStorage.getItem('feedLogs');
+    if (logs) {
+      setFeedLogs(JSON.parse(logs));
+    }
+  };
+
+  // Load feed logs initially and set up storage event listener
+  useEffect(() => {
+    loadFeedLogs(); // Initial load
+
+    // Update when storage changes
+    window.addEventListener('storage', loadFeedLogs);
+    
+    // Custom event listener for immediate updates
+    const handleFeedLogUpdate = () => loadFeedLogs();
+    window.addEventListener('feedLogUpdated', handleFeedLogUpdate);
+
+    return () => {
+      window.removeEventListener('storage', loadFeedLogs);
+      window.removeEventListener('feedLogUpdated', handleFeedLogUpdate);
+    };
+  }, []);
 
   // console.log(productionRecords);
   return (
@@ -164,7 +169,7 @@ const ProductionTracking = () => {
               </Button>
               <Button
                 className="bg-green-600 hover:bg-green-700"
-                // onClick={() => setRecordDialogOpen(true)}
+                onClick={() => setIsFeedLogDialogOpen(true)}
               >
                 <Plus className="w-4 h-4 mr-2" />
                 Add Feed Log
@@ -503,24 +508,24 @@ const ProductionTracking = () => {
                 </CardHeader>
                 <CardContent>
                   <div className="space-y-4">
-                    {fakeData.map((data, index) => (
+                    {feedLogs.map((log, index) => (
                       <div key={index} className="space-y-2">
                         <div className="border rounded-md p-3 flex justify-between">
                           <div className="space-y-1">
-                            <h1 className="font-semibold">{data.name}</h1>
+                            <h1 className="font-semibold">{log.feedType}</h1>
                             <p className="text-sm font-medium text-gray-500">
-                              {data.farm}
+                              {log.supplier}
                             </p>
                             <p className="text-sm font-medium text-gray-500">
-                              {data.date}
+                              {new Date(log.date).toLocaleDateString()}
                             </p>
                           </div>
                           <div className="flex flex-col items-end space-y-1">
                             <span className="font-semibold">
-                              {data.quantity}
+                              {log.quantity} KG
                             </span>
                             <span className="text-sm font-medium text-green-500">
-                              {data.price}
+                              ${log.cost}
                             </span>
                           </div>
                         </div>
@@ -529,13 +534,9 @@ const ProductionTracking = () => {
                   </div>
                   <div className="mt-4 p-3 bg-gray-50 rounded-lg">
                     <div className="flex justify-between items-center">
-                      <span className="font-medium">Daily Cost:</span>
+                      <span className="font-medium">Total Feed Cost:</span>
                       <span className="text-lg font-bold text-red-600">
-                        {/* {expenseSummary &&
-                        expenseSummary.Total_Expenses !== undefined &&
-                        expenseSummary.Total_Expenses !== null
-                          ? formatCurrency(expenseSummary.Total_Expenses)
-                          : "-"} */}
+                        ${feedLogs.reduce((total, log) => total + (parseFloat(log.cost) || 0), 0).toFixed(2)}
                       </span>
                     </div>
                   </div>
@@ -544,6 +545,10 @@ const ProductionTracking = () => {
             </div>
           </div>
         </main>
+        <FeedLogDialog 
+          open={isFeedLogDialogOpen}
+          onClose={() => setIsFeedLogDialogOpen(false)}
+        />
         <Toaster richColors />
       </div>
     </AuthGuard>

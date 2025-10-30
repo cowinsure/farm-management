@@ -13,38 +13,36 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Calendar, Eye, Heart, Plus, Search, TrendingUp } from "lucide-react";
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { FaPercent } from "react-icons/fa6";
 import { IoDocuments } from "react-icons/io5";
 import { LuMilk } from "react-icons/lu";
 import { TbMeat, TbMoodKid } from "react-icons/tb";
 import { Toaster } from "sonner";
+import { BreedingTrackingModal } from "@/components/Breeding/BreedingTrackingModal";
+import { BreedingStatusUpdateDialog } from "@/components/Breeding/BreedingStatusUpdateDialog";
+import { PencilIcon } from "lucide-react";
 
 const BreedingReproduction = () => {
   const loading = false;
-  const fakeData = [
-    {
-      name: "Hay",
-      farm: "Green Valley Farm",
-      date: "2024-05-25",
-      quantity: "250 kg",
-      price: "125",
-    },
-    {
-      name: "Straw",
-      farm: "Sunny Acres Farm",
-      date: "2024-06-10",
-      quantity: "300 kg",
-      price: "150",
-    },
-    {
-      name: "Alfalfa",
-      farm: "Red Barn Farm",
-      date: "2024-07-15",
-      quantity: "150 kg",
-      price: "75",
-    },
-  ];
+  const [isBreedingModalOpen, setIsBreedingModalOpen] = useState(false);
+  const [breedingRecords, setBreedingRecords] = useState<any[]>([]);
+  const [selectedRecord, setSelectedRecord] = useState<any>(null);
+  const [isStatusDialogOpen, setIsStatusDialogOpen] = useState(false);
+
+  // Load breeding records from localStorage
+  useEffect(() => {
+    const loadBreedingRecords = () => {
+      const records = JSON.parse(localStorage.getItem("breedingLogs") || "[]");
+      setBreedingRecords(records);
+    };
+    loadBreedingRecords();
+    window.addEventListener("breedingLogUpdated", loadBreedingRecords);
+    return () => {
+      window.removeEventListener("breedingLogUpdated", loadBreedingRecords);
+    };
+  }, []);
+
   return (
     <AuthGuard requireAuth={true}>
       <div className="relative py-16 lg:py-0 ">
@@ -56,7 +54,7 @@ const BreedingReproduction = () => {
             <div className="flex flex-col sm:flex-row gap-2 sm:gap-3 w-full sm:w-auto">
               <Button
                 className="bg-purple-600 hover:bg-purple-700"
-                // onClick={() => setRecordProductionModal(true)}
+                onClick={() => setIsBreedingModalOpen(true)}
               >
                 <Heart className="w-4 h-4 mr-2" />
                 Record Breeding
@@ -167,18 +165,19 @@ const BreedingReproduction = () => {
                         <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
                         <Input
                           placeholder="Search animal..."
-                            onChange={(e) => console.log(e)}
+                          onChange={(e) => console.log(e)}
                           className="pl-10 w-full sm:w-48"
                         />
                       </div>
-                      <Select >
+                      <Select>
                         <SelectTrigger className="w-full sm:w-32">
-                          <SelectValue placeholder="All Types" />
+                          <SelectValue placeholder="Status" />
                         </SelectTrigger>
                         <SelectContent>
-                          <SelectItem value="all">All Types</SelectItem>
-                          <SelectItem value="income">Income</SelectItem>
-                          <SelectItem value="expense">Expense</SelectItem>
+                          <SelectItem value="all">All Status</SelectItem>
+                          <SelectItem value="pending">Pending</SelectItem>
+                          <SelectItem value="confirmed">Confirmed</SelectItem>
+                          <SelectItem value="failed">Failed</SelectItem>
                         </SelectContent>
                       </Select>
                     </div>
@@ -266,28 +265,28 @@ const BreedingReproduction = () => {
                       <div className="text-center py-8 text-gray-500">
                         Loading...
                       </div>
-                    ) : [1, 2, 3, 4, 5, 6].length === 0 ? (
+                    ) : breedingRecords.length === 0 ? (
                       <div className="text-center py-8 text-gray-500">
-                        No data found
+                        No breeding records found
                       </div>
                     ) : (
                       <table className="w-full animate__animated animate__fadeInUp">
                         <thead>
                           <tr className="border-b border-gray-200">
                             <th className="text-left py-3 px-2 font-medium text-gray-600 text-sm">
-                              Animal
+                              Animal ID
                             </th>
                             <th className="text-left py-3 px-2 font-medium text-gray-600 text-sm">
-                              Quantity
+                              Breeding Method
                             </th>
                             {/* <th className="text-left py-3 px-2 font-medium text-gray-600 text-sm">
-                              Evening
-                            </th>
-                            <th className="text-left py-3 px-2 font-medium text-gray-600 text-sm">
-                              Total
+                              Breeding Date
                             </th> */}
                             <th className="text-left py-3 px-2 font-medium text-gray-600 text-sm">
-                              Production
+                              Expected Date
+                            </th>
+                            <th className="text-left py-3 px-2 font-medium text-gray-600 text-sm">
+                              Status
                             </th>
                             <th className="text-left py-3 px-2 font-medium text-gray-600 text-sm">
                               Actions
@@ -295,44 +294,45 @@ const BreedingReproduction = () => {
                           </tr>
                         </thead>
                         <tbody>
-                          {fakeData.map((record, idx) => (
+                          {breedingRecords.map((record, idx) => (
                             <tr
                               key={idx}
                               className="border-b border-gray-100 hover:bg-gray-50"
                             >
-                              <td className="py-3 px-2 flex flex-col">
-                                <span className="font-semibold">
-                                  {record.name}
-                                </span>
+                              <td className="py-3 px-2 font-semibold">
+                                {record.cowId || record.asset_id}
                               </td>
                               <td className="py-3 px-2 text-sm">
-                                {record.quantity}
+                                {record.breedingMethod || record.production_type_id}
                               </td>
-                              {/* <td className="py-3 px-2 text-sm">11.2 L</td>
-                              <td className="py-3 px-2 text-sm font-semibold">
-                                23.7 L
+                              {/* <td className="py-3 px-2 text-sm">
+                                {record.breedingDate
+                                  ? new Date(record.breedingDate).toLocaleDateString()
+                                  : record.date
+                                  ? new Date(record.date).toLocaleDateString()
+                                  : "-"}
                               </td> */}
-                              <td>{record.farm}</td>
+                              <td className="py-3 px-2 text-sm">
+                                {record.expectedCalvingDate
+                                  ? new Date(record.expectedCalvingDate).toLocaleDateString()
+                                  : "-"}
+                              </td>
                               <td className="py-3 px-2">
-                                <div className="flex items-center space-x-1">
-                                  <Button
-                                    size="sm"
-                                    variant="ghost"
-                                    className="h-7 w-7 p-0 border hover:bg-green-400 hover:text-white hover:scale-105 hover:-translate-y-1 hover:drop-shadow-xl transition-all duration-300 ease-in-out active:scale-90"
-                                  >
-                                    <Eye className="h-3 w-3" />
-                                  </Button>
-                                  {/* <Button size="sm" variant="ghost" className="h-7 w-7 p-0">
-                                    <Edit className="h-3 w-3" />
-                                  </Button>
-                                  <Button
-                                    size="sm"
-                                    variant="ghost"
-                                    className="h-7 w-7 p-0 text-red-600 hover:text-red-700"
-                                  >
-                                    <Trash2 className="h-3 w-3" />
-                                  </Button> */}
-                                </div>
+                                <span className="inline-block px-2 py-1 rounded text-xs font-medium bg-gray-100">
+                                  {record.pregnancyStatus || "Pending"}
+                                </span>
+                              </td>
+                              <td className="py-3 px-2">
+                                <button
+                                  className="inline-flex items-center px-2 py-1 border rounded text-xs bg-blue-50 hover:bg-blue-100 text-blue-700"
+                                  onClick={() => {
+                                    setSelectedRecord(record);
+                                    setIsStatusDialogOpen(true);
+                                  }}
+                                >
+                                  <PencilIcon className="w-4 h-4 mr-1" />
+                                 
+                                </button>
                               </td>
                             </tr>
                           ))}
@@ -507,7 +507,7 @@ const BreedingReproduction = () => {
                           </tr>
                         </thead>
                         <tbody>
-                          {fakeData.map((record, idx) => (
+                          {breedingRecords.map((record, idx) => (
                             <tr
                               key={idx}
                               className="border-b border-gray-100 hover:bg-gray-50"
@@ -575,8 +575,23 @@ const BreedingReproduction = () => {
                 </CardContent>
               </Card>
             </div>
+
           </div>
         </main>
+        <BreedingTrackingModal
+          open={isBreedingModalOpen}
+          onOpenChange={setIsBreedingModalOpen}
+          onSuccess={() => {
+            setIsBreedingModalOpen(false);
+          }}
+        />
+        {selectedRecord && (
+          <BreedingStatusUpdateDialog
+            open={isStatusDialogOpen}
+            onOpenChange={setIsStatusDialogOpen}
+            record={selectedRecord}
+          />
+        )}
         <Toaster richColors />
       </div>
     </AuthGuard>

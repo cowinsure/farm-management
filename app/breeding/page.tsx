@@ -22,9 +22,11 @@ import { Toaster } from "sonner";
 import { BreedingTrackingModal } from "@/components/Breeding/BreedingTrackingModal";
 import { BreedingStatusUpdateDialog } from "@/components/Breeding/BreedingStatusUpdateDialog";
 import { PencilIcon } from "lucide-react";
+import { BirthTrackingModal } from "@/components/Breeding/BirthTrackingModal";
 
 const BreedingReproduction = () => {
   const loading = false;
+  const [isBirthModalOpen, setBirthModalOpen] = useState(false);
   const [isBreedingModalOpen, setIsBreedingModalOpen] = useState(false);
   const [breedingRecords, setBreedingRecords] = useState<any[]>([]);
   const [selectedRecord, setSelectedRecord] = useState<any>(null);
@@ -61,7 +63,7 @@ const BreedingReproduction = () => {
               </Button>
               <Button
                 className="bg-pink-600 hover:bg-pink-700"
-                // onClick={() => setRecordDialogOpen(true)}
+                onClick={() => setBirthModalOpen(true)}
               >
                 <TbMoodKid className="w-4 h-4 mr-2" />
                 Record Birth
@@ -578,6 +580,15 @@ const BreedingReproduction = () => {
 
           </div>
         </main>
+
+        <BirthTrackingModal
+          open={isBirthModalOpen}
+          onOpenChange={setBirthModalOpen}
+          onSuccess={() => {
+            setBirthModalOpen(false);
+          }}          
+        />
+
         <BreedingTrackingModal
           open={isBreedingModalOpen}
           onOpenChange={setIsBreedingModalOpen}

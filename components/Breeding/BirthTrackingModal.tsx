@@ -107,6 +107,17 @@ export function BirthTrackingModal({
   // Handle form submit
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+
+    // Basic validation
+    if (!formData.asset_id) {
+      toast({ title: "Validation", description: "Please select an animal" });
+      return;
+    }
+    if (!formData.birthdate) {
+      toast({ title: "Validation", description: "Please provide birth date" });
+      return;
+    }
+
     setSubmitting(true);
 
     const payload = {
@@ -119,13 +130,31 @@ export function BirthTrackingModal({
 
     // Save to localStorage immediately for development/offline purposes
     try {
-      const existing = JSON.parse(localStorage.getItem("breedingLogs") || "[]");
-      const newLog = { ...payload, created_at: new Date().toISOString() };
-      const newLogs = [...existing, newLog];
-      localStorage.setItem("breedingLogs", JSON.stringify(newLogs));
+      if (typeof window === "undefined") throw new Error("No window");
 
-      // Dispatch a custom event so other parts of the app can pick up the change
-      window.dispatchEvent(new Event("breedingLogUpdated"));
+      let existing: any[] = [];
+      try {
+        const raw = localStorage.getItem("birthlogs");
+        existing = raw ? JSON.parse(raw) : [];
+        if (!Array.isArray(existing)) existing = [];
+      } catch (parseErr) {
+        // If parsing fails, reset to empty array to avoid blocking saves
+        console.warn("Failed to parse birthlogs, resetting to empty array", parseErr);
+        existing = [];
+      }
+
+      const newLog = {
+        id: Date.now().toString(),
+        ...payload,
+        reference_id: selectedCattle?.reference_id || null,
+        created_at: new Date().toISOString(),
+      };
+
+      const newLogs = [...existing, newLog];
+      localStorage.setItem("birthlogs", JSON.stringify(newLogs));
+
+      // Dispatch a custom event with detail so other parts can react and receive the new entry
+      window.dispatchEvent(new CustomEvent("birthLogUpdated", { detail: newLog }));
 
       // Clear form state after successful save
       setFormData({
@@ -137,25 +166,17 @@ export function BirthTrackingModal({
       });
 
       // Show success toast for every submission
-      toast({
-        title: "Success",
-        description: "Birth record saved",
-      });
+      toast({ title: "Success", description: "Birth record saved locally" });
 
       // Close dialog and notify parent
       onOpenChange(false);
       if (onSuccess) onSuccess();
     } catch (storageErr: any) {
-      // If saving to localStorage fails, show an error but still attempt to POST
-      toast({
-        title: "Warning",
-        description: "Could not save locally. Trying to submit to server...",
-      });
+      console.error("Could not save to localStorage:", storageErr);
+      toast({ title: "Warning", description: "Could not save locally." });
     } finally {
       setSubmitting(false);
     }
-
-    // Continue to submit to server in background; report API errors if they occur
   };
 
   const selectedCattle = isAnimals.find(

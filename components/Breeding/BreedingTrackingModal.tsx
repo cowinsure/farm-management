@@ -196,7 +196,7 @@ export function BreedingTrackingModal({
                   </SelectTrigger>
                   <SelectContent>
                     {isAnimals.map((animal) => (
-                      <SelectItem value={animal.id.toString()} key={animal.id}>
+                      <SelectItem value={animal.reference_id.toString()} key={animal.id}>
                         <div className="flex items-center gap-2 cursor-pointer">
                           <img
                             src={"/placeholder.png"}

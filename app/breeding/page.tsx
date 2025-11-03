@@ -31,6 +31,7 @@ const BreedingReproduction = () => {
   const [breedingRecords, setBreedingRecords] = useState<any[]>([]);
   const [selectedRecord, setSelectedRecord] = useState<any>(null);
   const [isStatusDialogOpen, setIsStatusDialogOpen] = useState(false);
+  const [birthLogs, setBirthLogs] = useState<any[]>([]);
 
   // Load breeding records from localStorage
   useEffect(() => {
@@ -43,6 +44,38 @@ const BreedingReproduction = () => {
     return () => {
       window.removeEventListener("breedingLogUpdated", loadBreedingRecords);
     };
+  }, []);
+
+  // Load birth logs from localStorage and listen for birthLogUpdated events
+  useEffect(() => {
+    const loadBirthLogs = () => {
+      try {
+        const raw = localStorage.getItem("birthlogs");
+        const parsed = raw ? JSON.parse(raw) : [];
+        // show newest first
+        setBirthLogs(Array.isArray(parsed) ? parsed.slice().reverse() : []);
+      } catch (err) {
+        console.warn("Failed to parse birthlogs from localStorage", err);
+        setBirthLogs([]);
+      }
+    };
+
+    // handler for CustomEvent('birthLogUpdated') dispatched by the modal
+    const handler = (e: Event) => {
+      const ce = e as CustomEvent;
+      if (ce?.detail) {
+        // prepend the new record so newest appear first
+        setBirthLogs((prev) => [ce.detail, ...prev]);
+      } else {
+        // fallback: reload from storage
+        loadBirthLogs();
+      }
+    };
+
+    // initial load
+    loadBirthLogs();
+    window.addEventListener("birthLogUpdated", handler as EventListener);
+    return () => window.removeEventListener("birthLogUpdated", handler as EventListener);
   }, []);
 
   return (
@@ -477,75 +510,37 @@ const BreedingReproduction = () => {
                     style={{ maxHeight: 375, overflowY: "auto" }}
                   >
                     {loading ? (
-                      <div className="text-center py-8 text-gray-500">
-                        Loading...
-                      </div>
-                    ) : [1, 2, 3, 4, 5, 6].length === 0 ? (
-                      <div className="text-center py-8 text-gray-500">
-                        No data found
-                      </div>
+                      <div className="text-center py-8 text-gray-500">Loading...</div>
+                    ) : birthLogs.length === 0 ? (
+                      <div className="text-center py-8 text-gray-500">No births found</div>
                     ) : (
                       <table className="w-full animate__animated animate__fadeInUp">
                         <thead>
                           <tr className="border-b border-gray-200">
-                            <th className="text-left py-3 px-2 font-medium text-gray-600 text-sm">
-                              Animal
-                            </th>
-                            <th className="text-left py-3 px-2 font-medium text-gray-600 text-sm">
-                              Quantity
-                            </th>
-                            {/* <th className="text-left py-3 px-2 font-medium text-gray-600 text-sm">
-                              Evening
-                            </th>
-                            <th className="text-left py-3 px-2 font-medium text-gray-600 text-sm">
-                              Total
-                            </th> */}
-                            <th className="text-left py-3 px-2 font-medium text-gray-600 text-sm">
-                              Production
-                            </th>
-                            <th className="text-left py-3 px-2 font-medium text-gray-600 text-sm">
-                              Actions
-                            </th>
+                            <th className="text-left py-3 px-2 font-medium text-gray-600 text-sm">Animal</th>
+                            <th className="text-left py-3 px-2 font-medium text-gray-600 text-sm">Birth Date</th>
+                            <th className="text-left py-3 px-2 font-medium text-gray-600 text-sm">Gender</th>
+                            <th className="text-left py-3 px-2 font-medium text-gray-600 text-sm">Weight</th>
+                            <th className="text-left py-3 px-2 font-medium text-gray-600 text-sm">Recorded At</th>
+                            <th className="text-left py-3 px-2 font-medium text-gray-600 text-sm">Actions</th>
                           </tr>
                         </thead>
                         <tbody>
-                          {breedingRecords.map((record, idx) => (
-                            <tr
-                              key={idx}
-                              className="border-b border-gray-100 hover:bg-gray-50"
-                            >
+                          {birthLogs.map((record, idx) => (
+                            <tr key={record.id || idx} className="border-b border-gray-100 hover:bg-gray-50">
                               <td className="py-3 px-2 flex flex-col">
-                                <span className="font-semibold">
-                                  {record.name}
-                                </span>
+                                <span className="font-semibold">{record.reference_id || record.asset_id || '-'}</span>
+                                {record.asset_id && !record.reference_id ? <small className="text-xs text-gray-500">{record.asset_id}</small> : null}
                               </td>
-                              <td className="py-3 px-2 text-sm">
-                                {record.quantity}
-                              </td>
-                              {/* <td className="py-3 px-2 text-sm">11.2 L</td>
-                              <td className="py-3 px-2 text-sm font-semibold">
-                                23.7 L
-                              </td> */}
-                              <td>{record.farm}</td>
+                              <td className="py-3 px-2 text-sm">{record.birthdate ? new Date(record.birthdate).toLocaleDateString() : '-'}</td>
+                              <td className="py-3 px-2 text-sm">{record.gender || '-'}</td>
+                              <td className="py-3 px-2 text-sm">{record.birth_weight || '-'}</td>
+                              <td className="py-3 px-2 text-sm">{record.created_at ? new Date(record.created_at).toLocaleString() : '-'}</td>
                               <td className="py-3 px-2">
                                 <div className="flex items-center space-x-1">
-                                  <Button
-                                    size="sm"
-                                    variant="ghost"
-                                    className="h-7 w-7 p-0 border hover:bg-green-400 hover:text-white hover:scale-105 hover:-translate-y-1 hover:drop-shadow-xl transition-all duration-300 ease-in-out active:scale-90"
-                                  >
+                                  <Button size="sm" variant="ghost" className="h-7 w-7 p-0 border">
                                     <Eye className="h-3 w-3" />
                                   </Button>
-                                  {/* <Button size="sm" variant="ghost" className="h-7 w-7 p-0">
-                                    <Edit className="h-3 w-3" />
-                                  </Button>
-                                  <Button
-                                    size="sm"
-                                    variant="ghost"
-                                    className="h-7 w-7 p-0 text-red-600 hover:text-red-700"
-                                  >
-                                    <Trash2 className="h-3 w-3" />
-                                  </Button> */}
                                 </div>
                               </td>
                             </tr>

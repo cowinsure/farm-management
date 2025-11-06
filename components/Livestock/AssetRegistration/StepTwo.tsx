@@ -1,16 +1,21 @@
-'use client'
+"use client";
 
+
+import InputField from "@/components/ui/InputField";
 import { useCowRegistration } from "@/context/CowRegistrationContext";
-import React, { useEffect, useState } from "react";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Separator } from "@/components/ui/separator";
+import SectionHeading from "@/helper/SectionHeading";
 
+import React, {
+  useEffect,
+  useState,
+  forwardRef,
+  useImperativeHandle,
+} from "react";
+import { IoMdArrowDropdown } from "react-icons/io";
+import { MdOutlineCalendarToday } from "react-icons/md";
 
 interface FormData {
-  hasDisease: boolean;
+  hasDisease: string | boolean;
   isPregnant: boolean;
   asset_type: string;
   gender: string;
@@ -50,7 +55,6 @@ interface VaccinationStatus {
   description: string | null;
 }
 
-
 interface DewormingStatus {
   id: number;
   name: string;
@@ -62,13 +66,21 @@ interface AssetType {
   name: string;
 }
 
-export default function StepTwo() {
-  const { data, updateStep, validateStep, reset } = useCowRegistration();
+export type StepTwoRef = {
+  validateFields: () => boolean;
+};
+
+const StepTwo = forwardRef<StepTwoRef>((props, ref) => {
+  const { data, updateStep } = useCowRegistration();
 
   const [breeds, setBreeds] = useState<Breed[]>([]);
   const [colors, setColors] = useState<Color[]>([]);
-  const [vaccinationStatuses, setVaccinationStatuses] = useState<VaccinationStatus[]>([]);
-  const [dewormingStatuses, setDewormingStatuses] = useState<DewormingStatus[]>([]);
+  const [vaccinationStatuses, setVaccinationStatuses] = useState<
+    VaccinationStatus[]
+  >([]); // State for vaccination statuses
+  const [dewormingStatuses, setDewormingStatuses] = useState<DewormingStatus[]>(
+    []
+  );
   const [assetTypes, setAssetTypes] = useState<AssetType[]>([]);
 
   const [formData, setFormData] = useState<FormData>({
@@ -93,6 +105,7 @@ export default function StepTwo() {
     purchase_from: "",
     purchase_amount: "",
   });
+  const [errors, setErrors] = useState<{ [key: string]: string }>({});
 
   // Fetch asset types from the API
   useEffect(() => {
@@ -104,13 +117,16 @@ export default function StepTwo() {
       }
 
       try {
-        const response = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/assets-type/`, {
-          method: "GET",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${accessToken}`,
-          },
-        });
+        const response = await fetch(
+          `${process.env.NEXT_PUBLIC_API_BASE_URL}/assets-type/`,
+          {
+            method: "GET",
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${accessToken}`,
+            },
+          }
+        );
 
         const result = await response.json();
 
@@ -138,13 +154,16 @@ export default function StepTwo() {
       }
 
       try {
-        const response = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/breeds/`, {
-          method: "GET",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${accessToken}`, // Include the token in the Authorization header
-          },
-        });
+        const response = await fetch(
+          `${process.env.NEXT_PUBLIC_API_BASE_URL}/breeds/`,
+          {
+            method: "GET",
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${accessToken}`, // Include the token in the Authorization header
+            },
+          }
+        );
 
         const result = await response.json();
 
@@ -159,8 +178,6 @@ export default function StepTwo() {
       }
     };
 
-
-
     fetchBreeds();
   }, []);
 
@@ -174,13 +191,16 @@ export default function StepTwo() {
       }
 
       try {
-        const response = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/colors/`, {
-          method: "GET",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${accessToken}`,
-          },
-        });
+        const response = await fetch(
+          `${process.env.NEXT_PUBLIC_API_BASE_URL}/colors/`,
+          {
+            method: "GET",
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${accessToken}`,
+            },
+          }
+        );
 
         const result = await response.json();
 
@@ -198,7 +218,6 @@ export default function StepTwo() {
     fetchColors();
   }, []);
 
-
   // Fetch vaccination statuses from the API
   useEffect(() => {
     const fetchVaccinationStatuses = async () => {
@@ -209,18 +228,24 @@ export default function StepTwo() {
       }
 
       try {
-        const response = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/vaccination-status/`, {
-          method: "GET",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${accessToken}`,
-          },
-        });
+        const response = await fetch(
+          `${process.env.NEXT_PUBLIC_API_BASE_URL}/vaccination-status/`,
+          {
+            method: "GET",
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${accessToken}`,
+            },
+          }
+        );
 
         const result = await response.json();
 
         if (response.ok) {
-          console.log("Vaccination statuses fetched successfully:", result.data.results);
+          console.log(
+            "Vaccination statuses fetched successfully:",
+            result.data.results
+          );
           setVaccinationStatuses(result.data.results); // Update the vaccinationStatuses state with API data
         } else {
           console.error("Failed to fetch vaccination statuses:", result);
@@ -243,18 +268,24 @@ export default function StepTwo() {
       }
 
       try {
-        const response = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/deworming-status/`, {
-          method: "GET",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${accessToken}`,
-          },
-        });
+        const response = await fetch(
+          `${process.env.NEXT_PUBLIC_API_BASE_URL}/deworming-status/`,
+          {
+            method: "GET",
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${accessToken}`,
+            },
+          }
+        );
 
         const result = await response.json();
 
         if (response.ok) {
-          console.log("Deworming statuses fetched successfully:", result.data.results);
+          console.log(
+            "Deworming statuses fetched successfully:",
+            result.data.results
+          );
           setDewormingStatuses(result.data.results); // Update the dewormingStatuses state with API data
         } else {
           console.error("Failed to fetch deworming statuses:", result);
@@ -267,28 +298,29 @@ export default function StepTwo() {
     fetchDewormingStatuses();
   }, []);
 
-  console.log(formData, "form data from step two");
-
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
+  const handleInputChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
+  ) => {
     const { name, value } = e.target;
+
+    // Update form data
     setFormData((prev) => ({
       ...prev,
       [name]: value,
     }));
 
+    // Update context
     updateStep({
       [name]: value,
     });
-  };
 
-  const handleSelectChange = (name: string, value: string) => {
-    setFormData((prev) => ({
-      ...prev,
-      [name]: value,
-    }));
-
-    updateStep({
-      [name]: value,
+    // Clear the error for this field
+    setErrors((prevErrors) => {
+      const newErrors = { ...prevErrors };
+      if (newErrors[name]) {
+        delete newErrors[name];
+      }
+      return newErrors;
     });
   };
 
@@ -297,312 +329,545 @@ export default function StepTwo() {
     if (data) {
       setFormData((prevData) => ({
         ...prevData,
-        ...data,
+        ...data, // Merge context data into local state
       }));
     }
   }, [data]);
 
+  const validateFields = () => {
+    const newErrors: { [key: string]: string } = {};
+
+    if (!formData.asset_type) newErrors.asset_type = "Asset Type is required";
+    if (!formData.gender) newErrors.gender = "Gender is required";
+    if (!formData.breed) newErrors.breed = "Breed is required";
+    if (!formData.color) newErrors.color = "Color is required";
+    if (!formData.age_in_months) newErrors.age_in_months = "Age is required";
+    if (!formData.weight_kg) newErrors.weight_kg = "Weight is required";
+    if (!formData.height) newErrors.height = "Height is required";
+    if (!formData.purchase_amount)
+      newErrors.purchase_amount = "Purchase amount is required";
+    if (!formData.purchase_from)
+      newErrors.purchase_from = "Purchase from is required";
+    if (!formData.purchase_date)
+      newErrors.purchase_date = "Purchase date is required";
+
+    // Conditional fields
+    if (formData.hasDisease === "true" && !formData.health_issues) {
+      newErrors.health_issues = "Please specify the disease name";
+    }
+
+    if (formData.gender === "female" && formData.isPregnant === true) {
+      if (!formData.pregnancy_status) {
+        newErrors.pregnancy_status = "Pregnancy status is required";
+      }
+      if (!formData.last_date_of_calving) {
+        newErrors.last_date_of_calving = "Last calving date is required";
+      }
+    }
+
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
+  };
+
+  useImperativeHandle(ref, () => ({
+    validateFields,
+  }));
+
   return (
-    <div className="space-y-6">
-      <div>
-        <h2 className="text-2xl font-bold text-gray-900 mb-2">Animal Details</h2>
-        <p className="text-gray-600">Provide detailed information about the animal</p>
-      </div>
-
-      {/* Basic Information */}
-      <Card>
-        <CardHeader>
-          <CardTitle className="text-lg">Basic Information</CardTitle>
-        </CardHeader>
-        <CardContent className="space-y-4">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div className="space-y-2">
-              <Label htmlFor="asset_type">Asset Type</Label>
-              <Select value={formData.asset_type} onValueChange={(value) => handleSelectChange("asset_type", value)}>
-                <SelectTrigger>
-                  <SelectValue placeholder="Select Asset Type" />
-                </SelectTrigger>
-                <SelectContent>
-                  {assetTypes.map((type) => (
-                    <SelectItem key={type.id} value={String(type.id)}>
-                      {type.name}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-            </div>
-
-            <div className="space-y-2">
-              <Label htmlFor="age_in_months">Age (Months)</Label>
-              <Input
-                type="number"
-                id="age_in_months"
-                name="age_in_months"
-                value={formData.age_in_months}
+    <div className="w-full lg:w-[80%] mx-auto mt-8 ">
+      <SectionHeading
+        marginBottom="8"
+        sectionTitle="Cattle Details"
+        description="Add detailed information about the animal"
+      />
+      {/* <div className="grid grid-cols-1 lg:grid-cols-2 gap-x-24 gap-y-8">
+        <div className="">
+              <label className="block mb-2" htmlFor="dateOfBirth">Date of Birth</label>
+              <input
+                type="date"
+                id="dateOfBirth"
+                name="dateOfBirth"
+                value={formData.dateOfBirth}
                 onChange={handleInputChange}
-                placeholder="Enter age in months"
+                placeholder="Date of Birth"
+                className="w-full p-2 border rounded"
               />
             </div>
+      </div> */}
 
-            <div className="space-y-2">
-              <Label htmlFor="gender">Gender</Label>
-              <Select value={formData.gender} onValueChange={(value) => handleSelectChange("gender", value)}>
-                <SelectTrigger>
-                  <SelectValue placeholder="Select Gender" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="male">Male</SelectItem>
-                  <SelectItem value="female">Female</SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
+      {/* Input Fields */}
+      <div className="flex flex-col gap-5 *:p-4" data-aos="zoom-in">
+        {/* Basic */}
+        <div className="border border-[#19A14B] rounded-lg bg-green-50">
+          <h1 className="font-bold text-xl text-green-600 mb-8 md:mb-0">
+            Basic Information
+          </h1>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-x-24 gap-y-8 md:p-6">
+            {/* Asset Type */}
+            <div className="relative w-full flex flex-col">
+              <label
+                htmlFor="gender"
+                className="mb-1 text-sm font-bold text-gray-600"
+              >
+                Asset Type
+              </label>
 
-            <div className="space-y-2">
-              <Label htmlFor="breed">Breed</Label>
-              <Select value={formData.breed} onValueChange={(value) => handleSelectChange("breed", value)}>
-                <SelectTrigger>
-                  <SelectValue placeholder="Select Breed" />
-                </SelectTrigger>
-                <SelectContent>
-                  {breeds.map((breed) => (
-                    <SelectItem key={breed.id} value={String(breed.id)}>
-                      {breed.name}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-            </div>
-
-            <div className="space-y-2">
-              <Label htmlFor="color">Color</Label>
-              <Select value={formData.color} onValueChange={(value) => handleSelectChange("color", value)}>
-                <SelectTrigger>
-                  <SelectValue placeholder="Select Color" />
-                </SelectTrigger>
-                <SelectContent>
-                  {colors.map((color) => (
-                    <SelectItem key={color.id} value={String(color.id)}>
-                      {color.name}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-            </div>
-
-            <div className="space-y-2">
-              <Label htmlFor="weight_kg">Weight (kg)</Label>
-              <Input
-                type="number"
-                id="weight_kg"
-                name="weight_kg"
-                value={formData.weight_kg}
+              <select
+                id="gender"
+                name="asset_type"
+                value={formData.asset_type}
                 onChange={handleInputChange}
-                placeholder="Enter weight in kg"
-              />
+                required
+                className={`appearance-none w-full border ${
+                  errors.asset_type ? "border-red-600" : "border-gray-300"
+                } bg-gray-50 rounded-md p-2 pr-10 font-semibold text-gray-500 cursor-pointer focus:outline-none focus:ring-1 focus:ring-green-500 focus:bg-green-50 hover:bg-green-50 hover:border-green-300 `}
+              >
+                <option value="">Select Asset Type</option>
+                {assetTypes.map((type) => (
+                  <option key={type.id} value={type.id}>
+                    {type.name}
+                  </option>
+                ))}
+              </select>
+              {errors.asset_type && (
+                <p className="text-red-400 text-sm mt-1text-red-600 mt-1 font-medium">
+                  {errors.asset_type}
+                </p>
+              )}
+
+              {/* Custom dropdown icon */}
+              <div className="pointer-events-none absolute right-3 top-8.5 text-gray-400">
+                <IoMdArrowDropdown className="text-xl" />
+              </div>
             </div>
 
-            <div className="space-y-2">
-              <Label htmlFor="height">Height (feet)</Label>
-              <Input
-                type="number"
-                id="height"
-                name="height"
-                value={formData.height}
+            <InputField
+              id="age"
+              label="Age in Month"
+              name="age_in_months"
+              onChange={handleInputChange}
+              value={formData.age_in_months}
+              placeholder="Enter age"
+              type="number"
+              error={errors.age_in_months}
+            />
+
+            {/* Gender */}
+            <div className="relative w-full flex flex-col">
+              <label
+                htmlFor="gender"
+                className="mb-1 text-sm font-bold text-gray-600"
+              >
+                Gender
+              </label>
+
+              <select
+                id="gender"
+                name="gender"
+                value={formData.gender}
                 onChange={handleInputChange}
-                placeholder="Enter height in feet"
-              />
+                required
+                className={`appearance-none w-full border ${
+                  errors.gender ? "border-red-600" : "border-gray-300"
+                } bg-gray-50 rounded-md p-2 pr-10 font-semibold text-gray-500 cursor-pointer focus:outline-none focus:ring-1 focus:ring-green-500 focus:bg-green-50 hover:bg-green-50 hover:border-green-300 `}
+              >
+                <option value="" disabled className="text-sm text-gray-400">
+                  Select gender
+                </option>
+                <option value="male" className="text-sm text-gray-700">
+                  Male
+                </option>
+                <option value="female" className="text-sm text-gray-700">
+                  Female
+                </option>
+              </select>
+
+              {errors.gender && (
+                <p className="text-red-400 text-sm mt-1text-red-600 mt-1 font-medium">
+                  {errors.gender}
+                </p>
+              )}
+
+              {/* Custom dropdown icon */}
+              <div className="pointer-events-none absolute right-3 top-8.5 text-gray-400">
+                <IoMdArrowDropdown className="text-xl" />
+              </div>
             </div>
+
+            {/* Breed */}
+            <div className="relative w-full flex flex-col">
+              <label
+                htmlFor="gender"
+                className="mb-1 text-sm font-bold text-gray-600"
+              >
+                Cattle Breed
+              </label>
+
+              <select
+                id="breed"
+                name="breed"
+                value={formData.breed}
+                onChange={handleInputChange}
+                required
+                className={`appearance-none w-full border ${
+                  errors.breed ? "border-red-600" : "border-gray-300"
+                } bg-gray-50 rounded-md p-2 pr-10 font-semibold text-gray-500 cursor-pointer focus:outline-none focus:ring-1 focus:ring-green-500 focus:bg-green-50 hover:bg-green-50 hover:border-green-300 `}
+              >
+                <option value="" disabled>
+                  Select Cattle Type
+                </option>
+                {breeds.map((breed) => (
+                  <option key={breed.id} value={breed.id}>
+                    {breed.name}
+                  </option>
+                ))}
+              </select>
+              {errors.breed && (
+                <p className="text-red-400 text-sm mt-1text-red-600 mt-1 font-medium">
+                  {errors.breed}
+                </p>
+              )}
+
+              {/* Custom dropdown icon */}
+              <div className="pointer-events-none absolute right-3 top-8.5 text-gray-400">
+                <IoMdArrowDropdown className="text-xl" />
+              </div>
+            </div>
+
+            {/* Color */}
+            <div className="relative w-full flex flex-col">
+              <label
+                htmlFor="gender"
+                className="mb-1 text-sm font-bold text-gray-600"
+              >
+                Cattle Color
+              </label>
+
+              <select
+                id="color"
+                name="color"
+                value={formData.color}
+                onChange={handleInputChange}
+                required
+                className={`appearance-none w-full border ${
+                  errors.color ? "border-red-600" : "border-gray-300"
+                } bg-gray-50 rounded-md p-2 pr-10 font-semibold text-gray-500 cursor-pointer focus:outline-none focus:ring-1 focus:ring-green-500 focus:bg-green-50 hover:bg-green-50 hover:border-green-300 `}
+              >
+                <option value="" disabled>
+                  Select Cattle Color
+                </option>
+                {colors.map((color) => (
+                  <option key={color.id} value={color.id}>
+                    {color.name}
+                  </option>
+                ))}
+              </select>
+              {errors.color && (
+                <p className="text-red-400 text-sm mt-1text-red-600 mt-1 font-medium">
+                  {errors.color}
+                </p>
+              )}
+
+              {/* Custom dropdown icon */}
+              <div className="pointer-events-none absolute right-3 top-8.5 text-gray-400">
+                <IoMdArrowDropdown className="text-xl" />
+              </div>
+            </div>
+
+            <InputField
+              id="weight"
+              label="Weight in Kg"
+              name="weight_kg"
+              onChange={handleInputChange}
+              value={formData.weight_kg}
+              placeholder="Enter weight"
+              type="text"
+              error={errors.weight_kg}
+            />
+
+            <InputField
+              id="height"
+              label="Height in feet"
+              name="height"
+              onChange={handleInputChange}
+              value={formData.height}
+              placeholder="Enter Height"
+              type="text"
+              error={errors.height}
+            />
           </div>
-        </CardContent>
-      </Card>
+        </div>
 
-      {/* Purchase Information */}
-      <Card>
-        <CardHeader>
-          <CardTitle className="text-lg">Purchase Information</CardTitle>
-        </CardHeader>
-        <CardContent className="space-y-4">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div className="space-y-2">
-              <Label htmlFor="purchase_amount">Purchase Amount</Label>
-              <Input
-                type="number"
-                id="purchase_amount"
-                name="purchase_amount"
-                value={formData.purchase_amount}
-                onChange={handleInputChange}
-                placeholder="Enter purchase amount"
-              />
-            </div>
-
-            <div className="space-y-2">
-              <Label htmlFor="purchase_from">Purchase From</Label>
-              <Input
-                type="text"
-                id="purchase_from"
-                name="purchase_from"
-                value={formData.purchase_from}
-                onChange={handleInputChange}
-                placeholder="Enter seller name"
-              />
-            </div>
-
-            <div className="space-y-2">
-              <Label htmlFor="purchase_date">Purchase Date</Label>
-              <Input
+        {/* Purchase */}
+        <div className="border border-[#19A14B] rounded-lg bg-green-50">
+          <h1 className="font-bold text-xl text-green-600 mb-8 md:mb-0">
+            Purchase Information
+          </h1>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-x-24 gap-y-8 md:p-6">
+            <InputField
+              id="purchase_amount"
+              label="Purchase Amount"
+              type="text"
+              name="purchase_amount"
+              value={formData.purchase_amount}
+              onChange={handleInputChange}
+              placeholder="Purchase Amount"
+              error={errors.purchase_amount}
+            />
+            <InputField
+              label="Purchase From"
+              type="text"
+              id="purchase_from"
+              name="purchase_from"
+              value={formData.purchase_from}
+              onChange={handleInputChange}
+              placeholder="Purchase From"
+              error={errors.purchase_from}
+            />
+            <div className="relative w-full">
+              <InputField
+                label="Purchase Date"
                 type="date"
                 id="purchase_date"
                 name="purchase_date"
                 value={formData.purchase_date}
                 onChange={handleInputChange}
+                placeholder="Purchase Date"
+                error={errors.purchase_date}
               />
+              <div className="pointer-events-none absolute right-3 bottom-2.5 text-gray-400">
+                <MdOutlineCalendarToday className="text-lg" />
+              </div>
             </div>
           </div>
-        </CardContent>
-      </Card>
+        </div>
 
-      {/* Health Information */}
-      <Card>
-        <CardHeader>
-          <CardTitle className="text-lg">Health Information</CardTitle>
-        </CardHeader>
-        <CardContent className="space-y-4">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div className="space-y-2">
-              <Label htmlFor="vaccination_status">Vaccination Status</Label>
-              <Select value={formData.vaccination_status} onValueChange={(value) => handleSelectChange("vaccination_status", value)}>
-                <SelectTrigger>
-                  <SelectValue placeholder="Select Vaccination Status" />
-                </SelectTrigger>
-                <SelectContent>
-                  {vaccinationStatuses.map((status) => (
-                    <SelectItem key={status.id} value={String(status.id)}>
-                      {status.name}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
+        {/* Vaccination */}
+        <div className="border border-[#19A14B] rounded-lg bg-green-50">
+          <h1 className="font-bold text-xl text-green-600 mb-8 md:mb-0">
+            Vaccination Information
+          </h1>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-x-24 gap-y-8 md:p-6">
+            {/*   Vaccination Status */}
+            <div className="relative w-full flex flex-col">
+              <label
+                htmlFor="gender"
+                className="mb-1 text-sm font-bold text-gray-600"
+              >
+                Vaccination Status
+              </label>
+
+              <select
+                name="vaccination_status"
+                value={formData.vaccination_status}
+                onChange={handleInputChange}
+                className={`appearance-none w-full border ${
+                  errors.vaccination_status
+                    ? "border-red-600"
+                    : "border-gray-300"
+                } bg-gray-50 rounded-md p-2 pr-10 font-semibold text-gray-500 cursor-pointer focus:outline-none focus:ring-1 focus:ring-green-500 focus:bg-green-50 hover:bg-green-50 hover:border-green-300 `}
+              >
+                <option value="" disabled>
+                  Select Vaccination Status
+                </option>
+                {vaccinationStatuses.map((status) => (
+                  <option key={status.id} value={status.id}>
+                    {status.name}
+                  </option>
+                ))}
+              </select>
+
+              {/* Custom dropdown icon */}
+              <div className="pointer-events-none absolute right-3 top-8.5 text-gray-400">
+                <IoMdArrowDropdown className="text-xl" />
+              </div>
+              {/* {errors.vaccination_status && (
+                <p className="text-red-400 mt-1 font-medium text-sm">
+                  {errors.vaccination_status}
+                </p>
+              )} */}
             </div>
 
-            <div className="space-y-2">
-              <Label htmlFor="last_vaccination_date">Last Vaccination Date</Label>
-              <Input
+            <div className="relative w-full">
+              <InputField
+                label="Last Vaccinated Date"
                 type="date"
                 id="last_vaccination_date"
                 name="last_vaccination_date"
                 value={formData.last_vaccination_date}
                 onChange={handleInputChange}
+                placeholder="Date of Birth"
               />
+              <div className="pointer-events-none absolute right-3 bottom-2.5 text-gray-400">
+                <MdOutlineCalendarToday className="text-lg" />
+              </div>
             </div>
 
-            <div className="space-y-2">
-              <Label htmlFor="deworming_status">Deworming Status</Label>
-              <Select value={formData.deworming_status} onValueChange={(value) => handleSelectChange("deworming_status", value)}>
-                <SelectTrigger>
-                  <SelectValue placeholder="Select Deworming Status" />
-                </SelectTrigger>
-                <SelectContent>
-                  {dewormingStatuses.map((status) => (
-                    <SelectItem key={status.id} value={String(status.id)}>
-                      {status.name}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
+            {/*  Deworming Status */}
+            <div className="relative w-full flex flex-col">
+              <label
+                htmlFor="gender"
+                className="mb-1 text-sm font-bold text-gray-600"
+              >
+                Deworming Status
+              </label>
+
+              <select
+                name="deworming_status"
+                value={formData.deworming_status}
+                onChange={handleInputChange}
+                className={`appearance-none w-full border ${
+                  errors.deworming_status ? "border-red-600" : "border-gray-300"
+                } bg-gray-50 rounded-md p-2 pr-10 font-semibold text-gray-500 cursor-pointer focus:outline-none focus:ring-1 focus:ring-green-500 focus:bg-green-50 hover:bg-green-50 hover:border-green-300 `}
+              >
+                <option value="" disabled>
+                  Select Deworming Status
+                </option>
+                {dewormingStatuses.map((status) => (
+                  <option key={status.id} value={status.id}>
+                    {status.name}
+                  </option>
+                ))}
+              </select>
+
+              {/* Custom dropdown icon */}
+              <div className="pointer-events-none absolute right-3 top-8.5 text-gray-400">
+                <IoMdArrowDropdown className="text-xl" />
+              </div>
             </div>
 
-            <div className="space-y-2">
-              <Label htmlFor="last_deworming_date">Last Deworming Date</Label>
-              <Input
+            <div className="relative w-full">
+              <InputField
+                label="Last Deworming Date"
                 type="date"
                 id="last_deworming_date"
                 name="last_deworming_date"
                 value={formData.last_deworming_date}
                 onChange={handleInputChange}
+                placeholder="Last Dewormed Date"
               />
-            </div>
-
-            <div className="space-y-2">
-              <Label htmlFor="hasDisease">Has Disease?</Label>
-              <Select value={String(formData.hasDisease)} onValueChange={(value) => handleSelectChange("hasDisease", value)}>
-                <SelectTrigger>
-                  <SelectValue placeholder="Select" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="true">Yes</SelectItem>
-                  <SelectItem value="false">No</SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
-          </div>
-
-          {formData.hasDisease && (
-            <div className="space-y-2">
-              <Label htmlFor="health_issues">Disease Name</Label>
-              <Input
-                type="text"
-                id="health_issues"
-                name="health_issues"
-                value={formData.health_issues}
-                onChange={handleInputChange}
-                placeholder="Enter disease name"
-              />
-            </div>
-          )}
-        </CardContent>
-      </Card>
-
-      {/* Pregnancy Information (Female Only) */}
-      {formData.gender === "female" && (
-        <Card>
-          <CardHeader>
-            <CardTitle className="text-lg">Pregnancy Information</CardTitle>
-          </CardHeader>
-          <CardContent className="space-y-4">
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div className="space-y-2">
-                <Label htmlFor="isPregnant">Is Pregnant?</Label>
-                <Select value={String(formData.isPregnant)} onValueChange={(value) => handleSelectChange("isPregnant", value)}>
-                  <SelectTrigger>
-                    <SelectValue placeholder="Select" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="true">Yes</SelectItem>
-                    <SelectItem value="false">No</SelectItem>
-                  </SelectContent>
-                </Select>
+              <div className="pointer-events-none absolute right-3 bottom-2.5 text-gray-400">
+                <MdOutlineCalendarToday className="text-lg" />
               </div>
-
-              {formData.isPregnant && (
-                <>
-                  <div className="space-y-2">
-                    <Label htmlFor="pregnancy_status">Pregnancy Status</Label>
-                    <Input
-                      type="text"
-                      id="pregnancy_status"
-                      name="pregnancy_status"
-                      value={formData.pregnancy_status}
-                      onChange={handleInputChange}
-                      placeholder="Enter pregnancy stage"
-                    />
-                  </div>
-
-                  <div className="space-y-2">
-                    <Label htmlFor="last_date_of_calving">Date of Last Calving</Label>
-                    <Input
-                      type="date"
-                      id="last_date_of_calving"
-                      name="last_date_of_calving"
-                      value={formData.last_date_of_calving}
-                      onChange={handleInputChange}
-                    />
-                  </div>
-                </>
-              )}
             </div>
-          </CardContent>
-        </Card>
-      )}
+
+            {/* Diseases */}
+            <div className="relative w-full flex flex-col">
+              <label
+                htmlFor="gender"
+                className="mb-1 text-sm font-bold text-gray-600"
+              >
+                Has Disease?
+              </label>
+
+              <select
+                name="hasDisease"
+                value={String(formData.hasDisease)}
+                onChange={handleInputChange}
+                className={`appearance-none w-full border ${
+                  errors.hasDisease ? "border-red-600" : "border-gray-300"
+                } bg-gray-50 rounded-md p-2 pr-10 font-semibold text-gray-500 cursor-pointer focus:outline-none focus:ring-1 focus:ring-green-500 focus:bg-green-50 hover:bg-green-50 hover:border-green-300 `}
+              >
+                <option value="" disabled>
+                  Select
+                </option>
+                <option value="true">Yes</option>
+                <option value="false">No</option>
+              </select>
+
+              {/* Custom dropdown icon */}
+              <div className="pointer-events-none absolute right-3 top-8.5 text-gray-400">
+                <IoMdArrowDropdown className="text-xl" />
+              </div>
+            </div>
+
+            {/* Conditionally render the disease name input */}
+            {formData.hasDisease === "true" && (
+              <div>
+                <InputField
+                  label="Disease Name"
+                  id="diseases_name"
+                  type="text"
+                  name="health_issues"
+                  value={formData.health_issues}
+                  onChange={handleInputChange}
+                  placeholder="Disease Name"
+                  error={errors.health_issues}
+                />
+              </div>
+            )}
+
+            {formData.gender === "female" && (
+              <>
+                {/*  Is Pregnant? */}
+                <div className="relative w-full flex flex-col">
+                  <label
+                    htmlFor="gender"
+                    className="mb-1 text-sm font-bold text-gray-600"
+                  >
+                    Is Pregnant?
+                  </label>
+
+                  <select
+                    name="isPregnant"
+                    value={String(formData.isPregnant)}
+                    onChange={handleInputChange}
+                    className={`appearance-none w-full border ${
+                      errors.isPregnant ? "border-red-600" : "border-gray-300"
+                    } bg-gray-50 rounded-md p-2 pr-10 font-semibold text-gray-500 cursor-pointer focus:outline-none focus:ring-1 focus:ring-green-500 focus:bg-green-50 hover:bg-green-50 hover:border-green-300 `}
+                  >
+                    <option value="" disabled>
+                      Select
+                    </option>
+                    <option value="true">Yes</option>
+                    <option value="false">No</option>
+                  </select>
+
+                  {/* Custom dropdown icon */}
+                  <div className="pointer-events-none absolute right-3 top-8.5 text-gray-400">
+                    <IoMdArrowDropdown className="text-xl" />
+                  </div>
+                </div>
+                {formData.isPregnant && (
+                  <>
+                    <div className="">
+                      <InputField
+                        label="Pregnancy Status"
+                        id=""
+                        type="text"
+                        name="pregnancy_status"
+                        value={formData.pregnancy_status}
+                        onChange={handleInputChange}
+                        placeholder="Pregnancy Stage"
+                        error={errors.pregnancy_status}
+                      />
+                    </div>
+
+                    <div className="relative w-full">
+                      <InputField
+                        label="Date of Last Calving"
+                        id=""
+                        type="date"
+                        name="last_date_of_calving"
+                        value={formData.last_date_of_calving}
+                        onChange={handleInputChange}
+                        placeholder="Date of Last Calving"
+                        error={errors.last_date_of_calving}
+                      />
+                      <div className="pointer-events-none absolute right-3 bottom-2.5 text-gray-400">
+                        <MdOutlineCalendarToday className="text-lg" />
+                      </div>
+                    </div>
+                  </>
+                )}
+              </>
+            )}
+          </div>
+        </div>
+      </div>
     </div>
   );
-}
+});
+StepTwo.displayName = "StepTwo";
+
+export default StepTwo;

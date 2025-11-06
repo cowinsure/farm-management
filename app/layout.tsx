@@ -19,7 +19,7 @@ export const urbanist = Urbanist({
 export const metadata: Metadata = {
   title: "LivestockPro",
   description: "Your Trusted Partner in Livestock Insurance",
-  generator: "v0.dev",
+
   icons: { icon: "/favicon.ico" },
 };
 

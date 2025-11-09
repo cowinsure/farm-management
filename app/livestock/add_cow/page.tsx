@@ -1,6 +1,5 @@
 "use client";
 
-
 import { useCowRegistration } from "@/context/CowRegistrationContext";
 import { useEffect, useRef, useState } from "react";
 
@@ -14,9 +13,15 @@ import { TbArrowBadgeRightFilled } from "react-icons/tb";
 import Link from "next/link";
 
 import { toast } from "sonner";
-import StepOne, { StepOneRef } from "@/components/Livestock/AssetRegistration/StepOne";
-import StepTwo, { StepTwoRef } from "@/components/Livestock/AssetRegistration/StepTwo";
-import StepFour, { StepFourRef } from "@/components/Livestock/AssetRegistration/StepFour";
+import StepOne, {
+  StepOneRef,
+} from "@/components/Livestock/AssetRegistration/StepOne";
+import StepTwo, {
+  StepTwoRef,
+} from "@/components/Livestock/AssetRegistration/StepTwo";
+import StepFour, {
+  StepFourRef,
+} from "@/components/Livestock/AssetRegistration/StepFour";
 import ModalGeneral from "@/modal/DialogGeneral";
 import MuzzleGuidlines from "@/components/Livestock/MuzzleGuidlines";
 import { Stepper } from "@/helper/Stepper";
@@ -160,33 +165,26 @@ export default function StepForm() {
     }
   };
   return (
-    <div className="p-2 mb-20 md:px-6">
+    <div className="md:px-6">
       {/* <div className="mb-5">
         <div className="flex items-center gap-3">
-          <Link
-            href={"/farmer"}
-            className="text-2xl md:text-3xl font-extrabold text-gray-700 cursor-pointer underline hover:underline-offset-1"
-          >
-            Farm
-          </Link>
-          <TbArrowBadgeRightFilled size={30} className="text-[#089C3E] -mb-1" />
           <h1 className="text-2xl md:text-3xl font-extrabold">Add cow</h1>
         </div>
-        <p className="md:text-lg font-medium text-gray-400 mt-2">
+        <p className="md:text-lg font-medium text-gray-400">
           Add a new asset
         </p>
       </div> */}
 
       {/* Step content */}
-      <div className=" bg-white rounded-xl flex flex-col justify-center">
+      <div className="px-24 md:px-20 pt-5 pb-4 bg-white rounded-t-lg">
         {/* Step bar container */}
         <Stepper
-          steps={["Cattle Info", "Owner Info", "Attachments"]}
+          steps={steps}
           currentStep={currentStep}
           completedSteps={completedSteps}
         />
       </div>
-      <div className="overflow-y-auto h-[550px] flex flex-col items-center bg-white mb-5 rounded-b-xl py-1">
+      <div className="overflow-y-auto h-[70vh] flex flex-col items-center bg-white rounded-b-lg mb-5 py-7 p-4 md:p-4">
         {renderStep()}
         {currentStep === 0 && (
           <button
@@ -241,6 +239,7 @@ export default function StepForm() {
           </button>
         )}
       </div>
+
       {/* Loading Spinner */}
       {isLoading && (
         <div className="mt-4 text-center">
@@ -293,7 +292,7 @@ export default function StepForm() {
           setErrorMessage("");
         }}
       >
-        <div className="text-black  text-center flex flex-col items-center p-5">
+        <div className="text-black text-center flex flex-col items-center p-5">
           <Image
             src={logo}
             alt="Logo"
@@ -315,6 +314,7 @@ export default function StepForm() {
           </div>
         </div>
       </ModalGeneral>
+
       <ModalGeneral
         isOpen={successMessage != null}
         onClose={() => {
@@ -358,6 +358,8 @@ export default function StepForm() {
           )}
         </div>
       </ModalGeneral>
+
+      {/* Muzzle Guideline */}
       <ModalGeneral
         isOpen={isGuidanceModal}
         onClose={() => setIsGuidanceModal(false)}

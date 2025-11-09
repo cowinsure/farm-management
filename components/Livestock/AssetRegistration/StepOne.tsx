@@ -9,8 +9,6 @@ import React, {
 import Image from "next/image";
 import { useCowRegistration } from "@/context/CowRegistrationContext";
 
-
-
 import logo from "../../../public/logo-03.png";
 
 import { toast } from "sonner";
@@ -157,10 +155,10 @@ export const StepOne = forwardRef<StepOneRef>((props, ref) => {
       setSelectedFile(data.muzzle_video);
     }
   }, [data]);
-  // Add an empty dependency array to ensure it runs only once
+
   return (
-    <div className="w-full flex items-center justify-center h-full">
-      {/* <h2 className="text-xl font-semibold mb-4">Muzzle Detection</h2> */}
+    <div className="w-full flex flex-col items-center justify-center h-full">
+      <h2 className="text-xl font-semibold mb-4">Muzzle Detection</h2>
       <div className="md:w-[60%] mx-auto">
         <div className="w-full flex flex-col justify-center items-center">
           <UploadVideo
@@ -284,7 +282,7 @@ export const StepOne = forwardRef<StepOneRef>((props, ref) => {
             </div>
           </ModalGeneral>
 
-          <ModalGeneral isOpen={isUploading} onClose={() => { }}>
+          <ModalGeneral isOpen={isUploading} onClose={() => {}}>
             <CowIdentificationLoader />
           </ModalGeneral>
           {/* {isUploading && (

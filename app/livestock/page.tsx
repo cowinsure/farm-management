@@ -122,7 +122,9 @@ export default function LivestockInventory() {
       return matchesSearch && matchesStatus && matchesBreed && matchesGender;
     }
   );
+
   console.log(filteredAnimals);
+  console.log(selectedAnimal);
 
   const getStatusBadge = (status: string) => {
     switch (status?.toLowerCase()) {
@@ -456,9 +458,7 @@ export default function LivestockInventory() {
                                   variant="ghost"
                                   className="h-7 w-7 p-0 border hover:bg-green-400 hover:text-white hover:scale-105 hover:-translate-y-1 hover:drop-shadow-xl transition-all duration-300 ease-in-out active:scale-90"
                                   onClick={() => {
-                                    setSelectedAnimal(
-                                      mapAnimalForModal(animal)
-                                    );
+                                    setSelectedAnimal(animal);
                                     setViewModalOpen(true);
                                   }}
                                 >
@@ -533,9 +533,9 @@ export default function LivestockInventory() {
 
       {/* Place modal at root of component */}
       <ViewAnimalModal
-        open={viewModalOpen}
-        onOpenChange={setViewModalOpen}
-        animal={selectedAnimal}
+        isOpen={viewModalOpen}
+        onClose={() => setViewModalOpen(false)}
+        cattle={selectedAnimal}
       />
     </AuthGuard>
   );

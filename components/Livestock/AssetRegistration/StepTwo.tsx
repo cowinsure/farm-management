@@ -1,6 +1,5 @@
 "use client";
 
-
 import InputField from "@/components/ui/InputField";
 import { useCowRegistration } from "@/context/CowRegistrationContext";
 import SectionHeading from "@/helper/SectionHeading";
@@ -374,7 +373,7 @@ const StepTwo = forwardRef<StepTwoRef>((props, ref) => {
   }));
 
   return (
-    <div className="w-full lg:w-[80%] mx-auto mt-8 ">
+    <div className="w-full lg:w-[90%] mx-auto">
       <SectionHeading
         marginBottom="8"
         sectionTitle="Cattle Details"
@@ -436,7 +435,7 @@ const StepTwo = forwardRef<StepTwoRef>((props, ref) => {
               )}
 
               {/* Custom dropdown icon */}
-              <div className="pointer-events-none absolute right-3 top-8.5 text-gray-400">
+              <div className="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 text-gray-400">
                 <IoMdArrowDropdown className="text-xl" />
               </div>
             </div>

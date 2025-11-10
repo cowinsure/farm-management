@@ -16,7 +16,7 @@ export const Stepper: React.FC<StepperProps> = ({
     steps.length === 1 ? 100 : (currentStep / (steps.length - 1)) * 100;
 
   return (
-    <div className="relative w-[70%] my-5 md:w-[70%] mx-auto h-16">
+    <div className="relative w-[70%] my-5 mx-auto h-16">
       {/* Line background behind the steps */}
       <div className="absolute top-2 left-0 right-0 h-5 bg-gray-300 rounded-full z-0 px-1" />
 

@@ -15,6 +15,7 @@ import { toast } from "sonner";
 import UploadVideo from "@/helper/UploadVedio";
 import ModalGeneral from "@/modal/DialogGeneral";
 import CowIdentificationLoader from "@/components/loader/cow-identification-loader";
+import SectionHeading from "@/helper/SectionHeading";
 
 // Define an interface for the response data
 interface ResponseData {
@@ -157,9 +158,13 @@ export const StepOne = forwardRef<StepOneRef>((props, ref) => {
   }, [data]);
 
   return (
-    <div className="w-full flex flex-col items-center justify-center h-full">
-      <h2 className="text-xl font-semibold mb-4">Muzzle Detection</h2>
-      <div className="md:w-[60%] mx-auto">
+    <div className="w-full lg:w-[90%] mx-auto">
+      <SectionHeading
+        marginBottom="8"
+        sectionTitle="Muzzle Detection"
+        description="Register your cattle muzzle here"
+      />
+      <div className="">
         <div className="w-full flex flex-col justify-center items-center">
           <UploadVideo
             onVideoCapture={(file) => {
@@ -179,7 +184,7 @@ export const StepOne = forwardRef<StepOneRef>((props, ref) => {
                   toast.error("Please select a video file before uploading.");
                 }
               }}
-              className="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-medium py-4 rounded"
+              className="bg-emerald-600 hover:bg-emerald-700 text-white font-medium px-6 py-2 mt-10 rounded"
             >
               {isUploading ? "Uploading..." : "Register Cow"}
             </button>

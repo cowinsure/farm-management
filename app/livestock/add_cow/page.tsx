@@ -4,7 +4,7 @@ import { useCowRegistration } from "@/context/CowRegistrationContext";
 import { useEffect, useRef, useState } from "react";
 
 import Image from "next/image";
-import logo from "../../../public/Logo-03.png";
+import logo from "../../../public/logo-03.png";
 import { unauthorized, useRouter } from "next/navigation";
 import { IoIosArrowBack, IoIosArrowForward } from "react-icons/io";
 import { FaCircleCheck } from "react-icons/fa6";
@@ -25,6 +25,7 @@ import StepFour, {
 import ModalGeneral from "@/modal/DialogGeneral";
 import MuzzleGuidlines from "@/components/Livestock/MuzzleGuidlines";
 import { Stepper } from "@/helper/Stepper";
+import SectionHeading from "@/helper/SectionHeading";
 
 const steps = ["Muzzel Detection", "Cow Details", "Attachments"];
 
@@ -130,6 +131,7 @@ export default function StepForm() {
 
   const handleNext = () => {
     const isStepOneValid = stepOneRef.current?.validateFields();
+    // const isStepOneValid = true
 
     if (isStepOneValid) {
       setCompletedSteps((prev) => new Set(prev).add(currentStep));
@@ -137,6 +139,7 @@ export default function StepForm() {
     }
 
     const isStepTwoValid = stepTwoRef.current?.validateFields();
+    // const isStepTwoValid = false
 
     if (isStepTwoValid) {
       setCompletedSteps((prev) => new Set(prev).add(currentStep));
@@ -166,14 +169,13 @@ export default function StepForm() {
   };
   return (
     <div className="md:px-6">
-      {/* <div className="mb-5">
-        <div className="flex items-center gap-3">
-          <h1 className="text-2xl md:text-3xl font-extrabold">Add cow</h1>
-        </div>
-        <p className="md:text-lg font-medium text-gray-400">
-          Add a new asset
-        </p>
-      </div> */}
+      <div className="">
+        <SectionHeading
+          marginBottom="4"
+          sectionTitle="Add Cattle Details"
+          description="Add detailed information about the animal"
+        />
+      </div>
 
       {/* Step content */}
       <div className="px-24 md:px-20 pt-5 pb-4 bg-white rounded-t-lg">
@@ -184,16 +186,18 @@ export default function StepForm() {
           completedSteps={completedSteps}
         />
       </div>
-      <div className="overflow-y-auto h-[70vh] flex flex-col items-center bg-white rounded-b-lg mb-5 py-7 p-4 md:p-4">
+      <div className="overflow-y-auto h-[70vh] flex flex-col items-center bg-white rounded-b-lg mb-5 py-7 p-4">
         {renderStep()}
-        {currentStep === 0 && (
-          <button
-            onClick={() => setIsGuidanceModal(true)}
-            className="text-green-600 font-bold underline hover:text-green-800 custom-hover hover:underline-offset-2 cursor-pointer md:mt-6"
-          >
-            View Guidelines
-          </button>
-        )}
+        <div className="h-full flex items-end">
+          {currentStep === 0 && (
+            <button
+              onClick={() => setIsGuidanceModal(true)}
+              className="text-green-600 font-bold underline hover:text-green-800 custom-hover hover:underline-offset-2 cursor-pointer md:mt-6"
+            >
+              View Guidelines
+            </button>
+          )}
+        </div>
       </div>
 
       {/* Navigation buttons */}

@@ -102,7 +102,7 @@ const StepFour = forwardRef<StepFourRef>((props, ref) => {
   }));
 
   return (
-    <div className="lg:w-[90%] xl:w-[80%] mx-auto mt-8 p-4">
+    <div className="w-full lg:w-[90%] mx-auto">
       <SectionHeading
         marginBottom="8"
         sectionTitle="Add Attachments"

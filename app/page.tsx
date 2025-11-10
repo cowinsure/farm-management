@@ -67,7 +67,7 @@ export default function Dashboard() {
   };
   return (
     <AuthGuard requireAuth={true}>
-      <div className=" py-16 lg:py-0 ">
+      <div className="  lg:py-0 ">
         <div className="flex">
           {/* Mobile menu button */}
 
@@ -84,7 +84,8 @@ export default function Dashboard() {
             </div>
 
             {/* Metrics Cards */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 lg:gap-6 mb-6 lg:mb-8">
+            <div className="grid grid-cols-2 lg:grid-cols-3 gap-4 lg:gap-6 mb-6 lg:mb-8">
+              {/* Total cattle */}
               <Card
                 className="border-0 shadow-lg hover:shadow-xl transition-shadow duration-300 animate__animated animate__fadeInRight"
                 style={{ animationDelay: "0s" }}
@@ -106,6 +107,7 @@ export default function Dashboard() {
                 </CardContent>
               </Card>
 
+              {/* Health status */}
               <Card
                 className="border-0 shadow-lg hover:shadow-xl transition-shadow duration-300 animate__animated animate__fadeInRight"
                 style={{ animationDelay: "0.25s" }}
@@ -127,6 +129,7 @@ export default function Dashboard() {
                 </CardContent>
               </Card>
 
+              {/* Monthly Rev */}
               <Card
                 className="border-0 shadow-lg hover:shadow-xl transition-shadow duration-300 animate__animated animate__fadeInRight"
                 style={{ animationDelay: "0.5s" }}

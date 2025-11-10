@@ -80,7 +80,7 @@ const BreedingReproduction = () => {
 
   return (
     <AuthGuard requireAuth={true}>
-      <div className="relative py-16 lg:py-0 ">
+      <div className="relative pb-10 lg:py-0 ">
         {/* Main Content */}
         <main className="flex-1 lg:ml-0 lg:px-4">
           {/* Page Header */}

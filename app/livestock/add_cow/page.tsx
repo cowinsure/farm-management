@@ -87,7 +87,7 @@ export default function StepForm() {
         try {
           const token = localStorage.getItem("accessToken");
           const response = await fetch(
-            `${process.env.NEXT_PUBLIC_API_BASE_URL}/create-asset/`,
+            `${process.env.NEXT_PUBLIC_API_BASE_URL}/v1/create-asset/`,
             {
               method: "POST",
               headers: {
@@ -246,10 +246,13 @@ export default function StepForm() {
 
       {/* Loading Spinner */}
       {isLoading && (
-        <div className="mt-4 text-center">
-          <p className="text-green-500 font-medium">
-            Submitting, please wait...
-          </p>
+        <div className="text-center border fixed inset-0 bg-white/40 backdrop-blur-md z-50 flex items-center justify-center">
+          <div className="flex flex-col items-center">
+            <div className="loader"></div>
+            <p className="text-gray-700 font-semibold text-xl mt-5">
+              Submitting, please wait...
+            </p>
+          </div>
         </div>
       )}
 

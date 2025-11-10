@@ -231,6 +231,8 @@ const StepTwo = forwardRef<StepTwoRef>((props, ref) => {
 
   const validateFields = () => {
     const newErrors: { [key: string]: string } = {};
+
+    // 🐮 Basic Information
     if (!formData.asset_type) newErrors.asset_type = "Asset Type is required";
     if (!formData.gender) newErrors.gender = "Gender is required";
     if (!formData.breed) newErrors.breed = "Breed is required";
@@ -238,20 +240,37 @@ const StepTwo = forwardRef<StepTwoRef>((props, ref) => {
     if (!formData.age_in_months) newErrors.age_in_months = "Age is required";
     if (!formData.weight_kg) newErrors.weight_kg = "Weight is required";
     if (!formData.height) newErrors.height = "Height is required";
+
+    // 💰 Purchase Information
     if (!formData.purchase_amount)
       newErrors.purchase_amount = "Purchase amount is required";
     if (!formData.purchase_from)
       newErrors.purchase_from = "Purchase from is required";
     if (!formData.purchase_date)
       newErrors.purchase_date = "Purchase date is required";
+
+    // 💉 Vaccination Information
+    if (!formData.vaccination_status)
+      newErrors.vaccination_status = "Vaccination status is required";
+    if (!formData.last_vaccination_date)
+      newErrors.last_vaccination_date = "Last vaccination date is required";
+    if (!formData.deworming_status)
+      newErrors.deworming_status = "Deworming status is required";
+    if (!formData.last_deworming_date)
+      newErrors.last_deworming_date = "Last deworming date is required";
+
+    // 🧬 Health Information
     if (formData.hasDisease === "true" && !formData.health_issues)
       newErrors.health_issues = "Please specify the disease name";
+
+    // 🤰 Pregnancy Information (only for females)
     if (formData.gender === "female" && formData.isPregnant === true) {
       if (!formData.pregnancy_status)
         newErrors.pregnancy_status = "Pregnancy status is required";
       if (!formData.last_date_of_calving)
         newErrors.last_date_of_calving = "Last calving date is required";
     }
+
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };

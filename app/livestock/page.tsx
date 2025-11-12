@@ -29,8 +29,11 @@ import Heading from "@/components/ui/Heading";
 import SectionHeading from "@/helper/SectionHeading";
 import { MobileOverlay } from "@/components/mobile-overlay";
 import { MobileOverlayPro } from "@/components/MobileOverlayPro";
+import { useLocalization } from "@/context/LocalizationContext";
 
 export default function LivestockInventory() {
+     const { t, setLocale, locale } = useLocalization();
+  
   const [animals, setAnimals] = useState<any[]>([]);
   const [searchTerm, setSearchTerm] = useState("");
   const [statusFilter, setStatusFilter] = useState("all");
@@ -174,8 +177,8 @@ export default function LivestockInventory() {
           {/* Page Header */}
           <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-6">
             <SectionHeading
-              sectionTitle="Livestock Inventory"
-              description="Add and manage your cattles"
+              sectionTitle={t("title_livestock_inventory")}
+              description={t("sub_title_add_and_manage_cattle")}
             />
             <Button
               onClick={() => {

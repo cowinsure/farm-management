@@ -30,8 +30,10 @@ import { useRouter } from "next/navigation";
 import { RecordVaccinationScheduleDialog } from "@/components/health/record-vaccination-schedule-dialog";
 import { RecordHealthIssueDialog } from "@/components/health/record-health-issue-dialog";
 import { Toaster } from "sonner";
+import { useLocalization } from "@/context/LocalizationContext";
 
 export default function Dashboard() {
+    const { t, setLocale, locale } = useLocalization();
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const { user, logout } = useAuth();
   const [dashboardSummary, setDashboardSummary] = useState<any>({});
@@ -77,10 +79,10 @@ export default function Dashboard() {
             {/* Welcome Banner */}
             <div className="bg-gradient-to-r from-[#17a34a] to-blue-600 rounded-lg p-6 mb-6 text-white ">
               <h2 className="text-2xl font-bold mb-2">
-                Welcome back, {user?.role || "User"}!
+                {t("title_Dashboard")} {user?.role || "User"}!
               </h2>
               <p className="text-green-100">
-                {"Here's what's happening on your farm today"}
+                {t("sub_title_Dashboard")}
               </p>
             </div>
 

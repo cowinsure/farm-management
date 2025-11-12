@@ -1,0 +1,13 @@
+{
+  "welcome": "Welcome to InsureCow",
+  "login": "Login",
+  "logout": "Logout",
+  "dashboard": "Dashboard",
+  "language": "Languag",
+  "total_cattle" : "Total Cattle",
+  "title_livestock_inventory": "Livestock Inventory",
+  "sub_title_add_and_manage_cattle":"Add and manage your cattle",
+  "title_Dashboard": "Welcome back, Farmer!",
+    "sub_title_Dashboard": "Here's an overview of your farm's performance."
+
+}

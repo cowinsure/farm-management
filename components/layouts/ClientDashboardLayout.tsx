@@ -8,12 +8,14 @@ import MobileNav from "./MobileNav";
 import { FaUserCircle } from "react-icons/fa";
 import { motion, AnimatePresence } from "framer-motion";
 import { usePathname } from "next/navigation";
+import { useLocalization } from "@/context/LocalizationContext";
 
 export default function ClientDashboardLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
+   const { t, setLocale, locale } = useLocalization();
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [open, setOpen] = useState(false);
   const timeoutRef = useRef<NodeJS.Timeout | null>(null);
@@ -57,6 +59,9 @@ export default function ClientDashboardLayout({
                   </p>
                 </div>
               </div>
+               <button onClick={() => setLocale(locale === "en" ? "bn" : "en")}>
+        {t("language")}
+      </button>
 
               {/* <div className="relative">
                 <Bell className="w-6 h-6 text-gray-600 cursor-pointer hover:text-green-600" />
@@ -94,6 +99,9 @@ export default function ClientDashboardLayout({
                   )}
                 </AnimatePresence>
               </div>
+
+
+
 
               {/* <button
               className="md:hidden p-2"

@@ -186,10 +186,10 @@ const ScheduleVaccinationDialog: React.FC<ScheduleVaccinationDialogProps> = ({
         <div className="relative bg-white rounded-lg shadow-2xl w-full max-w-2xl p-8 overflow-auto max-h-[90vh]">
           <button
             onClick={handleCloseDialog}
-            className="absolute top-6 right-6 p-1 hover:bg-gray-100 rounded-lg transition-colors"
+            className="absolute z-10 top-6 right-6 p-1 hover:bg-gray-300 rounded-lg transition-colors"
             aria-label="Close dialog"
           >
-            <X size={24} className="text-gray-600" />
+            <X size={24} className="text-red-600" />
           </button>
 
           <div ref={contentRef}>
@@ -202,10 +202,10 @@ const ScheduleVaccinationDialog: React.FC<ScheduleVaccinationDialogProps> = ({
                 Select Cows
               </h2>
 
-              <div ref={dropdownRef} className="relative mb-4">
+              <div ref={dropdownRef} className="flex flex-row relative mb-4">
                 <button
                   onClick={() => setIsDropdownOpen(!isDropdownOpen)}
-                  className="w-full flex items-center justify-between px-4 py-3 border-2 border-gray-300 rounded-lg hover:border-green-500 transition-all hover:bg-green-50 focus:outline-none"
+                  className="w-[65%] flex items-center justify-between px-4 py-3 border-2 border-gray-300 rounded-lg hover:border-green-500 transition-all hover:bg-green-50 focus:outline-none"
                 >
                   <div className="flex items-center gap-2">
                     <Logs size={20} className="text-gray-600" />
@@ -227,7 +227,7 @@ const ScheduleVaccinationDialog: React.FC<ScheduleVaccinationDialogProps> = ({
 
                 {/* Dropdown Menu */}
                 {isDropdownOpen && (
-                  <div className="absolute top-full left-0 right-0 mt-2 bg-white border-2 border-gray-300 rounded-lg shadow-lg z-10">
+                  <div className="absolute w-[65%] top-full left-0 right-0 mt-2 bg-white border-2 border-gray-300 rounded-lg shadow-lg z-10">
                     <div className="max-h-48 overflow-y-auto">
                       {availableCows.map((cow) => {
                         const isSelected = selectedCows.some(
@@ -263,14 +263,13 @@ const ScheduleVaccinationDialog: React.FC<ScheduleVaccinationDialogProps> = ({
                     </div>
                   </div>
                 )}
+
+                {/* Scan QR Button */}
+                <button className="w-[30%] flex items-center justify-center gap-2 px-6 py-3 bg-gray-100 hover:bg-gray-200 rounded-lg transition-colors font-medium">
+                  <QrCode size={20} />
+                  Scan QR
+                </button>
               </div>
-
-              {/* Scan QR Button */}
-              <button className="w-full flex items-center justify-center gap-2 px-6 py-3 bg-gray-100 hover:bg-gray-200 rounded-lg transition-colors font-medium">
-                <QrCode size={20} />
-                Scan QR
-              </button>
-
               {/* Selected Cows */}
               <div className="space-y-3 mt-4">
                 {selectedCows.map((cow) => (

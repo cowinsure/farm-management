@@ -17,31 +17,36 @@ const MuzzleGuidlines = ({ close }: GuidlineProps) => {
       icon: MdOutlineAccessTime,
       title: "Keep it short",
       description:
-        "Record a 15-second video. Make sure the video is short and clear.",
+        "Record a 15 second video. Make sure the video is short and clear.",
+      shortDescription: "Record a 15 sec video",
     },
     {
       icon: MdPhoneIphone,
       title: "Stay steady",
       description:
         "Move slowly and avoid shaking. Hold the camera firmly for smooth footage.",
+      shortDescription: "Move slowly and avoid shaking",
     },
     {
       icon: MdCenterFocusStrong,
       title: "Center the muzzle",
       description:
         "Align the cow’s muzzle inside the box. Ensure the muzzle is centered on-screen.",
+      shortDescription: "Ensure the muzzle is centered on-screen",
     },
     {
       icon: MdLightbulbOutline,
       title: "Use good lighting",
       description:
         "Record in a well-lit area. Avoid dark environments for better recognition.",
+      shortDescription: "Record in a well-lit area",
     },
     {
       icon: MdDoNotDisturbAlt,
       title: "Avoid distractions",
       description:
         "Keep the background clear. No people, animals, or clutter behind the cow.",
+      shortDescription: "Keep the background clear",
     },
   ];
 
@@ -51,13 +56,15 @@ const MuzzleGuidlines = ({ close }: GuidlineProps) => {
         Muzzle Tech Recording Guide
       </h2>
       <p className="text-center sm:text-sm md:text-[16px] font-medium text-gray-500 mb-6">
-        Following these steps is crucial to ensure accurate muzzle detection. A
-        clear, steady video with proper lighting and alignment helps the system
-        identify the cow’s muzzle effectively, improving the reliability and
-        success of the scan.
+        Following these steps is crucial to ensure accurate muzzle detection.{" "}
+        <span className="hidden md:block">
+          A clear, steady video with proper lighting and alignment helps the
+          system identify the cow’s muzzle effectively, improving the
+          reliability and success of the scan.
+        </span>
       </p>
 
-      <div className="space-y-3">
+      <div className="space-y-3 hidden md:block">
         {muzzleTechSteps.map((step, index) => (
           <div
             key={index}
@@ -67,6 +74,23 @@ const MuzzleGuidlines = ({ close }: GuidlineProps) => {
             <div>
               <p className="font-semibold">{step.title}</p>
               <p className="font-medium text-gray-500">{step.description}</p>
+            </div>
+          </div>
+        ))}
+      </div>
+
+      <div className="space-y-3">
+        {muzzleTechSteps.map((step, index) => (
+          <div
+            key={index}
+            className="flex items-start gap-4 bg-gray-100 p-4 rounded-lg"
+          >
+            <step.icon className="text-green-700 text-4xl mt-1" />
+            <div className="h-full">
+              <p className="font-semibold">{step.title}</p>
+              <p className="font-medium text-gray-500">
+                {step.shortDescription}
+              </p>
             </div>
           </div>
         ))}

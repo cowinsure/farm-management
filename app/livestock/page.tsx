@@ -170,6 +170,7 @@ export default function LivestockInventory() {
       <div className="flex relative pb-10 lg:py-0">
         {/* Main Content */}
         <main className="flex-1 lg:ml-0 lg:px-4">
+          
           {/* Page Header */}
           <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-6">
             <SectionHeading
@@ -247,7 +248,9 @@ export default function LivestockInventory() {
                       <div className="text-2xl font-bold text-right text-green-600">
                         {total}
                       </div>
-                      <div className="text-sm text-gray-600">Total Animals</div>
+                      <div className="text-sm text-gray-600">
+                        <span className="hidden md:block">Total</span> Animals
+                      </div>
                     </div>
                   </div>
                 </CardContent>

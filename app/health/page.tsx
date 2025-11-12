@@ -44,6 +44,7 @@ import { GrUpdate } from "react-icons/gr";
 import { Toaster } from "sonner";
 import { LuPawPrint } from "react-icons/lu";
 import { TiWarningOutline } from "react-icons/ti";
+import SectionHeading from "@/helper/SectionHeading";
 // Add type for health record
 export interface HealthRecord {
   id: number;
@@ -287,8 +288,11 @@ export default function HealthVaccination() {
         <main className="flex-1 lg:ml-0 lg:px-4">
           {/* Page Header */}
           <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-6">
-            <Heading heading="Health & Vaccination" />
-            <div className="flex flex-col sm:flex-row gap-2 sm:gap-3 w-full sm:w-auto">
+            <SectionHeading
+              sectionTitle="Health & Vaccination"
+              description="Manage your cattles health and vaccines"
+            />
+            <div className="hidden lg:flex flex-col sm:flex-row gap-2 sm:gap-3 w-full sm:w-auto">
               <Button
                 className="bg-blue-600 hover:bg-blue-700"
                 onClick={() => setVaccinationDialogOpen(true)}
@@ -305,6 +309,54 @@ export default function HealthVaccination() {
               </Button>
             </div>
           </div>
+
+          {/* Breeding and Reproduction btn is here for mobile devices */}
+          <Card
+            className="block lg:hidden animate__animated animate__fadeInRight border border-green-200 bg-gradient-to-r from-emerald-50 via-green-50 to-teal-50
+ shadow-none w-full"
+            style={{ animationDelay: "0s" }}
+          >
+            <CardContent className="p-0.5">
+              <div className="flex items-center gap-2">
+                <div className="p-1 rounded-lg flex gap-2 items-center">
+                  <img
+                    src="/Breeding-removebg-preview.png"
+                    alt="cow image"
+                    width={80}
+                    className="rounded-lg drop-shadow-md scale-110"
+                  />
+                </div>
+                <div className="p-2 w-full">
+                  <div className="mb-2">
+                    <h1 className="font-bold text-gray-700 text-lg">
+                      Record health & vaccination
+                    </h1>
+                    <p className="font-medium text-gray-500 text-sm">
+                      Click to add details
+                    </p>
+                  </div>
+                  <div className="flex items-center gap-2 *:w-[50%]">
+                    {/* Btn for mobile */}
+                    <button
+                      className="bg-green-950 rounded-lg py-2 px-2 flex items-center justify-center gap-2 font-semibold text-white lg:hidden"
+                      onClick={() => setVaccinationDialogOpen(true)}
+                    >
+                      <Calendar className="w-4 h-4" />
+                       Vaccination
+                    </button>
+                    <button
+                      className=" bg-emerald-700 rounded-lg py-2 px-2 flex items-center justify-center gap-2 font-semibold text-white lg:hidden"
+                      onClick={() => setRecordDialogOpen(true)}
+                    >
+                      <Plus className="w-4 h-4" />
+                       Health
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+
           <RecordVaccinationScheduleDialog
             open={vaccinationDialogOpen}
             onOpenChange={setVaccinationDialogOpen}
@@ -447,7 +499,6 @@ export default function HealthVaccination() {
           </div>
 
           {/* Vaccination Schedule (API-driven) Table */}
-
           <ViewVaccinationModal
             open={isVaccinationDialogOpen}
             onOpenChange={setIsVaccinationDialogOpen}

@@ -106,9 +106,9 @@ export default function CowIdentificationLoader() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-green-50 to-blue-50 p-4 flex items-center justify-center">
+    <div className="flex items-center justify-center">
       <Card className="w-full max-w-2xl">
-        <CardContent className="p-8">
+        <CardContent className="p-4 overflow-y-auto h-[90vh] ">
           <div className="text-center mb-8">
             <div className="relative w-24 h-24 mx-auto mb-4">
               <div className="absolute inset-0 border-4 border-green-200 rounded-full"></div>

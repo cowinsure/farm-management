@@ -1,0 +1,12 @@
+{
+  "welcome": "ইনসিউরকাউতে স্বাগতম",
+  "login": "লগইন",
+  "logout": "লগআউট",
+  "dashboard": "ড্যাশবোর্ড",
+  "language": "ভাষা",
+    "total_cattle" : "মোট গবাদি পশু",
+    "title_livestock_inventory": "গবাদি পশুর তালিকা",
+    "sub_title_add_and_manage_cattle":"আপনার গবাদি পশু যোগ করুন এবং পরিচালনা করুন",
+    "title_Dashboard": "স্বাগতম!",
+    "sub_title_Dashboard": "এখানে আপনার খামারের কর্মক্ষমতার একটি ওভারভিউ রয়েছে।"
+}

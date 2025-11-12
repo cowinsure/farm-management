@@ -23,6 +23,7 @@ import { BreedingTrackingModal } from "@/components/Breeding/BreedingTrackingMod
 import { BreedingStatusUpdateDialog } from "@/components/Breeding/BreedingStatusUpdateDialog";
 import { PencilIcon } from "lucide-react";
 import { BirthTrackingModal } from "@/components/Breeding/BirthTrackingModal";
+import SectionHeading from "@/helper/SectionHeading";
 
 const BreedingReproduction = () => {
   const loading = false;
@@ -75,17 +76,21 @@ const BreedingReproduction = () => {
     // initial load
     loadBirthLogs();
     window.addEventListener("birthLogUpdated", handler as EventListener);
-    return () => window.removeEventListener("birthLogUpdated", handler as EventListener);
+    return () =>
+      window.removeEventListener("birthLogUpdated", handler as EventListener);
   }, []);
 
   return (
     <AuthGuard requireAuth={true}>
-      <div className="relative py-16 lg:py-0 ">
+      <div className="relative pb-10 lg:py-0 ">
         {/* Main Content */}
         <main className="flex-1 lg:ml-0 lg:px-4">
           {/* Page Header */}
           <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-6">
-            <Heading heading="Breeding & Reproduction" />
+            <SectionHeading
+              sectionTitle="Breeding & Reproduction"
+              description="Manage your farms reproductive numbers"
+            />
             <div className="flex flex-col sm:flex-row gap-2 sm:gap-3 w-full sm:w-auto">
               <Button
                 className="bg-purple-600 hover:bg-purple-700"
@@ -338,7 +343,8 @@ const BreedingReproduction = () => {
                                 {record.cowId || record.asset_id}
                               </td>
                               <td className="py-3 px-2 text-sm">
-                                {record.breedingMethod || record.production_type_id}
+                                {record.breedingMethod ||
+                                  record.production_type_id}
                               </td>
                               {/* <td className="py-3 px-2 text-sm">
                                 {record.breedingDate
@@ -349,7 +355,9 @@ const BreedingReproduction = () => {
                               </td> */}
                               <td className="py-3 px-2 text-sm">
                                 {record.expectedCalvingDate
-                                  ? new Date(record.expectedCalvingDate).toLocaleDateString()
+                                  ? new Date(
+                                      record.expectedCalvingDate
+                                    ).toLocaleDateString()
                                   : "-"}
                               </td>
                               <td className="py-3 px-2">
@@ -366,7 +374,6 @@ const BreedingReproduction = () => {
                                   }}
                                 >
                                   <PencilIcon className="w-4 h-4 mr-1" />
-                                 
                                 </button>
                               </td>
                             </tr>
@@ -406,7 +413,7 @@ const BreedingReproduction = () => {
                   <div className="flex flex-col lg:flex-row items-start lg:items-center justify-between gap-4">
                     <CardTitle className="flex items-center">
                       <TbMoodKid className="w-5 h-5 mr-2 text-pink-600" />
-                     Recent Births
+                      Recent Births
                     </CardTitle>
                     <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2 w-full lg:w-auto">
                       <div className="relative">
@@ -414,7 +421,7 @@ const BreedingReproduction = () => {
                         <Input
                           placeholder="Search animal..."
                           value={""}
-                            onChange={(e) => console.log(e)}
+                          onChange={(e) => console.log(e)}
                           className="pl-10 w-full sm:w-48"
                         />
                       </div>
@@ -510,35 +517,80 @@ const BreedingReproduction = () => {
                     style={{ maxHeight: 375, overflowY: "auto" }}
                   >
                     {loading ? (
-                      <div className="text-center py-8 text-gray-500">Loading...</div>
+                      <div className="text-center py-8 text-gray-500">
+                        Loading...
+                      </div>
                     ) : birthLogs.length === 0 ? (
-                      <div className="text-center py-8 text-gray-500">No births found</div>
+                      <div className="text-center py-8 text-gray-500">
+                        No births found
+                      </div>
                     ) : (
                       <table className="w-full animate__animated animate__fadeInUp">
                         <thead>
                           <tr className="border-b border-gray-200">
-                            <th className="text-left py-3 px-2 font-medium text-gray-600 text-sm">Animal</th>
-                            <th className="text-left py-3 px-2 font-medium text-gray-600 text-sm">Birth Date</th>
-                            <th className="text-left py-3 px-2 font-medium text-gray-600 text-sm">Gender</th>
-                            <th className="text-left py-3 px-2 font-medium text-gray-600 text-sm">Weight</th>
-                            <th className="text-left py-3 px-2 font-medium text-gray-600 text-sm">Recorded At</th>
-                            <th className="text-left py-3 px-2 font-medium text-gray-600 text-sm">Actions</th>
+                            <th className="text-left py-3 px-2 font-medium text-gray-600 text-sm">
+                              Animal
+                            </th>
+                            <th className="text-left py-3 px-2 font-medium text-gray-600 text-sm">
+                              Birth Date
+                            </th>
+                            <th className="text-left py-3 px-2 font-medium text-gray-600 text-sm">
+                              Gender
+                            </th>
+                            <th className="text-left py-3 px-2 font-medium text-gray-600 text-sm">
+                              Weight
+                            </th>
+                            <th className="text-left py-3 px-2 font-medium text-gray-600 text-sm">
+                              Recorded At
+                            </th>
+                            <th className="text-left py-3 px-2 font-medium text-gray-600 text-sm">
+                              Actions
+                            </th>
                           </tr>
                         </thead>
                         <tbody>
                           {birthLogs.map((record, idx) => (
-                            <tr key={record.id || idx} className="border-b border-gray-100 hover:bg-gray-50">
+                            <tr
+                              key={record.id || idx}
+                              className="border-b border-gray-100 hover:bg-gray-50"
+                            >
                               <td className="py-3 px-2 flex flex-col">
-                                <span className="font-semibold">{record.reference_id || record.asset_id || '-'}</span>
-                                {record.asset_id && !record.reference_id ? <small className="text-xs text-gray-500">{record.asset_id}</small> : null}
+                                <span className="font-semibold">
+                                  {record.reference_id ||
+                                    record.asset_id ||
+                                    "-"}
+                                </span>
+                                {record.asset_id && !record.reference_id ? (
+                                  <small className="text-xs text-gray-500">
+                                    {record.asset_id}
+                                  </small>
+                                ) : null}
                               </td>
-                              <td className="py-3 px-2 text-sm">{record.birthdate ? new Date(record.birthdate).toLocaleDateString() : '-'}</td>
-                              <td className="py-3 px-2 text-sm">{record.gender || '-'}</td>
-                              <td className="py-3 px-2 text-sm">{record.birth_weight || '-'}</td>
-                              <td className="py-3 px-2 text-sm">{record.created_at ? new Date(record.created_at).toLocaleString() : '-'}</td>
+                              <td className="py-3 px-2 text-sm">
+                                {record.birthdate
+                                  ? new Date(
+                                      record.birthdate
+                                    ).toLocaleDateString()
+                                  : "-"}
+                              </td>
+                              <td className="py-3 px-2 text-sm">
+                                {record.gender || "-"}
+                              </td>
+                              <td className="py-3 px-2 text-sm">
+                                {record.birth_weight || "-"}
+                              </td>
+                              <td className="py-3 px-2 text-sm">
+                                {record.created_at
+                                  ? new Date(record.created_at).toLocaleString()
+                                  : "-"}
+                              </td>
                               <td className="py-3 px-2">
                                 <div className="flex items-center space-x-1">
-                                  <Button size="sm" variant="ghost" className="h-7 w-7 p-0 border">
+                                  <Button
+                                    size="sm"
+                                    variant="ghost"
+                                    className="h-7 w-7 p-0 border"
+                                  >
                                     <Eye className="h-3 w-3" />
                                   </Button>
                                 </div>
@@ -572,7 +624,6 @@ const BreedingReproduction = () => {
                 </CardContent>
               </Card>
             </div>
-
           </div>
         </main>
 
@@ -581,7 +632,7 @@ const BreedingReproduction = () => {
           onOpenChange={setBirthModalOpen}
           onSuccess={() => {
             setBirthModalOpen(false);
-          }}          
+          }}
         />
 
         <BreedingTrackingModal

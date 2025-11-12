@@ -16,6 +16,7 @@ import {
   TrendingDown,
   PawPrint,
   Icon,
+  ChevronRight,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -29,8 +30,10 @@ import { useRouter } from "next/navigation";
 import { RecordVaccinationScheduleDialog } from "@/components/health/record-vaccination-schedule-dialog";
 import { RecordHealthIssueDialog } from "@/components/health/record-health-issue-dialog";
 import { Toaster } from "sonner";
+import { useLocalization } from "@/context/LocalizationContext";
 
 export default function Dashboard() {
+    const { t, setLocale, locale } = useLocalization();
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const { user, logout } = useAuth();
   const [dashboardSummary, setDashboardSummary] = useState<any>({});
@@ -67,7 +70,7 @@ export default function Dashboard() {
   };
   return (
     <AuthGuard requireAuth={true}>
-      <div className=" py-16 lg:py-0 ">
+      <div className="  lg:py-0 ">
         <div className="flex">
           {/* Mobile menu button */}
 
@@ -76,115 +79,190 @@ export default function Dashboard() {
             {/* Welcome Banner */}
             <div className="bg-gradient-to-r from-[#17a34a] to-blue-600 rounded-lg p-6 mb-6 text-white ">
               <h2 className="text-2xl font-bold mb-2">
-                Welcome back, {user?.role || "User"}!
+                {t("title_Dashboard")} {user?.role || "User"}!
               </h2>
               <p className="text-green-100">
-                {"Here's what's happening on your farm today"}
+                {t("sub_title_Dashboard")}
               </p>
             </div>
 
             {/* Metrics Cards */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 lg:gap-6 mb-6 lg:mb-8">
+            <div className="grid grid-cols-2 lg:grid-cols-3 gap-4 lg:gap-6 mb-6 lg:mb-8">
+              {/* Total Cattle */}
               <Card
-                className="border-0 shadow-lg hover:shadow-xl transition-shadow duration-300 animate__animated animate__fadeInRight"
+                className="animate__animated animate__fadeInRight"
                 style={{ animationDelay: "0s" }}
               >
-                <CardHeader className="flex flex-row items-center justify-between pb-2">
-                  <CardTitle className="text-sm font-medium text-gray-600">
-                    Total Cattle
-                  </CardTitle>
-                  <div className="p-2 bg-green-100 rounded-lg">
-                    {/* <Users className="w-6 h-6 text-green-600" /> */}
-                    <PawPrint className="w-6 h-6 text-green-600" />
+                <CardContent className="p-4">
+                  <div className="flex items-center justify-between space-x-3">
+                    <div className="p-2 rounded-lg bg-green-100">
+                      <PawPrint className="w-6 h-6 text-green-600" />
+                    </div>
+                    <div>
+                      <div className="text-2xl font-bold text-right text-green-600">
+                        {dashboardSummary?.Total_Animals || 0}
+                      </div>
+                      <div className="text-sm text-gray-600">Total Cattle</div>
+                    </div>
                   </div>
-                </CardHeader>
-                <CardContent>
-                  <div className="text-2xl font-bold text-gray-900">
-                    {dashboardSummary?.Total_Animals || 0}
-                  </div>
-                  {/* <p className="text-xs text-gray-600 mt-1">{stat.change}</p> */}
                 </CardContent>
               </Card>
 
+              {/* Health Status */}
               <Card
-                className="border-0 shadow-lg hover:shadow-xl transition-shadow duration-300 animate__animated animate__fadeInRight"
+                className="animate__animated animate__fadeInRight"
                 style={{ animationDelay: "0.25s" }}
               >
-                <CardHeader className="flex flex-row items-center justify-between pb-2">
-                  <CardTitle className="text-sm font-medium text-gray-600">
-                    Health Status
-                  </CardTitle>
-                  <div className="p-2 bg-green-100 rounded-lg">
-                    {/* <Users className="w-6 h-6 text-green-600" /> */}
-                    <Heart className="w-6 h-6 text-green-600" />
+                <CardContent className="p-4">
+                  <div className="flex items-center justify-between space-x-3">
+                    <div className="p-2 rounded-lg bg-green-100">
+                      <Heart className="w-6 h-6 text-green-600" />
+                    </div>
+                    <div>
+                      <div className="text-2xl font-bold text-right text-green-600">
+                        {dashboardSummary?.Health_Status || 0}%
+                      </div>
+                      <div className="text-sm text-gray-600">Health Status</div>
+                    </div>
                   </div>
-                </CardHeader>
-                <CardContent>
-                  <div className="text-2xl font-bold text-gray-900">
-                    {dashboardSummary?.Health_Status || 0}%
-                  </div>
-                  {/* <p className="text-xs text-gray-600 mt-1">{stat.change}</p> */}
                 </CardContent>
               </Card>
 
+              {/* Monthly Revenue */}
               <Card
-                className="border-0 shadow-lg hover:shadow-xl transition-shadow duration-300 animate__animated animate__fadeInRight"
+                className="animate__animated animate__fadeInRight col-span-2 lg:col-span-1"
                 style={{ animationDelay: "0.5s" }}
               >
-                <CardHeader className="flex flex-row items-center justify-between pb-2">
-                  <CardTitle className="text-sm font-medium text-gray-600">
-                    Monthly Revenue
-                  </CardTitle>
-                  <div className="p-2 bg-orange-100 rounded-lg">
-                    {/* <Users className="w-6 h-6 text-green-600" /> */}
-                    <DollarSign className="w-6 h-6 text-orange-600" />
+                <CardContent className="p-4">
+                  <div className="flex items-center justify-between space-x-3">
+                    <div className="p-2 rounded-lg bg-orange-100">
+                      <DollarSign className="w-6 h-6 text-orange-600" />
+                    </div>
+                    <div>
+                      <div className="text-2xl font-bold text-right text-orange-600">
+                        ৳ {dashboardSummary?.Monthly_Revenue || 0}
+                      </div>
+                      <div className="text-sm text-gray-600">
+                        Monthly Revenue
+                      </div>
+                    </div>
                   </div>
-                </CardHeader>
-                <CardContent>
-                  <div className="text-2xl font-bold text-gray-900">
-                    ৳ {dashboardSummary.Monthly_Revenue || 0}
-                  </div>
-                  {/* <p className="text-xs text-gray-600 mt-1">{stat.change}</p> */}
                 </CardContent>
               </Card>
             </div>
 
-            {/* Quick Actions */}
-            <div className="mb-8 bg-white p-7 rounded-lg shadow-lg animate__animated animate__fadeIn">
+            {/* Quick Actions for Desktop */}
+            <div className="mb-8 bg-white p-7 rounded-lg shadow-lg animate__animated animate__fadeIn hidden lg:block">
               <h3 className="text-lg font-semibold text-gray-900 mb-4">
                 Quick Actions
               </h3>
-              <div className="grid lg:grid-cols-3 gap-3">
+
+              <div className="grid lg:grid-cols-4 gap-3">
                 <Button
                   onClick={() => {
                     router.push("/livestock/add_cow");
                   }}
-                  className="bg-green-600 hover:bg-green-700 h-20"
+                  className="bg-green-600 hover:bg-green-700 lg:h-20"
                 >
                   <Plus className="w-4 h-4 mr-2" />
                   Add Animal
                 </Button>
+
                 <Button
                   onClick={() => {
                     setVaccinationDialogOpen(true);
                   }}
-                  className="bg-blue-600 hover:bg-blue-700 h-20"
+                  className="bg-blue-600 hover:bg-blue-700 lg:h-20"
                 >
                   <Calendar className="w-4 h-4 mr-2" />
                   Schedule Vaccination
                 </Button>
-                {/* <Button className="bg-purple-600 hover:bg-purple-700 h-12">
+
+                <Button className="bg-purple-600 hover:bg-purple-700 lg:h-20">
                   <TrendingUp className="w-4 h-4 mr-2" />
                   Record Production
-                </Button> */}
+                </Button>
+
                 <Button
                   onClick={() => {
                     setRecordDialogOpen(true);
                   }}
-                  className="bg-red-600 hover:bg-red-700 h-20"
+                  className="bg-red-600 hover:bg-red-700 lg:h-20"
                 >
                   <Plus className="w-4 h-4 mr-2" />
                   Record Health Issue
+                </Button>
+              </div>
+            </div>
+
+            {/* Quick Actions for Mobile */}
+            <div className="mb-8 bg-white p-4 rounded-xl shadow-lg animate__animated animate__fadeIn block lg:hidden">
+              <h3 className="text-lg font-semibold text-gray-900 mb-4">
+                Quick Actions
+              </h3>
+
+              <div className="flex flex-col justify-start gap-2 text-black">
+                <Button
+                  onClick={() => {
+                    router.push("/livestock/add_cow");
+                  }}
+                  className="bg-gray-50 hover:bg-gray-100 w-full flex justify-between text-gray-800 h-14 rounded-full  "
+                >
+                  <div className="flex items-center gap-3">
+                    <div className="bg-green-500 rounded-full p-2">
+                      <Plus className="text-white w-6 h-6 " />
+                    </div>{" "}
+                    Add Animal
+                  </div>
+                  <div className="bg-gray-200 rounded-full text-gray-500 text-center">
+                    <ChevronRight />
+                  </div>
+                </Button>
+
+                <Button
+                  onClick={() => {
+                    setVaccinationDialogOpen(true);
+                  }}
+                  className="bg-gray-50 hover:bg-gray-100 w-full flex justify-between text-gray-800 h-14 rounded-full  "
+                >
+                  <div className="flex items-center gap-3">
+                    <div className="bg-blue-500 rounded-full p-2">
+                      <Calendar className="text-white w-6 h-6 " />
+                    </div>{" "}
+                    Schedule Vaccination
+                  </div>
+                  <div className="bg-gray-200 rounded-full text-gray-500 text-center">
+                    <ChevronRight />
+                  </div>
+                </Button>
+
+                <Button className="bg-gray-50 hover:bg-gray-100 w-full flex justify-between text-gray-800 h-14 rounded-full  ">
+                  <div className="flex items-center gap-3">
+                    <div className="bg-purple-500 rounded-full p-2">
+                      <TrendingUp className="text-white w-6 h-6 " />
+                    </div>{" "}
+                    Record Production
+                  </div>
+                  <div className="bg-gray-200 rounded-full text-gray-500 text-center">
+                    <ChevronRight />
+                  </div>
+                </Button>
+
+                <Button
+                  onClick={() => {
+                    setRecordDialogOpen(true);
+                  }}
+                  className="bg-gray-50 hover:bg-gray-100 w-full flex justify-between text-gray-800 h-14 rounded-full  "
+                >
+                  <div className="flex items-center gap-3">
+                    <div className="bg-red-500 rounded-full p-2">
+                      <Plus className="text-white w-6 h-6 " />
+                    </div>{" "}
+                    Record Health Issue
+                  </div>
+                  <div className="bg-gray-200 rounded-full text-gray-500 text-center">
+                    <ChevronRight />
+                  </div>
                 </Button>
               </div>
             </div>
@@ -300,6 +378,7 @@ export default function Dashboard() {
                 </Card>
               </div> */}
             </div>
+
             <Toaster richColors />
           </main>
         </div>

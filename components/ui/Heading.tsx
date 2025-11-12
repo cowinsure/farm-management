@@ -1,10 +1,15 @@
 import React from "react";
 interface HeadingProps {
   heading: string;
+  className?: string;
 }
-const Heading = ({ heading }: HeadingProps) => {
+const Heading = ({ heading, className }: HeadingProps) => {
   return (
-    <h2 className="text-2xl lg:text-3xl font-bold text-gray-900 animate__animated animate__fadeIn">{heading}</h2>
+    <h2
+      className={`text-xl lg:text-3xl text-green-800 block lg:hidden tracking-wide animate__animated animate__fadeIn mb-2 font-semibold ${className}`}
+    >
+      {heading}
+    </h2>
   );
 };
 

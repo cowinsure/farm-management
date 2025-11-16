@@ -342,14 +342,14 @@ export default function HealthVaccination() {
                       onClick={() => setVaccinationDialogOpen(true)}
                     >
                       <Calendar className="w-4 h-4" />
-                       Vaccination
+                      Vaccination
                     </button>
                     <button
                       className=" bg-emerald-700 rounded-lg py-2 px-2 flex items-center justify-center gap-2 font-semibold text-white lg:hidden"
                       onClick={() => setRecordDialogOpen(true)}
                     >
                       <Plus className="w-4 h-4" />
-                       Health
+                      Health
                     </button>
                   </div>
                 </div>
@@ -373,129 +373,82 @@ export default function HealthVaccination() {
           />
 
           {/* Summary Cards */}
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-            {/* Total animals */}
-            <Card
-              className="animate__animated animate__fadeInRight"
-              style={{ animationDelay: "0s" }}
-            >
-              <CardContent className="p-4">
-                <div className="flex items-center justify-between space-x-2">
-                  <LuPawPrint className="w-8 h-8 text-purple-600" />
-                  <div>
-                    <div className="text-2xl font-bold text-right text-purple-600">
-                      {summary.Total}
-                    </div>
-                    <div className="text-sm text-gray-600">Total Animals</div>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
-            {/* Due Vaccination */}
-            <Card
-              className="animate__animated animate__fadeInRight"
-              style={{ animationDelay: "0s" }}
-            >
-              <CardContent className="p-4">
-                <div className="flex items-center justify-between space-x-2">
-                  <Syringe className="w-8 h-8 text-blue-600" />
-                  <div>
-                    <div className="text-2xl font-bold text-right text-blue-600">
-                      {vaccinationDue}
-                    </div>
-                    <div className="text-sm text-gray-600">
-                      Due Vaccinations
+          <div className="mt-6 lg:mt-0 mb-6 lg:mb-8 border lg:border-none rounded-lg lg:rounded-none p-4 lg:p-0 bg-green-50 lg:bg-transparent">
+            <Heading heading="Quick Stats" />
+            <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 lg:gap-6 lg:mb-8">
+              {/* Total animals */}
+              <Card
+                className="animate__animated animate__fadeInRight"
+                style={{ animationDelay: "0s" }}
+              >
+                <CardContent className="p-4">
+                  <div className="flex items-center justify-between space-x-2">
+                    <LuPawPrint className="w-8 h-8 text-purple-600" />
+                    <div>
+                      <div className="text-2xl font-bold text-right text-purple-600">
+                        {summary.Total}
+                      </div>
+                      <div className="text-sm text-gray-600">Total Animals</div>
                     </div>
                   </div>
-                </div>
-              </CardContent>
-            </Card>
-            {/* Sick animals */}
-            <Card
-              className="animate__animated animate__fadeInRight"
-              style={{ animationDelay: "0.25s" }}
-            >
-              <CardContent className="p-4">
-                <div className="flex items-center justify-between space-x-2">
-                  <Heart className="w-8 h-8 text-red-600" />
-                  <div>
-                    <div className="text-2xl font-bold text-right text-red-600">
-                      {summary.Sick > 0 ? summary.Sick : 0}
-                    </div>
-                    <div className="text-sm text-gray-600">Sick Animals</div>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
-            {/* Critical Animals */}
-            <Card
-              className="animate__animated animate__fadeInRight"
-              style={{ animationDelay: "0.25s" }}
-            >
-              <CardContent className="p-4">
-                <div className="flex items-center justify-between space-x-2">
-                  <TiWarningOutline className="w-8 h-8 text-amber-600" />
-                  <div>
-                    <div className="text-2xl font-bold text-right text-amber-600">
-                      {summary.Critical > 0 ? summary.Critical : 0}
-                    </div>
-                    <div className="text-sm text-gray-600">
-                      Critical Animals
+                </CardContent>
+              </Card>
+              {/* Due Vaccination */}
+              <Card
+                className="animate__animated animate__fadeInRight"
+                style={{ animationDelay: "0s" }}
+              >
+                <CardContent className="p-4">
+                  <div className="flex items-center justify-between space-x-2">
+                    <Syringe className="w-8 h-8 text-blue-600" />
+                    <div>
+                      <div className="text-2xl font-bold text-right text-blue-600">
+                        {vaccinationDue}
+                      </div>
+                      <div className="text-sm text-gray-600">
+                        Due Vaccinations
+                      </div>
                     </div>
                   </div>
-                </div>
-              </CardContent>
-            </Card>
-
-            {/* <Card>
-          <CardContent className="p-4">
-            <div className="flex items-center space-x-2">
-              <TriangleAlert className="w-8 h-8 text-red-600" />
-              <div>
-                <div className="text-2xl font-bold text-red-600">{summary.Critical}</div>
-                <div className="text-sm text-gray-600">Critical Animals</div>
-              </div>
+                </CardContent>
+              </Card>
+              {/* Sick animals */}
+              <Card
+                className="animate__animated animate__fadeInRight"
+                style={{ animationDelay: "0.25s" }}
+              >
+                <CardContent className="p-4">
+                  <div className="flex items-center justify-between space-x-2">
+                    <Heart className="w-8 h-8 text-red-600" />
+                    <div>
+                      <div className="text-2xl font-bold text-right text-red-600">
+                        {summary.Sick > 0 ? summary.Sick : 0}
+                      </div>
+                      <div className="text-sm text-gray-600">Sick Animals</div>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+              {/* Critical Animals */}
+              <Card
+                className="animate__animated animate__fadeInRight"
+                style={{ animationDelay: "0.25s" }}
+              >
+                <CardContent className="p-4">
+                  <div className="flex items-center justify-between space-x-2">
+                    <TiWarningOutline className="w-8 h-8 text-amber-600" />
+                    <div>
+                      <div className="text-2xl font-bold text-right text-amber-600">
+                        {summary.Critical > 0 ? summary.Critical : 0}
+                      </div>
+                      <div className="text-sm text-gray-600">
+                        Critical Animals
+                      </div>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
             </div>
-          </CardContent>
-        </Card> */}
-
-            {/* <Card>
-                <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                  <CardTitle className="text-sm font-medium text-gray-600">{summary.Critical}</CardTitle>
-                  <div className="w-4 h-4 bg-green-100 rounded flex items-center justify-center">
-                    <div className="w-2 h-2 bg-red-600 rounded-full"></div>
-                  </div>
-                </CardHeader>
-                <CardContent>
-                  <div className="text-sm text-gray-600">Critical Animals</div>
-                </CardContent>
-              </Card> */}
-
-            {/* <Card>
-                <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                  <CardTitle className="text-sm font-medium text-gray-600">85</CardTitle>
-                  <div className="w-4 h-4 bg-green-100 rounded flex items-center justify-center">
-                    <div className="w-2 h-2 bg-green-600 rounded-full"></div>
-                  </div>
-                </CardHeader>
-                <CardContent>
-                  <div className="text-sm text-gray-600">Healthy Animals</div>
-                </CardContent>
-              </Card> */}
-
-            {/* <Card>
-                <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                  <CardTitle className="text-sm font-medium text-gray-600">
-                    {summary.Total > 0 ? `${Math.round(((summary.Total - summary.Critical) / summary.Total) * 100)}%` : "0%"}
-                  </CardTitle>
-                  <div className="w-4 h-4 bg-purple-100 rounded flex items-center justify-center">
-                    <div className="w-2 h-2 bg-purple-600 rounded-full"></div>
-                  </div>
-                </CardHeader>
-                <CardContent>
-                  <div className="text-sm text-gray-600">Health Rate</div>
-                </CardContent>
-              </Card> */}
           </div>
 
           {/* Vaccination Schedule (API-driven) Table */}
@@ -666,10 +619,7 @@ export default function HealthVaccination() {
             </Card>
 
             {/* Health Records */}
-            <Card
-            // className="animate__animated animate__fadeIn"
-            // style={{ animationDelay: "0.5s" }}
-            >
+            <Card>
               <CardHeader>
                 <div className="flex flex-col lg:flex-row items-start lg:items-center justify-between gap-4">
                   <CardTitle className="flex items-center">

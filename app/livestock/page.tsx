@@ -173,7 +173,6 @@ export default function LivestockInventory() {
       <div className="flex relative pb-10 lg:py-0">
         {/* Main Content */}
         <main className="flex-1 lg:ml-0 lg:px-4">
-          
           {/* Page Header */}
           <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-6">
             <SectionHeading
@@ -252,7 +251,8 @@ export default function LivestockInventory() {
                         {total}
                       </div>
                       <div className="text-sm text-gray-600">
-                        <span className="hidden md:block">Total</span> Animals
+                        <span className="hidden md:inline-flex">Total</span>{" "}
+                        Animals
                       </div>
                     </div>
                   </div>
@@ -302,7 +302,8 @@ export default function LivestockInventory() {
           {/* Animal Registry */}
           <Card className="animate__animated animate__fadeIn">
             <CardHeader>
-              <CardTitle className="text-lg lg:text-xl">
+              <CardTitle className="flex items-center text-lg lg:text-xl gap-2">
+                <PawPrint className="w-5 h-5 text-green-600" />
                 Animal Registry
               </CardTitle>
               <div className="flex flex-col lg:flex-row items-start lg:items-center justify-between gap-4">

@@ -20,6 +20,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Plus, Receipt } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { log } from "console";
+import { useLocalization } from "@/context/LocalizationContext";
 
 interface FinancialModalProps {
   type: "income" | "expense";
@@ -68,6 +69,7 @@ const farmerName = [
 ];
 
 const FinancialModal = ({ type }: FinancialModalProps) => {
+  const { t, setLocale, locale } = useLocalization();
   const [open, setOpen] = useState(false);
   const [formData, setFormData] = useState({
     category: "",
@@ -207,7 +209,7 @@ const FinancialModal = ({ type }: FinancialModalProps) => {
           ) : (
             <Receipt className="w-4 h-4 mr-2" />
           )}
-          Add {type === "income" ? "Income" : "Expense"}
+          {type === "income" ? `${t("add_income")}` : `${t("add_expense")}`}
         </Button>
       </DialogTrigger>
       <DialogContent className="sm:max-w-[425px]">
@@ -218,7 +220,7 @@ const FinancialModal = ({ type }: FinancialModalProps) => {
         </DialogHeader>
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
-            <Label htmlFor="category">Category</Label>
+            <Label htmlFor="category">{t("category")}</Label>
             <Select
               value={formData.category}
               onValueChange={(value) =>
@@ -234,12 +236,12 @@ const FinancialModal = ({ type }: FinancialModalProps) => {
               </SelectTrigger>
               <SelectContent>
                 {loadingLedgers ? (
-                  <div className="px-4 py-2 text-gray-500">Loading...</div>
+                  <div className="px-4 py-2 text-gray-500">{t("loading")}</div>
                 ) : ledgerError ? (
                   <div className="px-4 py-2 text-red-500">{ledgerError}</div>
                 ) : ledgerOptions.length === 0 ? (
                   <div className="px-4 py-2 text-gray-500">
-                    No categories found
+                    {t("no_category")}
                   </div>
                 ) : (
                   ledgerOptions.map((ledger) => (
@@ -254,7 +256,7 @@ const FinancialModal = ({ type }: FinancialModalProps) => {
 
           {formData.category && formData.category.toString() === "2" ? (
             <div>
-              <Label htmlFor="category">Transfer To</Label>
+              <Label htmlFor="category">{t("transfer_to")}</Label>
               <Select
                 value={formData.farmerName}
                 onValueChange={(value) =>
@@ -264,18 +266,22 @@ const FinancialModal = ({ type }: FinancialModalProps) => {
                 <SelectTrigger>
                   <SelectValue
                     placeholder={
-                      loadingLedgers ? "Loading..." : "Select category"
+                      loadingLedgers
+                        ? `${t("loading")}`
+                        : `${t("select_category")}`
                     }
                   />
                 </SelectTrigger>
                 <SelectContent>
                   {loadingLedgers ? (
-                    <div className="px-4 py-2 text-gray-500">Loading...</div>
+                    <div className="px-4 py-2 text-gray-500">
+                      {t("loading")}
+                    </div>
                   ) : ledgerError ? (
                     <div className="px-4 py-2 text-red-500">{ledgerError}</div>
                   ) : ledgerOptions.length === 0 ? (
                     <div className="px-4 py-2 text-gray-500">
-                      No categories found
+                      {t("no_category")}
                     </div>
                   ) : (
                     farmerName.map((farmer) => (
@@ -293,7 +299,7 @@ const FinancialModal = ({ type }: FinancialModalProps) => {
 
           <div className="grid grid-cols-2 gap-4">
             <div>
-              <Label htmlFor="amount">Amount ($)</Label>
+              <Label htmlFor="amount">{t("amount")} ($)</Label>
               <Input
                 id="amount"
                 type="number"
@@ -306,7 +312,7 @@ const FinancialModal = ({ type }: FinancialModalProps) => {
               />
             </div>
             <div>
-              <Label htmlFor="date">Date</Label>
+              <Label htmlFor="date">{t("date")}</Label>
               <Input
                 id="date"
                 type="date"
@@ -320,14 +326,14 @@ const FinancialModal = ({ type }: FinancialModalProps) => {
           </div>
 
           <div>
-            <Label htmlFor="description">Description</Label>
+            <Label htmlFor="description">{t("description")}</Label>
             <Textarea
               id="description"
               value={formData.description}
               onChange={(e) =>
                 setFormData({ ...formData, description: e.target.value })
               }
-              placeholder="Enter description..."
+              placeholder={t("enter_description")}
               required
             />
           </div>
@@ -338,7 +344,7 @@ const FinancialModal = ({ type }: FinancialModalProps) => {
               variant="outline"
               onClick={() => setOpen(false)}
             >
-              Cancel
+              {t("cancel")}
             </Button>
             <Button
               type="submit"
@@ -349,7 +355,7 @@ const FinancialModal = ({ type }: FinancialModalProps) => {
               }
               disabled={submitting}
             >
-              {submitting ? "Saving..." : "Record"}
+              {submitting ? `${t("saving...")}` : `${t("record")}`}
             </Button>
           </div>
         </form>

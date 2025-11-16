@@ -36,13 +36,11 @@ export default function RootLayout({
       </head>
       <body className={`${urbanist.className}`}>
         <LocalizationProvider>
-
-       
-        <CowRegistrationProvider>
-          <ClientRootLayout>{children}</ClientRootLayout>
-        </CowRegistrationProvider>
-         </LocalizationProvider>
-        <Toaster  />
+          <CowRegistrationProvider>
+            <ClientRootLayout>{children}</ClientRootLayout>
+          </CowRegistrationProvider>
+          <Toaster  />
+        </LocalizationProvider>
       </body>
     </html>
   );

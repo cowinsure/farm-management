@@ -120,7 +120,9 @@ export default function Dashboard() {
                       <div className="text-2xl font-bold text-right text-green-600">
                         {dashboardSummary?.Health_Status || 0}%
                       </div>
-                      <div className="text-sm text-gray-600">Health Status</div>
+                      <div className="text-sm text-gray-600">
+                        Health <span className="hidden md:inline-block">Status</span>
+                      </div>
                     </div>
                   </div>
                 </CardContent>

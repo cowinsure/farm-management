@@ -41,6 +41,7 @@ import { Span } from "next/dist/trace";
 import { GrMoney } from "react-icons/gr";
 import { FaPercent } from "react-icons/fa";
 import Heading from "@/components/ui/Heading";
+import SectionHeading from "@/helper/SectionHeading";
 
 export default function FinancialManagement() {
   const [sidebarOpen, setSidebarOpen] = useState(false);
@@ -187,113 +188,161 @@ export default function FinancialManagement() {
         <main className="flex-1 lg:ml-0 lg:px-4">
           {/* Page Header */}
           <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-6">
-            <Heading heading="Financial Management" />
-            <div className="flex flex-col sm:flex-row gap-2 sm:gap-3 w-full sm:w-auto">
+            <SectionHeading
+              sectionTitle="Financial Management"
+              description="Manage your farms finances"
+            />
+            <div className="hidden lg:flex flex-col sm:flex-row gap-2 sm:gap-3 w-full sm:w-auto">
               <FinancialModal type="income" />
               <FinancialModal type="expense" />
             </div>
           </div>
 
+          {/* Breeding and Reproduction btn is here for mobile devices */}
+          <Card
+            className="block lg:hidden animate__animated animate__fadeInRight border border-green-200 bg-gradient-to-r from-emerald-50 via-green-50 to-teal-50
+           shadow-none w-full"
+            style={{ animationDelay: "0s" }}
+          >
+            <CardContent className="p-0.5">
+              <div className="flex items-center gap-2">
+                <div className="p-1 rounded-lg flex gap-2 items-center">
+                  <img
+                    src="/Financial.png"
+                    alt="cow image"
+                    width={80}
+                    className="rounded-lg drop-shadow-md scale-150"
+                  />
+                </div>
+                <div className="p-2 w-full">
+                  <div className="mb-2">
+                    <h1 className="font-bold text-gray-700 text-lg">
+                      Add income & expences
+                    </h1>
+                    <p className="font-medium text-gray-500 text-sm">
+                      Click to add details
+                    </p>
+                  </div>
+                  <div className="flex items-center gap-2 *:w-[50%]">
+                    {/* Btn for mobile */}
+
+                    <FinancialModal type="income" />
+                    <FinancialModal type="expense" />
+                  </div>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+
           {/* Summary Cards */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 lg:gap-6 mb-6 lg:mb-8">
-            <Card
-              className="animate__animated animate__fadeInRight"
-              style={{ animationDelay: "0s" }}
-            >
-              <CardContent className="p-4">
-                <div className="flex items-center justify-between space-x-2">
-                  <span className="text-3xl font-extrabold text-green-600">
-                    ৳
-                  </span>
+          <div className="mt-6 lg:mt-0 mb-6 lg:mb-8 border lg:border-none rounded-lg lg:rounded-none p-4 lg:p-0 bg-green-50 lg:bg-transparent">
+            <Heading heading="Quick Stats" />
+            <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 lg:gap-6 lg:mb-8">
+              <Card
+                className="animate__animated animate__fadeInRight"
+                style={{ animationDelay: "0s" }}
+              >
+                <CardContent className="p-4">
+                  <div className="flex items-center justify-between space-x-2">
+                    <span className="text-3xl font-extrabold text-green-600">
+                      ৳
+                    </span>
 
-                  <div>
-                    <div className="text-2xl font-bold text-green-600">
-                      {summary &&
-                      summary["Monthly Revenue"] !== undefined &&
-                      summary["Monthly Revenue"] !== null
-                        ? `৳${summary["Monthly Revenue"].toLocaleString()}`
-                        : "-"}
-                    </div>
-                    <div className="text-sm text-gray-600">Monthly Revenue</div>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
-
-            <Card
-              className="animate__animated animate__fadeInRight"
-              style={{ animationDelay: "0.25s" }}
-            >
-              <CardContent className="p-4">
-                <div className="flex items-center justify-between space-x-2">
-                  <CreditCard className="w-8 h-8 text-red-600" />
-
-                  <div>
-                    <div className="text-2xl font-bold text-red-600">
-                      {summary &&
-                      summary["Monthly Expense"] !== undefined &&
-                      summary["Monthly Expense"] !== null
-                        ? `৳${summary["Monthly Expense"].toLocaleString()}`
-                        : "-"}
-                    </div>
-                    <div className="text-sm text-gray-600">
-                      Monthly Expenses
+                    <div>
+                      <div className="text-2xl font-bold text-green-600">
+                        {summary &&
+                        summary["Monthly Revenue"] !== undefined &&
+                        summary["Monthly Revenue"] !== null
+                          ? `${summary["Monthly Revenue"].toLocaleString()}`
+                          : "-"}
+                      </div>
+                      <div className="text-sm text-gray-600 text-right">
+                        <span className="hidden md:inline-flex">Monthly</span>{" "}
+                        Revenue
+                      </div>
                     </div>
                   </div>
-                </div>
-              </CardContent>
-            </Card>
+                </CardContent>
+              </Card>
 
-            <Card
-              className="animate__animated animate__fadeInRight"
-              style={{ animationDelay: "0.5s" }}
-            >
-              <CardContent className="p-4">
-                <div className="flex items-center justify-between space-x-2">
-                  <GrMoney className="w-8 h-8 text-blue-600" />
+              <Card
+                className="animate__animated animate__fadeInRight"
+                style={{ animationDelay: "0.25s" }}
+              >
+                <CardContent className="p-4">
+                  <div className="flex items-center justify-between space-x-2">
+                    <CreditCard className="w-8 h-8 text-red-600" />
 
-                  <div>
-                    <div className="text-2xl font-bold text-blue-600">
-                      {summary &&
-                      summary["Net Profit"] !== undefined &&
-                      summary["Net Profit"] !== null
-                        ? `৳${summary["Net Profit"].toLocaleString()}`
-                        : "-"}
+                    <div>
+                      <div className="text-2xl font-bold text-red-600">
+                        {summary &&
+                        summary["Monthly Expense"] !== undefined &&
+                        summary["Monthly Expense"] !== null
+                          ? `${summary["Monthly Expense"].toLocaleString()}`
+                          : "-"}
+                      </div>
+                      <div className="text-sm text-gray-600">
+                        <span className="hidden md:inline-flex">Monthly</span>{" "}
+                        Expenses
+                      </div>
                     </div>
-                    <div className="text-sm text-gray-600">Net Profit</div>
                   </div>
-                </div>
-              </CardContent>
-            </Card>
+                </CardContent>
+              </Card>
 
-            <Card
-              className="animate__animated animate__fadeInRight"
-              style={{ animationDelay: "0.75s" }}
-            >
-              <CardContent className="p-4">
-                <div className="flex items-center justify-between space-x-2">
-                  <div className="rounded-full flex items-center justify-center">
-                    <FaPercent className="w-6 h-6 text-purple-600 font-bold" />
-                  </div>
+              <Card
+                className="animate__animated animate__fadeInRight"
+                style={{ animationDelay: "0.5s" }}
+              >
+                <CardContent className="p-4">
+                  <div className="flex items-center justify-between space-x-2">
+                    <GrMoney className="w-8 h-8 text-blue-600" />
 
-                  <div>
-                    <div className="text-2xl font-bold text-purple-600">
-                      {summary &&
-                      summary["Profit Margin"] !== undefined &&
-                      summary["Profit Margin"] !== null ? (
-                        <div>
-                          {summary["Profit Margin"]}
-                          <small className="text-xs">%</small>
-                        </div>
-                      ) : (
-                        "-"
-                      )}
+                    <div>
+                      <div className="text-2xl font-bold text-blue-600">
+                        {summary &&
+                        summary["Net Profit"] !== undefined &&
+                        summary["Net Profit"] !== null
+                          ? `${summary["Net Profit"].toLocaleString()}`
+                          : "-"}
+                      </div>
+                      <div className="text-sm text-gray-600 text-right">
+                        Net Profit
+                      </div>
                     </div>
-                    <div className="text-sm text-gray-600">Profit Margin</div>
                   </div>
-                </div>
-              </CardContent>
-            </Card>
+                </CardContent>
+              </Card>
+
+              <Card
+                className="animate__animated animate__fadeInRight"
+                style={{ animationDelay: "0.75s" }}
+              >
+                <CardContent className="p-4">
+                  <div className="flex items-center justify-between space-x-2">
+                    <div className="rounded-full flex items-center justify-center">
+                      <FaPercent className="w-6 h-6 text-purple-600 font-bold" />
+                    </div>
+
+                    <div>
+                      <div className="text-2xl font-bold text-purple-600 text-right">
+                        {summary &&
+                        summary["Profit Margin"] !== undefined &&
+                        summary["Profit Margin"] !== null ? (
+                          <div>
+                            {summary["Profit Margin"]}
+                            {/* <small className="text-xs">%</small> */}
+                          </div>
+                        ) : (
+                          "-"
+                        )}
+                      </div>
+                      <div className="text-sm text-gray-600">Profit Margin</div>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+            </div>
           </div>
 
           {/* Main Content Grid */}
@@ -303,7 +352,7 @@ export default function FinancialManagement() {
               <Card className="animate__animated animate__fadeIn">
                 <CardHeader>
                   <div className="flex flex-col lg:flex-row items-start lg:items-center justify-between gap-4">
-                    <CardTitle className="flex items-center">
+                    <CardTitle className="flex items-center text-lg lg:text-xl">
                       <TrendingUp className="w-5 h-5 mr-2" />
                       Recent Transactions
                     </CardTitle>
@@ -544,7 +593,7 @@ export default function FinancialManagement() {
               </Card> */}
               <Card className="animate__animated animate__fadeIn">
                 <CardHeader>
-                  <CardTitle className="flex items-center">
+                  <CardTitle className="flex items-center text-lg lg:text-xl">
                     <CreditCard className="w-5 h-5 mr-2 text-red-600" />
                     Expense Breakdown
                   </CardTitle>

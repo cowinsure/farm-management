@@ -41,7 +41,7 @@ export default function ClientDashboardLayout({
     <div className="min-h-screen bg-gradient-to-br from-[#edf7f4] to-[#f8fafc]">
       {/* Header */}
       {addCowRoute ? null : (
-        <header className="bg-green-50 border-b-4 border-green-400 shadow-[5px_1px_20px_rgba(34,197,94,0.7)] hidden lg:block">
+        <header className="bg-green-50 border-b-4 border-green-400 shadow-[5px_1px_20px_rgba(34,197,94,0.7)] block">
           <div className="w-full px-4 sm:px-6 lg:px-8">
             <div className="flex justify-between items-center h-16">
               <div className="flex items-center space-x-3">
@@ -63,7 +63,7 @@ export default function ClientDashboardLayout({
                 <span className="absolute -top-2 -right-2 bg-red-500 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">3</span>
               </div> */}
               <div
-                className="hidden md:flex items-center space-x-4 relative z-50"
+                className="flex items-center space-x-4 relative z-50"
                 onMouseEnter={handleMouseEnter}
                 onMouseLeave={handleMouseLeave}
               >

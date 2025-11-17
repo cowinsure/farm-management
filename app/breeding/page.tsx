@@ -24,8 +24,10 @@ import { BreedingStatusUpdateDialog } from "@/components/Breeding/BreedingStatus
 import { PencilIcon } from "lucide-react";
 import { BirthTrackingModal } from "@/components/Breeding/BirthTrackingModal";
 import SectionHeading from "@/helper/SectionHeading";
+import { useLocalization } from "@/context/LocalizationContext";
 
 const BreedingReproduction = () => {
+  const { t, locale, setLocale } = useLocalization();
   const loading = false;
   const [isBirthModalOpen, setBirthModalOpen] = useState(false);
   const [isBreedingModalOpen, setIsBreedingModalOpen] = useState(false);
@@ -88,8 +90,8 @@ const BreedingReproduction = () => {
           {/* Page Header */}
           <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-6">
             <SectionHeading
-              sectionTitle="Breeding & Reproduction"
-              description="Manage your farms reproductive numbers"
+              sectionTitle={t("breeding_reproduction")}
+              description={t("manage_reproductive_numbers")}
             />
             <div className="flex flex-col sm:flex-row gap-2 sm:gap-3 w-full sm:w-auto">
               <Button
@@ -97,14 +99,14 @@ const BreedingReproduction = () => {
                 onClick={() => setIsBreedingModalOpen(true)}
               >
                 <Heart className="w-4 h-4 mr-2" />
-                Record Breeding
+                {t("record_breeding")}
               </Button>
               <Button
                 className="bg-pink-600 hover:bg-pink-700"
                 onClick={() => setBirthModalOpen(true)}
               >
                 <TbMoodKid className="w-4 h-4 mr-2" />
-                Record Birth
+                {t("record_birth")}
               </Button>
             </div>
           </div>
@@ -126,7 +128,7 @@ const BreedingReproduction = () => {
                       15
                     </div>
                     <div className="text-sm text-gray-600">
-                      Pregnant Animals
+                      {t("pregnant_animals")}
                     </div>
                   </div>
                 </div>
@@ -145,7 +147,9 @@ const BreedingReproduction = () => {
                     <div className="text-2xl font-bold text-right text-pink-600">
                       8
                     </div>
-                    <div className="text-sm text-gray-600">Expected Births</div>
+                    <div className="text-sm text-gray-600">
+                      {t("expected_births")}
+                    </div>
                   </div>
                 </div>
               </CardContent>
@@ -163,7 +167,9 @@ const BreedingReproduction = () => {
                     <div className="text-2xl font-bold text-right text-orange-600">
                       23
                     </div>
-                    <div className="text-sm text-gray-600">Total Births</div>
+                    <div className="text-sm text-gray-600">
+                      {t("total_births")}
+                    </div>
                   </div>
                 </div>
               </CardContent>
@@ -183,7 +189,9 @@ const BreedingReproduction = () => {
                     <div className="text-2xl font-bold text-right text-purple-600">
                       89
                     </div>
-                    <div className="text-sm text-gray-600">Success Rate</div>
+                    <div className="text-sm text-gray-600">
+                      {t("success_rate")}
+                    </div>
                   </div>
                 </div>
               </CardContent>
@@ -198,26 +206,30 @@ const BreedingReproduction = () => {
                   <div className="flex flex-col lg:flex-row items-start lg:items-center justify-between gap-4">
                     <CardTitle className="flex items-center">
                       <Heart className="w-5 h-5 mr-2 text-blue-600" />
-                      Active Breeding Records
+                      {t("active_breeding_records")}
                     </CardTitle>
                     <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2 w-full lg:w-auto">
                       <div className="relative">
                         <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
                         <Input
-                          placeholder="Search animal..."
+                          placeholder={t("search_animals")}
                           onChange={(e) => console.log(e)}
                           className="pl-10 w-full sm:w-48"
                         />
                       </div>
                       <Select>
                         <SelectTrigger className="w-full sm:w-32">
-                          <SelectValue placeholder="Status" />
+                          <SelectValue placeholder={t("all_status")} />
                         </SelectTrigger>
                         <SelectContent>
-                          <SelectItem value="all">All Status</SelectItem>
-                          <SelectItem value="pending">Pending</SelectItem>
-                          <SelectItem value="confirmed">Confirmed</SelectItem>
-                          <SelectItem value="failed">Failed</SelectItem>
+                          <SelectItem value="all">{t("all_status")}</SelectItem>
+                          <SelectItem value="pending">
+                            {t("pending")}
+                          </SelectItem>
+                          <SelectItem value="confirmed">
+                            {t("confirmed")}
+                          </SelectItem>
+                          <SelectItem value="failed">{t("failed")}</SelectItem>
                         </SelectContent>
                       </Select>
                     </div>
@@ -303,33 +315,33 @@ const BreedingReproduction = () => {
                   >
                     {loading ? (
                       <div className="text-center py-8 text-gray-500">
-                        Loading...
+                        {t("loading")}...
                       </div>
                     ) : breedingRecords.length === 0 ? (
                       <div className="text-center py-8 text-gray-500">
-                        No breeding records found
+                        {t("no_breeding_records_found")}
                       </div>
                     ) : (
                       <table className="w-full animate__animated animate__fadeInUp">
                         <thead>
                           <tr className="border-b border-gray-200">
                             <th className="text-left py-3 px-2 font-medium text-gray-600 text-sm">
-                              Animal ID
+                              {t("animal_id")}
                             </th>
                             <th className="text-left py-3 px-2 font-medium text-gray-600 text-sm">
-                              Breeding Method
+                              {t("breeding_method")}
                             </th>
                             {/* <th className="text-left py-3 px-2 font-medium text-gray-600 text-sm">
                               Breeding Date
                             </th> */}
                             <th className="text-left py-3 px-2 font-medium text-gray-600 text-sm">
-                              Expected Date
+                              {t("expected_date")}
                             </th>
                             <th className="text-left py-3 px-2 font-medium text-gray-600 text-sm">
-                              Status
+                              {t("status")}
                             </th>
                             <th className="text-left py-3 px-2 font-medium text-gray-600 text-sm">
-                              Actions
+                              {t("actions")}
                             </th>
                           </tr>
                         </thead>
@@ -413,13 +425,13 @@ const BreedingReproduction = () => {
                   <div className="flex flex-col lg:flex-row items-start lg:items-center justify-between gap-4">
                     <CardTitle className="flex items-center">
                       <TbMoodKid className="w-5 h-5 mr-2 text-pink-600" />
-                      Recent Births
+                      {t("recent_births")}
                     </CardTitle>
                     <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2 w-full lg:w-auto">
                       <div className="relative">
                         <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
                         <Input
-                          placeholder="Search animal..."
+                          placeholder={t("search_animals")}
                           value={""}
                           onChange={(e) => console.log(e)}
                           className="pl-10 w-full sm:w-48"
@@ -427,12 +439,14 @@ const BreedingReproduction = () => {
                       </div>
                       <Select>
                         <SelectTrigger className="w-full sm:w-32">
-                          <SelectValue placeholder="All Types" />
+                          <SelectValue placeholder={t("all_types")} />
                         </SelectTrigger>
                         <SelectContent>
-                          <SelectItem value="all">All Types</SelectItem>
-                          <SelectItem value="income">Income</SelectItem>
-                          <SelectItem value="expense">Expense</SelectItem>
+                          <SelectItem value="all">{t("all_types")}</SelectItem>
+                          <SelectItem value="income">{t("income")}</SelectItem>
+                          <SelectItem value="expense">
+                            {t("expense")}
+                          </SelectItem>
                         </SelectContent>
                       </Select>
                     </div>
@@ -518,33 +532,33 @@ const BreedingReproduction = () => {
                   >
                     {loading ? (
                       <div className="text-center py-8 text-gray-500">
-                        Loading...
+                        {t("loading")}
                       </div>
                     ) : birthLogs.length === 0 ? (
                       <div className="text-center py-8 text-gray-500">
-                        No births found
+                        {t("no_births_found")}
                       </div>
                     ) : (
                       <table className="w-full animate__animated animate__fadeInUp">
                         <thead>
                           <tr className="border-b border-gray-200">
                             <th className="text-left py-3 px-2 font-medium text-gray-600 text-sm">
-                              Animal
+                              {t("animal_id")}
                             </th>
                             <th className="text-left py-3 px-2 font-medium text-gray-600 text-sm">
-                              Birth Date
+                              {t("birth_date")}
                             </th>
                             <th className="text-left py-3 px-2 font-medium text-gray-600 text-sm">
-                              Gender
+                              {t("gender")}
                             </th>
                             <th className="text-left py-3 px-2 font-medium text-gray-600 text-sm">
-                              Weight
+                              {t("weight")}
                             </th>
                             <th className="text-left py-3 px-2 font-medium text-gray-600 text-sm">
-                              Recorded At
+                              {t("recorded_at")}
                             </th>
                             <th className="text-left py-3 px-2 font-medium text-gray-600 text-sm">
-                              Actions
+                              {t("actions")}
                             </th>
                           </tr>
                         </thead>

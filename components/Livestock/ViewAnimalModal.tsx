@@ -181,10 +181,26 @@
 "use client";
 
 import { Fragment } from "react";
-import { Dialog, DialogPanel, DialogTitle, Transition, TransitionChild } from "@headlessui/react";
+import {
+  Dialog,
+  DialogPanel,
+  DialogTitle,
+  Transition,
+  TransitionChild,
+} from "@headlessui/react";
 import { IoClose, IoColorPaletteSharp } from "react-icons/io5";
-import { FaCalendarAlt, FaMoneyBillAlt, FaUser, FaRegHeart, FaDollarSign } from "react-icons/fa";
-import { MdOutlineLocationOn, MdOutlinePermMedia, MdOutlineCalendarToday } from "react-icons/md";
+import {
+  FaCalendarAlt,
+  FaMoneyBillAlt,
+  FaUser,
+  FaRegHeart,
+  FaDollarSign,
+} from "react-icons/fa";
+import {
+  MdOutlineLocationOn,
+  MdOutlinePermMedia,
+  MdOutlineCalendarToday,
+} from "react-icons/md";
 import { IoMdInformationCircleOutline } from "react-icons/io";
 import { TfiRuler } from "react-icons/tfi";
 import { LiaWeightSolid } from "react-icons/lia";
@@ -229,9 +245,13 @@ interface ViewAnimalModalProps {
   cattle: CattleData;
 }
 
-export default function ViewAnimalModal({ isOpen, onClose, cattle }: ViewAnimalModalProps) {
+export default function ViewAnimalModal({
+  isOpen,
+  onClose,
+  cattle,
+}: ViewAnimalModalProps) {
   if (!cattle) return null;
-console.log(cattle);
+  console.log(cattle);
   return (
     <Transition show={isOpen} as={Fragment}>
       <Dialog as="div" className="relative z-50" onClose={onClose}>
@@ -252,8 +272,13 @@ console.log(cattle);
             <DialogPanel className="w-full max-w-5xl transform rounded-2xl bg-white p-6 text-left align-middle shadow-xl">
               {/* Header */}
               <div className="flex justify-between items-center mb-6">
-                <DialogTitle as="h3" className="text-xl font-bold">{cattle.name}</DialogTitle>
-                <button onClick={onClose} className="text-gray-400 hover:text-red-500">
+                <DialogTitle as="h3" className="text-xl font-bold">
+                  {cattle.name}
+                </DialogTitle>
+                <button
+                  onClick={onClose}
+                  className="text-gray-400 hover:text-red-500"
+                >
                   <IoClose size={24} className="cursor-pointer" />
                 </button>
               </div>
@@ -275,7 +300,10 @@ console.log(cattle);
 
                     <div className="w-full space-y-3">
                       <CowCardData label="Cow ID" value={cattle.reference_id} />
-                      <CowCardData label="Asset Type" value={cattle.asset_type} />
+                      <CowCardData
+                        label="Asset Type"
+                        value={cattle.asset_type}
+                      />
                       <CowCardData label="Breed" value={cattle.breed} />
                       <CowCardData label="Gender" value={cattle.gender} />
                     </div>
@@ -286,7 +314,10 @@ console.log(cattle);
                 <div className="md:col-span-3 space-y-5 md:max-h-[80vh] md:overflow-y-auto">
                   {/* Basic Info */}
                   <div className="bg-white border border-gray-200 rounded-2xl p-5 shadow-xs">
-                    <ModalHeader icon={<MdOutlineCalendarToday />} header="Basic Information" />
+                    <ModalHeader
+                      icon={<MdOutlineCalendarToday />}
+                      header="Basic Information"
+                    />
                     <div className="grid xs:grid-cols-1 sm:grid-cols-2 gap-8 mt-8">
                       <DetailsSection
                         icon={<MdOutlineCalendarToday size={20} />}
@@ -320,7 +351,10 @@ console.log(cattle);
 
                   {/* Health Info */}
                   <div className="bg-white border border-gray-200 rounded-2xl p-5 shadow-xs space-y-8">
-                    <ModalHeader icon={<FaRegHeart />} header="Health Information" />
+                    <ModalHeader
+                      icon={<FaRegHeart />}
+                      header="Health Information"
+                    />
                     <div className="grid sm:grid-cols-2 gap-8">
                       <DetailsSection
                         icon={<LuSyringe size={20} />}
@@ -351,11 +385,18 @@ console.log(cattle);
 
                   {/* Purchase Info */}
                   <div className="bg-white border border-gray-200 rounded-2xl p-5 shadow-xs space-y-8">
-                    <ModalHeader icon={<FaDollarSign />} header="Purchase & Ownership" />
+                    <ModalHeader
+                      icon={<FaDollarSign />}
+                      header="Purchase & Ownership"
+                    />
                     <div className="grid md:grid-cols-2 gap-8">
                       <DetailsSection
                         label="Purchase Amount"
-                        value={cattle.purchase_amount ? parseInt(cattle.purchase_amount).toLocaleString() : "N/A"}
+                        value={
+                          cattle.purchase_amount
+                            ? parseInt(cattle.purchase_amount).toLocaleString()
+                            : "N/A"
+                        }
                         icon={<FaMoneyBillAlt />}
                         className="text-green-700 bg-green-200"
                       />
@@ -382,7 +423,10 @@ console.log(cattle);
 
                   {/* Media Section */}
                   <div className="bg-white border border-gray-200 rounded-2xl p-5 shadow-xs">
-                    <ModalHeader icon={<MdOutlinePermMedia />} header="Media Information" />
+                    <ModalHeader
+                      icon={<MdOutlinePermMedia />}
+                      header="Media Information"
+                    />
                     <div className="grid md:grid-cols-2 gap-4 mt-8">
                       {[
                         ["Right Side Image", cattle.right_side_image],
@@ -392,8 +436,13 @@ console.log(cattle);
                         ["Vet Certificate", cattle.vet_certificate],
                         ["Chairman Certificate", cattle.chairman_certificate],
                       ].map(([label, url]) => (
-                        <div key={label as string} className="border rounded-xl flex flex-col items-center justify-center gap-3 p-4 text-center bg-white">
-                          <span className="font-semibold text-sm truncate w-full">{label}</span>
+                        <div
+                          key={label as string}
+                          className="border rounded-xl flex flex-col items-center justify-center gap-3 p-4 text-center bg-white"
+                        >
+                          <span className="font-semibold text-sm truncate w-full">
+                            {label}
+                          </span>
                           <FallbackImage
                             src={url as string}
                             alt={label as string}
@@ -406,11 +455,19 @@ console.log(cattle);
 
                       {/* Muzzle Video */}
                       <div className="flex flex-col gap-3 items-center justify-center p-4 rounded-xl border text-center bg-white">
-                        <span className="font-semibold text-sm">Muzzle Video</span>
+                        <span className="font-semibold text-sm">
+                          Muzzle Video
+                        </span>
                         {cattle.muzzle_video ? (
-                          <video src={cattle.muzzle_video} controls className="w-full h-64 rounded-md object-cover" />
+                          <video
+                            src={cattle.muzzle_video}
+                            controls
+                            className="w-full h-64 rounded-md object-cover"
+                          />
                         ) : (
-                          <span className="text-gray-400 text-sm">No Video</span>
+                          <span className="text-gray-400 text-sm">
+                            No Video
+                          </span>
                         )}
                       </div>
                     </div>
@@ -447,27 +504,47 @@ const ModalHeader = ({ icon, header }: HeaderProps) => (
   </div>
 );
 
-const DetailsSection = ({ icon, label, value, text, className }: DetailsProps) => (
+const DetailsSection = ({
+  icon,
+  label,
+  value,
+  text,
+  className,
+}: DetailsProps) => (
   <div className="flex items-center gap-2">
     {icon && (
-      <span className={`w-9 h-8 rounded-full flex items-center justify-center text-lg ${className || "text-gray-600 bg-gray-100"}`}>
+      <span
+        className={`w-9 h-8 rounded-full flex items-center justify-center text-lg ${
+          className || "text-gray-600 bg-gray-100"
+        }`}
+      >
         {icon}
       </span>
     )}
     <div className="flex flex-col justify-between w-full">
       <label className="text-sm text-gray-500">{label}</label>
-      <span className="font-bold text-[#4e4e4e]">{value || "N/A"} {text}</span>
+      <span className="font-bold text-[#4e4e4e]">
+        {value || "N/A"} {text}
+      </span>
     </div>
   </div>
 );
 
 const CowCardData = ({ icon, label, value }: DetailsProps) => (
   <div className="flex items-center gap-2">
-    {icon && <span className="text-green-700 w-8 h-8 bg-gray-200 rounded-full flex items-center justify-center">{icon}</span>}
+    {icon && (
+      <span className="text-green-700 w-8 h-8 bg-gray-200 rounded-full flex items-center justify-center">
+        {icon}
+      </span>
+    )}
     <div className="flex justify-between items-center w-full px-1">
-      <label className="text-sm font-medium text-gray-500">{label || "N/A"}</label>
+      <label className="text-sm font-medium text-gray-500">
+        {label || "N/A"}
+      </label>
       <span className="font-semibold text-gray-700">
-        <span className="px-3 py-1 border border-gray-200 rounded-full">{value || "N/A"}</span>
+        <span className="px-3 py-1 border border-gray-200 rounded-full">
+          {value || "N/A"}
+        </span>
       </span>
     </div>
   </div>

@@ -28,6 +28,7 @@ import { LuMilk } from "react-icons/lu";
 import { TbMeat } from "react-icons/tb";
 import { toast, Toaster } from "sonner";
 import { FeedLogDialog } from "@/components/Production/FeedLogDialog";
+import SectionHeading from "@/helper/SectionHeading";
 
 const ProductionTracking = () => {
   const [isRecordProductionModal, setRecordProductionModal] = useState(false);
@@ -127,7 +128,7 @@ const ProductionTracking = () => {
 
   // Function to load feed logs from localStorage
   const loadFeedLogs = () => {
-    const logs = localStorage.getItem('feedLogs');
+    const logs = localStorage.getItem("feedLogs");
     if (logs) {
       setFeedLogs(JSON.parse(logs));
     }
@@ -138,15 +139,15 @@ const ProductionTracking = () => {
     loadFeedLogs(); // Initial load
 
     // Update when storage changes
-    window.addEventListener('storage', loadFeedLogs);
-    
+    window.addEventListener("storage", loadFeedLogs);
+
     // Custom event listener for immediate updates
     const handleFeedLogUpdate = () => loadFeedLogs();
-    window.addEventListener('feedLogUpdated', handleFeedLogUpdate);
+    window.addEventListener("feedLogUpdated", handleFeedLogUpdate);
 
     return () => {
-      window.removeEventListener('storage', loadFeedLogs);
-      window.removeEventListener('feedLogUpdated', handleFeedLogUpdate);
+      window.removeEventListener("storage", loadFeedLogs);
+      window.removeEventListener("feedLogUpdated", handleFeedLogUpdate);
     };
   }, []);
 
@@ -158,8 +159,11 @@ const ProductionTracking = () => {
         <main className="flex-1 lg:ml-0 lg:px-4">
           {/* Page Header */}
           <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-6">
-            <Heading heading="Production Tracking" />
-            <div className="flex flex-col sm:flex-row gap-2 sm:gap-3 w-full sm:w-auto">
+            <SectionHeading
+              sectionTitle="Production Tracking"
+              description="Manage your farms production numbers"
+            />
+            <div className="hidden lg:flex flex-col sm:flex-row gap-2 sm:gap-3 w-full sm:w-auto">
               <Button
                 className="bg-purple-600 hover:bg-purple-700"
                 onClick={() => setRecordProductionModal(true)}
@@ -182,83 +186,137 @@ const ProductionTracking = () => {
             />
           </div>
 
+          {/* Production btn is here for mobile devices */}
+          <Card
+            className="block lg:hidden animate__animated animate__fadeInRight border border-green-200 bg-gradient-to-r from-emerald-50 via-green-50 to-teal-50
+ shadow-none w-full"
+            style={{ animationDelay: "0s" }}
+          >
+            <CardContent className="p-0.5">
+              <div className="flex items-center gap-2">
+                <div className="p-1 rounded-lg flex gap-2 items-center">
+                  <img
+                    src="/Feed.png"
+                    alt="cow image"
+                    width={90}
+                    className="rounded-lg drop-shadow-md scale-125"
+                  />
+                </div>
+                <div className="p-2 w-full">
+                  <div className="mb-2">
+                    <h1 className="font-bold text-gray-700 text-lg">
+                      Record production & feed
+                    </h1>
+                    <p className="font-medium text-gray-500 text-sm">
+                      Click to add details
+                    </p>
+                  </div>
+                  <div className="flex items-center gap-2 *:w-[50%]">
+                    {/* Btn for mobile */}
+                    <button
+                      className="bg-green-950 rounded-lg py-2 px-2 flex items-center justify-center gap-2 font-semibold text-white lg:hidden"
+                      onClick={() => setRecordProductionModal(true)}
+                    >
+                      <IoDocuments className="w-4 h-4" />
+                      <span className="hidden md:inline-block">Record</span> Production
+                    </button>
+
+                    <button
+                      className=" bg-emerald-700 rounded-lg py-2 px-2 flex items-center justify-center gap-2 font-semibold text-white lg:hidden"
+                      onClick={() => setIsFeedLogDialogOpen(true)}
+                    >
+                      <Plus className="w-4 h-4" />
+                      Feed Log
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+
           {/* Summary Cards */}
-          <div className="grid xs:grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 lg:gap-6 mb-6 lg:mb-8">
-            <Card
-              className="animate__animated animate__fadeInRight"
-              style={{ animationDelay: "0s" }}
-            >
-              <CardContent className="p-4">
-                <div className="flex items-center justify-between space-x-2">
-                  <span className="text-3xl font-extrabold text-blue-600">
-                    <LuMilk />
-                  </span>
+          <div className="mt-6 lg:mt-0 mb-6 lg:mb-8 border lg:border-none rounded-lg lg:rounded-none p-4 lg:p-0 bg-green-50 lg:bg-transparent">
+            <Heading heading="Quick Stats" />
+            <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 lg:gap-6 lg:mb-8">
+              <Card
+                className="animate__animated animate__fadeInRight"
+                style={{ animationDelay: "0s" }}
+              >
+                <CardContent className="p-4">
+                  <div className="flex items-center justify-between space-x-2">
+                    <span className="text-3xl font-extrabold text-blue-600">
+                      <LuMilk />
+                    </span>
 
-                  <div>
-                    <div className="text-2xl font-bold text-right text-blue-600">
-                      500 L
+                    <div>
+                      <div className="text-2xl font-bold text-right text-blue-600">
+                        500 L
+                      </div>
+                      <div className="text-sm text-gray-600">Today's Milk</div>
                     </div>
-                    <div className="text-sm text-gray-600">Today's Milk</div>
                   </div>
-                </div>
-              </CardContent>
-            </Card>
+                </CardContent>
+              </Card>
 
-            <Card
-              className="animate__animated animate__fadeInRight"
-              style={{ animationDelay: "0.25s" }}
-            >
-              <CardContent className="p-4">
-                <div className="flex items-center justify-between space-x-2">
-                  <TrendingUp className="w-8 h-8 text-green-600" />
+              <Card
+                className="animate__animated animate__fadeInRight"
+                style={{ animationDelay: "0.25s" }}
+              >
+                <CardContent className="p-4">
+                  <div className="flex items-center justify-between space-x-2">
+                    <TrendingUp className="w-8 h-8 text-green-600" />
 
-                  <div>
-                    <div className="text-2xl font-bold text-right text-green-600">
-                      5%
+                    <div>
+                      <div className="text-2xl font-bold text-right text-green-600">
+                        5%
+                      </div>
+                      <div className="text-sm text-gray-600">
+                        <span className="hidden md:inline-flex">Weekly</span>{" "}
+                        Growth
+                      </div>
                     </div>
-                    <div className="text-sm text-gray-600">Weekly Growth</div>
                   </div>
-                </div>
-              </CardContent>
-            </Card>
+                </CardContent>
+              </Card>
 
-            <Card
-              className="animate__animated animate__fadeInRight"
-              style={{ animationDelay: "0.5s" }}
-            >
-              <CardContent className="p-4">
-                <div className="flex items-center justify-between space-x-2">
-                  <TbMeat className="w-8 h-8 text-orange-600" />
+              <Card
+                className="animate__animated animate__fadeInRight"
+                style={{ animationDelay: "0.5s" }}
+              >
+                <CardContent className="p-4">
+                  <div className="flex items-center justify-between space-x-2">
+                    <TbMeat className="w-8 h-8 text-orange-600" />
 
-                  <div>
-                    <div className="text-2xl font-bold text-right text-orange-600">
-                      16.5
+                    <div>
+                      <div className="text-2xl font-bold text-right text-orange-600">
+                        16.5
+                      </div>
+                      <div className="text-sm text-gray-600"><span className="hidden md:inline-block">Avg</span> L/animal</div>
                     </div>
-                    <div className="text-sm text-gray-600">Avg L/animal</div>
                   </div>
-                </div>
-              </CardContent>
-            </Card>
+                </CardContent>
+              </Card>
 
-            <Card
-              className="animate__animated animate__fadeInRight"
-              style={{ animationDelay: "0.75s" }}
-            >
-              <CardContent className="p-4">
-                <div className="flex items-center justify-between space-x-2">
-                  <div className="rounded-full flex items-center justify-center">
-                    <FaPercent className="w-6 h-6 text-purple-600 font-bold" />
-                  </div>
-
-                  <div>
-                    <div className="text-2xl font-bold text-right text-purple-600">
-                      89
+              <Card
+                className="animate__animated animate__fadeInRight"
+                style={{ animationDelay: "0.75s" }}
+              >
+                <CardContent className="p-4">
+                  <div className="flex items-center justify-between space-x-2">
+                    <div className="rounded-full flex items-center justify-center">
+                      <FaPercent className="w-6 h-6 text-purple-600 font-bold" />
                     </div>
-                    <div className="text-sm text-gray-600">Quality Rate</div>
+
+                    <div>
+                      <div className="text-2xl font-bold text-right text-purple-600">
+                        89
+                      </div>
+                      <div className="text-sm text-gray-600">Quality Rate</div>
+                    </div>
                   </div>
-                </div>
-              </CardContent>
-            </Card>
+                </CardContent>
+              </Card>
+            </div>
           </div>
 
           {/* Main Content Grid */}
@@ -267,7 +325,7 @@ const ProductionTracking = () => {
               <Card className="animate__animated animate__fadeIn">
                 <CardHeader>
                   <div className="flex flex-col lg:flex-row items-start lg:items-center justify-between gap-4">
-                    <CardTitle className="flex items-center">
+                    <CardTitle className="flex items-center text-lg lg:text-xl">
                       <LuMilk className="w-5 h-5 mr-2 text-blue-600" />
                       Daily Milk Production
                     </CardTitle>
@@ -296,80 +354,57 @@ const ProductionTracking = () => {
                 </CardHeader>
                 <CardContent>
                   {/* Mobile Card View */}
-                  {/* <div className="lg:hidden space-y-4">
+                  <div className="lg:hidden space-y-4">
                     {loading ? (
                       <div className="text-center py-8 text-gray-500">
                         Loading...
                       </div>
-                    ) : filteredTransactions.length === 0 ? (
+                    ) : recordsToShow.length === 0 ? (
                       <div className="text-center py-8 text-gray-500">
-                        No transactions found.
+                        No records found.
                       </div>
                     ) : (
-                      filteredTransactions.map((transaction) => (
-                        <Card key={transaction.voucher_no} className="p-4">
+                      recordsToShow.map((record, idx) => (
+                        <Card key={idx} className="p-4">
                           <div className="flex items-start justify-between mb-3">
                             <div>
                               <h3 className="font-semibold text-lg">
-                                {transaction.txn_head}
+                                {record.asset_ref_id}
                               </h3>
                               <p className="text-sm text-gray-600">
-                                {transaction.date}
+                                Quantity:{" "}
+                                <span className="font-medium">
+                                  {record.quantity}
+                                </span>
+                              </p>
+                              <p className="text-sm text-gray-600">
+                                Production:{" "}
+                                <span className="font-medium">
+                                  {record.type_name}
+                                </span>
                               </p>
                             </div>
-                            <div className="text-right">
-                              {getTransactionBadge(transaction.type)}
-                              <p
-                                className={`font-bold text-3xl mt-1 ${
-                                  transaction.amount > 0
-                                    ? "text-green-600"
-                                    : "text-red-600"
-                                }`}
+
+                            <div className="flex">
+                              <Button
+                                size="sm"
+                                variant="ghost"
+                                className="h-8 w-8 p-0 border hover:bg-green-400 hover:text-white 
+                hover:scale-105 hover:-translate-y-1 hover:drop-shadow-xl 
+                transition-all duration-300 ease-in-out active:scale-90"
                               >
-                                {formatCurrency(transaction.amount)}
-                              </p>
+                                <Eye className="h-4 w-4" />
+                              </Button>
                             </div>
-                          </div>
-                          <p className="text-sm text-gray-600 mb-4">
-                            {transaction.description}
-                          </p>
-                          <div className="flex items-center justify-end space-x-2">
-                            <Button
-                              size="sm"
-                              variant="ghost"
-                              className="h-8 w-8 p-0"
-                              onClick={() => {
-                                setSelectedTransaction(
-                                  mapTransactionForModal(transaction)
-                                );
-                                setViewModalOpen(true);
-                              }}
-                            >
-                              <Eye className="h-4 w-4" />
-                            </Button>
-                            <Button
-                              size="sm"
-                              variant="ghost"
-                              className="h-8 w-8 p-0"
-                            >
-                              <Edit className="h-4 w-4" />
-                            </Button>
-                            <Button
-                              size="sm"
-                              variant="ghost"
-                              className="h-8 w-8 p-0 text-red-600 hover:text-red-700"
-                            >
-                              <Trash2 className="h-4 w-4" />
-                            </Button>
                           </div>
                         </Card>
                       ))
                     )}
-                  </div> */}
+                  </div>
 
                   {/* Desktop Table View */}
                   <div
-                    className=" lg:block overflow-x-auto"
+                    className="hidden lg:block overflow-x-auto"
                     style={{ maxHeight: 375, overflowY: "auto" }}
                   >
                     {loading ? (
@@ -501,7 +536,7 @@ const ProductionTracking = () => {
               </Card> */}
               <Card className="animate__animated animate__fadeIn">
                 <CardHeader>
-                  <CardTitle className="flex items-center">
+                  <CardTitle className="flex items-center text-lg lg:text-xl">
                     <TbMeat className="w-5 h-5 mr-2 text-green-600" />
                     Feed Consumption
                   </CardTitle>
@@ -536,7 +571,13 @@ const ProductionTracking = () => {
                     <div className="flex justify-between items-center">
                       <span className="font-medium">Total Feed Cost:</span>
                       <span className="text-lg font-bold text-red-600">
-                        ${feedLogs.reduce((total, log) => total + (parseFloat(log.cost) || 0), 0).toFixed(2)}
+                        $
+                        {feedLogs
+                          .reduce(
+                            (total, log) => total + (parseFloat(log.cost) || 0),
+                            0
+                          )
+                          .toFixed(2)}
                       </span>
                     </div>
                   </div>
@@ -545,7 +586,7 @@ const ProductionTracking = () => {
             </div>
           </div>
         </main>
-        <FeedLogDialog 
+        <FeedLogDialog
           open={isFeedLogDialogOpen}
           onClose={() => setIsFeedLogDialogOpen(false)}
         />

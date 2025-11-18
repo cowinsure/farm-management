@@ -342,14 +342,14 @@ export default function HealthVaccination() {
                       onClick={() => setVaccinationDialogOpen(true)}
                     >
                       <Calendar className="w-4 h-4" />
-                       Vaccination
+                      Vaccination
                     </button>
                     <button
                       className=" bg-emerald-700 rounded-lg py-2 px-2 flex items-center justify-center gap-2 font-semibold text-white lg:hidden"
                       onClick={() => setRecordDialogOpen(true)}
                     >
                       <Plus className="w-4 h-4" />
-                       Health
+                      Health
                     </button>
                   </div>
                 </div>
@@ -373,129 +373,81 @@ export default function HealthVaccination() {
           />
 
           {/* Summary Cards */}
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-            {/* Total animals */}
-            <Card
-              className="animate__animated animate__fadeInRight"
-              style={{ animationDelay: "0s" }}
-            >
-              <CardContent className="p-4">
-                <div className="flex items-center justify-between space-x-2">
-                  <LuPawPrint className="w-8 h-8 text-purple-600" />
-                  <div>
-                    <div className="text-2xl font-bold text-right text-purple-600">
-                      {summary.Total}
-                    </div>
-                    <div className="text-sm text-gray-600">Total Animals</div>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
-            {/* Due Vaccination */}
-            <Card
-              className="animate__animated animate__fadeInRight"
-              style={{ animationDelay: "0s" }}
-            >
-              <CardContent className="p-4">
-                <div className="flex items-center justify-between space-x-2">
-                  <Syringe className="w-8 h-8 text-blue-600" />
-                  <div>
-                    <div className="text-2xl font-bold text-right text-blue-600">
-                      {vaccinationDue}
-                    </div>
-                    <div className="text-sm text-gray-600">
-                      Due Vaccinations
+          <div className="mt-6 lg:mt-0 mb-6 lg:mb-8 border lg:border-none rounded-lg lg:rounded-none p-4 lg:p-0 bg-green-50 lg:bg-transparent">
+            <Heading heading="Quick Stats" />
+            <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 lg:gap-6 lg:mb-8">
+              {/* Total animals */}
+              <Card
+                className="animate__animated animate__fadeInRight"
+                style={{ animationDelay: "0s" }}
+              >
+                <CardContent className="p-4">
+                  <div className="flex items-center justify-between space-x-2">
+                    <LuPawPrint className="w-8 h-8 text-purple-600" />
+                    <div>
+                      <div className="text-2xl font-bold text-right text-purple-600">
+                        {summary.Total}
+                      </div>
+                      <div className="text-sm text-gray-600"><span className="hidden md:inline-block">Total</span> Animals</div>
                     </div>
                   </div>
-                </div>
-              </CardContent>
-            </Card>
-            {/* Sick animals */}
-            <Card
-              className="animate__animated animate__fadeInRight"
-              style={{ animationDelay: "0.25s" }}
-            >
-              <CardContent className="p-4">
-                <div className="flex items-center justify-between space-x-2">
-                  <Heart className="w-8 h-8 text-red-600" />
-                  <div>
-                    <div className="text-2xl font-bold text-right text-red-600">
-                      {summary.Sick > 0 ? summary.Sick : 0}
-                    </div>
-                    <div className="text-sm text-gray-600">Sick Animals</div>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
-            {/* Critical Animals */}
-            <Card
-              className="animate__animated animate__fadeInRight"
-              style={{ animationDelay: "0.25s" }}
-            >
-              <CardContent className="p-4">
-                <div className="flex items-center justify-between space-x-2">
-                  <TiWarningOutline className="w-8 h-8 text-amber-600" />
-                  <div>
-                    <div className="text-2xl font-bold text-right text-amber-600">
-                      {summary.Critical > 0 ? summary.Critical : 0}
-                    </div>
-                    <div className="text-sm text-gray-600">
-                      Critical Animals
+                </CardContent>
+              </Card>
+              {/* Due Vaccination */}
+              <Card
+                className="animate__animated animate__fadeInRight"
+                style={{ animationDelay: "0s" }}
+              >
+                <CardContent className="p-4">
+                  <div className="flex items-center justify-between space-x-2">
+                    <Syringe className="w-8 h-8 text-blue-600" />
+                    <div>
+                      <div className="text-2xl font-bold text-right text-blue-600">
+                        {vaccinationDue}
+                      </div>
+                      <div className="text-sm text-gray-600"><span className="hidden md:inline-block">Due</span> Vaccines</div>
                     </div>
                   </div>
-                </div>
-              </CardContent>
-            </Card>
-
-            {/* <Card>
-          <CardContent className="p-4">
-            <div className="flex items-center space-x-2">
-              <TriangleAlert className="w-8 h-8 text-red-600" />
-              <div>
-                <div className="text-2xl font-bold text-red-600">{summary.Critical}</div>
-                <div className="text-sm text-gray-600">Critical Animals</div>
-              </div>
+                </CardContent>
+              </Card>
+              {/* Sick animals */}
+              <Card
+                className="animate__animated animate__fadeInRight"
+                style={{ animationDelay: "0.25s" }}
+              >
+                <CardContent className="p-4">
+                  <div className="flex items-center justify-between space-x-2">
+                    <Heart className="w-8 h-8 text-red-600" />
+                    <div>
+                      <div className="text-2xl font-bold text-right text-red-600">
+                        {summary.Sick > 0 ? summary.Sick : 0}
+                      </div>
+                      <div className="text-sm text-gray-600">Sick Animals</div>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+              {/* Critical Animals */}
+              <Card
+                className="animate__animated animate__fadeInRight"
+                style={{ animationDelay: "0.25s" }}
+              >
+                <CardContent className="p-4">
+                  <div className="flex items-center justify-between space-x-2">
+                    <TiWarningOutline className="w-8 h-8 text-amber-600" />
+                    <div>
+                      <div className="text-2xl font-bold text-right text-amber-600">
+                        {summary.Critical > 0 ? summary.Critical : 0}
+                      </div>
+                      <div className="text-sm text-gray-600">
+                        Critical{" "}
+                        <span className="hidden md:inline-flex">Animals</span>
+                      </div>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
             </div>
-          </CardContent>
-        </Card> */}
-
-            {/* <Card>
-                <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                  <CardTitle className="text-sm font-medium text-gray-600">{summary.Critical}</CardTitle>
-                  <div className="w-4 h-4 bg-green-100 rounded flex items-center justify-center">
-                    <div className="w-2 h-2 bg-red-600 rounded-full"></div>
-                  </div>
-                </CardHeader>
-                <CardContent>
-                  <div className="text-sm text-gray-600">Critical Animals</div>
-                </CardContent>
-              </Card> */}
-
-            {/* <Card>
-                <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                  <CardTitle className="text-sm font-medium text-gray-600">85</CardTitle>
-                  <div className="w-4 h-4 bg-green-100 rounded flex items-center justify-center">
-                    <div className="w-2 h-2 bg-green-600 rounded-full"></div>
-                  </div>
-                </CardHeader>
-                <CardContent>
-                  <div className="text-sm text-gray-600">Healthy Animals</div>
-                </CardContent>
-              </Card> */}
-
-            {/* <Card>
-                <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                  <CardTitle className="text-sm font-medium text-gray-600">
-                    {summary.Total > 0 ? `${Math.round(((summary.Total - summary.Critical) / summary.Total) * 100)}%` : "0%"}
-                  </CardTitle>
-                  <div className="w-4 h-4 bg-purple-100 rounded flex items-center justify-center">
-                    <div className="w-2 h-2 bg-purple-600 rounded-full"></div>
-                  </div>
-                </CardHeader>
-                <CardContent>
-                  <div className="text-sm text-gray-600">Health Rate</div>
-                </CardContent>
-              </Card> */}
           </div>
 
           {/* Vaccination Schedule (API-driven) Table */}
@@ -523,7 +475,7 @@ export default function HealthVaccination() {
             <Card className="animate__animated animate__fadeIn">
               <CardHeader>
                 <div className="flex flex-col lg:flex-row items-start lg:items-center justify-between gap-4">
-                  <CardTitle className="flex items-center">
+                  <CardTitle className="flex items-center text-lg lg:text-xl">
                     <Syringe className="w-5 h-5 mr-2 text-blue-600" />
                     Vaccination Schedule
                   </CardTitle>
@@ -559,8 +511,105 @@ export default function HealthVaccination() {
                   </div>
                 </div>
               </CardHeader>
+
               <CardContent>
-                <div className="overflow-x-auto -mx-4 sm:mx-0">
+                {/* 🌿 MOBILE CARD VIEW */}
+                <div className="lg:hidden space-y-4">
+                  {filteredVaccinations.length === 0 ? (
+                    <div className="text-center py-10 text-gray-400 italic">
+                      No vaccinations found.
+                    </div>
+                  ) : (
+                    filteredVaccinations.map((vaccination) => {
+                      // Color bar according to your status colors
+                      let statusColor = "bg-gray-300";
+                      switch (vaccination.status?.toLowerCase()) {
+                        case "due":
+                          statusColor = "bg-yellow-500";
+                          break;
+                        case "complete":
+                          statusColor = "bg-green-500";
+                          break;
+                        case "overdue":
+                          statusColor = "bg-red-500";
+                          break;
+                      }
+
+                      return (
+                        <Card
+                          key={vaccination.id}
+                          className="relative p-4 rounded-xl shadow-lg bg-gradient-to-br from-white via-gray-50 to-gray-100 border border-gray-200 overflow-hidden animate__animated animate__fadeInUp"
+                        >
+                          {/* Status Bar */}
+                          <div
+                            className={`absolute top-0 left-0 w-full h-1 ${statusColor}`}
+                          />
+
+                          {/* Header */}
+                          <div className="flex items-center justify-between mb-4">
+                            <div>
+                              <h3 className="font-bold text-lg text-gray-800">
+                                {vaccination.name}
+                              </h3>
+                              <p className="text-xs text-gray-500">
+                                Ref ID: {vaccination.reference_id}
+                              </p>
+                            </div>
+                            <span
+                              className={`text-sm font-semibold capitalize px-3 py-1 rounded-full ${
+                                vaccination.status === "Due"
+                                  ? "bg-yellow-100 text-yellow-900"
+                                  : vaccination.status === "Complete"
+                                  ? "bg-green-100 text-green-900"
+                                  : "bg-red-100 text-red-900"
+                              }`}
+                            >
+                              {vaccination.status}
+                            </span>
+                          </div>
+
+                          {/* Details Grid */}
+                          <div className="grid grid-cols-2 gap-4 text-sm mb-4">
+                            <div>
+                              <span className="text-gray-400 uppercase text-xs">
+                                Vaccine
+                              </span>
+                              <p className="font-medium text-gray-700">
+                                {vaccination.vaccine_name || "—"}
+                              </p>
+                            </div>
+                            <div>
+                              <span className="text-gray-400 uppercase text-xs">
+                                Due Date
+                              </span>
+                              <p className="font-medium text-gray-700">
+                                {vaccination.due_date || "—"}
+                              </p>
+                            </div>
+                          </div>
+
+                          {/* Action Button */}
+                          <div className="flex justify-end">
+                            <Button
+                              size="sm"
+                              variant="outline"
+                              className="h-8 w-8 p-0 border-gray-300 hover:bg-green-500 hover:text-white transition-all duration-300"
+                              onClick={() => {
+                                setSelectedVaccination(vaccination);
+                                setIsVaccinationDialogOpen(true);
+                              }}
+                            >
+                              <Eye className="h-4 w-4" />
+                            </Button>
+                          </div>
+                        </Card>
+                      );
+                    })
+                  )}
+                </div>
+
+                {/* 🌿 DESKTOP TABLE VIEW (Unchanged) */}
+                <div className="hidden lg:block overflow-x-auto -mx-4 sm:mx-0">
                   <div className="inline-block min-w-full align-middle">
                     <table className="w-full animate__animated animate__fadeInUp">
                       <thead>
@@ -585,6 +634,7 @@ export default function HealthVaccination() {
                           </th>
                         </tr>
                       </thead>
+
                       <tbody>
                         {filteredVaccinations.map((vaccination) => (
                           <tr
@@ -611,7 +661,6 @@ export default function HealthVaccination() {
                                 {vaccination.status}
                               </span>
                             </td>
-
                             <td className="py-3 px-2">
                               {vaccination.due_date || "-"}
                             </td>
@@ -634,7 +683,8 @@ export default function HealthVaccination() {
                     </table>
                   </div>
                 </div>
-                {/* Pagination Controls for Vaccination Schedule */}
+
+                {/* Pagination (Untouched) */}
                 <div className="flex justify-end items-center gap-2 mt-4">
                   <Button
                     size="sm"
@@ -666,16 +716,14 @@ export default function HealthVaccination() {
             </Card>
 
             {/* Health Records */}
-            <Card
-            // className="animate__animated animate__fadeIn"
-            // style={{ animationDelay: "0.5s" }}
-            >
+            <Card>
               <CardHeader>
                 <div className="flex flex-col lg:flex-row items-start lg:items-center justify-between gap-4">
-                  <CardTitle className="flex items-center">
+                  <CardTitle className="flex items-center text-lg lg:text-xl">
                     <Heart className="w-5 h-5 mr-2 text-red-600" />
                     Health Records
                   </CardTitle>
+
                   <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2 w-full lg:w-auto">
                     <div className="relative">
                       <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
@@ -686,6 +734,7 @@ export default function HealthVaccination() {
                         className="pl-10 w-full sm:w-48"
                       />
                     </div>
+
                     <div className="flex gap-2">
                       <Select
                         value={healthFilter}
@@ -710,8 +759,109 @@ export default function HealthVaccination() {
                   </div>
                 </div>
               </CardHeader>
+
               <CardContent>
-                <div className="overflow-x-auto -mx-4 sm:mx-0">
+                {/* 🌿 MOBILE CARD VIEW */}
+                <div className="lg:hidden space-y-4">
+                  {healthRecords.length === 0 ? (
+                    <div className="text-center py-10 text-gray-400 italic">
+                      No health records found.
+                    </div>
+                  ) : (
+                    healthRecords.map((record) => {
+                      // Status bar color mapping
+                      let statusColor = "bg-red-500";
+                      const st = (record.status_name || "").toLowerCase();
+
+                      if (st === "healthy") statusColor = "bg-green-500";
+                      else if (st === "under treatment")
+                        statusColor = "bg-yellow-500";
+                      else if (st === "complete") statusColor = "bg-blue-500";
+
+                      return (
+                        <Card
+                          key={record.id}
+                          className="relative p-4 rounded-xl shadow-lg bg-gradient-to-br from-white via-gray-50 to-gray-100 border border-gray-200 overflow-hidden animate__animated animate__fadeInUp"
+                        >
+                          {/* Top Status Bar */}
+                          <div
+                            className={`absolute top-0 left-0 w-full h-1 ${statusColor}`}
+                          />
+
+                          {/* Header */}
+                          <div className="flex items-center justify-between mb-4">
+                            <div>
+                              <h3 className="font-bold text-lg text-gray-800">
+                                {record.asset_ref_id}
+                              </h3>
+                              <p className="text-xs text-gray-500">
+                                Health Status
+                              </p>
+                            </div>
+
+                            {/* Using your existing badge method */}
+                            <div>
+                              {getHealthStatusBadge(record.status_name)}
+                            </div>
+                          </div>
+
+                          {/* Details Grid */}
+                          <div className="grid grid-cols-2 gap-4 text-sm mb-4">
+                            <div>
+                              <span className="text-gray-400 uppercase text-xs">
+                                Condition
+                              </span>
+                              <p className="font-medium text-gray-700">
+                                {record.condition_name || "—"}
+                              </p>
+                            </div>
+
+                            <div>
+                              <span className="text-gray-400 uppercase text-xs">
+                                Date
+                              </span>
+                              <p className="font-medium text-gray-700">
+                                {new Date().toLocaleDateString("en-US", {
+                                  year: "numeric",
+                                  month: "short",
+                                  day: "numeric",
+                                })}
+                              </p>
+                            </div>
+                          </div>
+
+                          {/* Actions */}
+                          <div className="flex justify-end space-x-4">
+                            <Button
+                              size="sm"
+                              variant="outline"
+                              className="h-8 w-8 p-0 border-gray-300 hover:bg-green-500 hover:text-white transition-all"
+                              onClick={() => {
+                                setViewRecord(record);
+                                setIsDialogOpen(true);
+                              }}
+                            >
+                              <Eye className="h-4 w-4" />
+                            </Button>
+
+                            <Button
+                              size="sm"
+                              variant="outline"
+                              title="Update health status"
+                              className="h-8 w-8 p-0 border-gray-300 hover:bg-blue-500 hover:text-white transition-all"
+                              onClick={() => handleHealthRecrodStatus(record)}
+                            >
+                              <GrUpdate className="h-4 w-4" />
+                            </Button>
+                          </div>
+                        </Card>
+                      );
+                    })
+                  )}
+                </div>
+
+                {/* 🌿 DESKTOP TABLE (UNCHANGED) */}
+                <div className="hidden lg:block overflow-x-auto -mx-4 sm:mx-0">
                   <div className="inline-block min-w-full align-middle">
                     <table className="w-full animate__animated animate__fadeInUp">
                       <thead>
@@ -733,6 +883,7 @@ export default function HealthVaccination() {
                           </th>
                         </tr>
                       </thead>
+
                       <tbody>
                         {healthRecords.map((record) => (
                           <tr
@@ -740,35 +891,33 @@ export default function HealthVaccination() {
                             className="border-b border-gray-100 hover:bg-gray-50"
                           >
                             <td className="py-3 px-2">
-                              <div>
-                                <div className="font-medium text-sm">
-                                  {record.asset_ref_id}
-                                </div>
-                                {/* <div className="text-xs text-gray-500">
-                                  {record.asset_id}
-                                </div> */}
+                              <div className="font-medium text-sm">
+                                {record.asset_ref_id}
                               </div>
                             </td>
+
                             <td className="py-3 px-2 text-sm">
                               {record.condition_name}
                             </td>
+
                             <td className="py-3 px-2 text-sm">
-                              {/* {record.treatment_date} */}
                               {new Date().toLocaleDateString("en-US", {
                                 year: "numeric",
                                 month: "short",
                                 day: "numeric",
                               })}
                             </td>
+
                             <td className="py-3 px-2">
                               {getHealthStatusBadge(record.status_name)}
                             </td>
+
                             <td className="py-3 px-2">
                               <div className="flex items-center space-x-5">
                                 <Button
                                   size="sm"
                                   variant="ghost"
-                                  className="h-7 w-7 p-0 border hover:bg-green-400 hover:text-white hover:scale-105 hover:-translate-y-1 hover:drop-shadow-xl transition-all duration-300 ease-in-out active:scale-90"
+                                  className="h-7 w-7 p-0 border hover:bg-green-400 hover:text-white hover:scale-105 hover:-translate-y-1 hover:drop-shadow-xl transition-all"
                                   onClick={() => {
                                     setViewRecord(record);
                                     setIsDialogOpen(true);
@@ -776,10 +925,11 @@ export default function HealthVaccination() {
                                 >
                                   <Eye className="h-3 w-3" />
                                 </Button>
+
                                 <Button
                                   size="sm"
                                   variant="ghost"
-                                  className="h-7 w-7 p-0 border hover:bg-blue-400 hover:text-white hover:scale-105 hover:-translate-y-1 hover:drop-shadow-xl transition-all duration-300 ease-in-out active:scale-90"
+                                  className="h-7 w-7 p-0 border hover:bg-blue-400 hover:text-white hover:scale-105 hover:-translate-y-1 hover:drop-shadow-xl transition-all"
                                   onClick={() => {
                                     handleHealthRecrodStatus(record);
                                   }}
@@ -787,9 +937,6 @@ export default function HealthVaccination() {
                                 >
                                   <GrUpdate className="h-3 w-3" />
                                 </Button>
-                                {/* <Button size="sm" variant="ghost" className="h-7 w-7 p-0 text-red-600 hover:text-red-700">
-                                    <Trash2 className="h-3 w-3" />
-                                  </Button> */}
                               </div>
                             </td>
                           </tr>
@@ -798,6 +945,7 @@ export default function HealthVaccination() {
                     </table>
                   </div>
                 </div>
+
                 {/* Pagination Controls */}
                 <div className="flex justify-end items-center gap-2 mt-4">
                   <Button
@@ -808,10 +956,12 @@ export default function HealthVaccination() {
                   >
                     Prev
                   </Button>
+
                   <span className="text-sm">
                     Page {currentPage} of{" "}
                     {Math.ceil(totalRecords / pageSize) || 1}
                   </span>
+
                   <Button
                     size="sm"
                     variant="outline"

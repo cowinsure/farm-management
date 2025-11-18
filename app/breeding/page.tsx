@@ -138,7 +138,7 @@ const BreedingReproduction = () => {
                 </div>
                 <div className="p-2 w-full">
                   <div className="mb-2">
-                    <h1 className="font-bold text-gray-700 text-lg">
+                    <h1 className="font-bold text-gray-700 text-">
                       Record breeding & reproduction
                     </h1>
                     <p className="font-medium text-gray-500 text-sm">

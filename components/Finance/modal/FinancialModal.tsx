@@ -198,14 +198,14 @@ const FinancialModal = ({ type }: FinancialModalProps) => {
         <Button
           className={
             type === "income"
-              ? "bg-green-600 hover:bg-green-700"
-              : "bg-red-600 hover:bg-red-700"
+              ? "bg-green-950 rounded-lg py-2 px-2 flex items-center justify-center gap-2 font-semibold text-white lg:bg-green-600 lg:hover:bg-green-700"
+              : "bg-emerald-700 rounded-lg py-2 px-2 flex items-center justify-center gap-2 font-semibold text-white lg:bg-red-600 lg:hover:bg-red-700"
           }
         >
           {type === "income" ? (
-            <Plus className="w-4 h-4 mr-2" />
+            <Plus className="w-4 h-4" />
           ) : (
-            <Receipt className="w-4 h-4 mr-2" />
+            <Receipt className="w-4 h-4" />
           )}
           Add {type === "income" ? "Income" : "Expense"}
         </Button>

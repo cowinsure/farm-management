@@ -82,7 +82,7 @@ const MobileNav = () => {
   return (
     <div
       ref={menuRef}
-      className="fixed bottom-0 inset-x-0 z-50 bg-gradient-to-r from-emerald-950 via-green-950 to-emerald-900 backdrop-blur-xl shadow-[0_-2px_20px_rgba(0,0,0,0.5)] lg:hidden transition-all duration-300 rounded-t-2xl"
+      className="fixed bottom-0 inset-x-0 z-[99] bg-gradient-to-r from-emerald-950 via-green-950 to-emerald-900 backdrop-blur-xl shadow-[0_-2px_20px_rgba(0,0,0,0.5)] lg:hidden transition-all duration-300 rounded-t-2xl"
     >
       {/* Hidden Menu Panel */}
       {showMore && hiddenItems.length > 0 && (

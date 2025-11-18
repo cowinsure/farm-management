@@ -102,7 +102,7 @@ export default function Dashboard() {
                       <div className="text-2xl font-bold text-right text-green-600">
                         {dashboardSummary?.Total_Animals || 0}
                       </div>
-                      <div className="text-sm text-gray-600">Total Cattle</div>
+                      <div className="text-sm text-gray-600">Cattle</div>
                     </div>
                   </div>
                 </CardContent>
@@ -122,7 +122,7 @@ export default function Dashboard() {
                       <div className="text-2xl font-bold text-right text-green-600">
                         {dashboardSummary?.Health_Status || 0}%
                       </div>
-                      <div className="text-sm text-gray-600">
+                      <div className="text-sm text-gray-600 text-right">
                         Health <span className="hidden md:inline-block">Status</span>
                       </div>
                     </div>

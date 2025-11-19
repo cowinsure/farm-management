@@ -3,7 +3,7 @@ name: Deploy to Dev Server
 on:
   push:
     branches:
-      - develop
+      - Development
 
 jobs:
   deploy:

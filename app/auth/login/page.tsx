@@ -109,7 +109,7 @@ export default function LoginPage() {
             <div className="w-16 h-16 bg-green-600 rounded-xl flex items-center justify-center mx-auto mb-4">
               <span className="text-white font-bold text-xl">🐄</span>
             </div>
-            <h1 className="text-2xl font-bold text-gray-900">LivestockPro ERP</h1>
+            <h1 className="text-2xl font-bold text-gray-900">LivestockPro ERP dashboard</h1>
             <p className="text-gray-600 mt-2">Sign in to your account</p>
           </div>
 

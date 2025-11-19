@@ -9,7 +9,7 @@ import React, {
 import Image from "next/image";
 import { useCowRegistration } from "@/context/CowRegistrationContext";
 
-import logo from "../../../public/logo-03.png";
+import logo from "../../../public/Logo-03.png";
 
 import { toast } from "sonner";
 import UploadVideo from "@/helper/UploadVedio";

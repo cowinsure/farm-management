@@ -4,7 +4,7 @@ import { useCowRegistration } from "@/context/CowRegistrationContext";
 import { useEffect, useRef, useState } from "react";
 
 import Image from "next/image";
-import logo from "../../../public/logo-03.png";
+import logo from "../../../public/Logo-03.png";
 import { unauthorized, useRouter } from "next/navigation";
 import { IoIosArrowBack, IoIosArrowForward } from "react-icons/io";
 import { FaCircleCheck } from "react-icons/fa6";

@@ -1,0 +1,8 @@
+
+services:
+  frontend-farmmanagement-dev:
+    image: insurecow/insurecow_warehouse_repo:frontend-farmmanagement-dev
+    container_name: frontend-farmmanagement-dev
+    ports:
+      - "3005:3000"
+    restart: always

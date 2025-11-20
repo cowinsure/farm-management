@@ -3,6 +3,7 @@ import type React from "react";
 import { useState, useEffect, useRef } from "react";
 import { X, Send, QrCode, ChevronDown, Logs } from "lucide-react";
 import gsap from "gsap";
+import { useLocalization } from "@/context/LocalizationContext";
 
 interface Cow {
   id: string;
@@ -26,6 +27,7 @@ const ScheduleVaccinationDialog: React.FC<ScheduleVaccinationDialogProps> = ({
   onClose,
   onSuccess,
 }) => {
+  const { t, locale, setLocale } = useLocalization();
   const [selectedCows, setSelectedCows] = useState<Cow[]>([]);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
 

@@ -8,7 +8,7 @@ import React, {
 import { useCowRegistration } from "@/context/CowRegistrationContext";
 import SectionHeading from "@/helper/SectionHeading";
 import { ImageUploadBlock } from "@/helper/ImageUploadBlock";
-
+import { useLocalization } from "@/context/LocalizationContext";
 
 // export interface StepFourProps {
 //   onNext: () => void;
@@ -21,7 +21,7 @@ export type StepFourRef = {
 
 const StepFour = forwardRef<StepFourRef>((props, ref) => {
   StepFour.displayName = "StepFour";
-
+  const { t, locale, setLocale } = useLocalization();
   const { data, updateStep } = useCowRegistration();
 
   // State to hold images
@@ -90,7 +90,7 @@ const StepFour = forwardRef<StepFourRef>((props, ref) => {
       // Check required fields
       requiredFields.forEach((field) => {
         if (!images[field]) {
-          newErrors[field] = "This field is required";
+          newErrors[field] = `${t("field_required")}`;
         }
       });
 
@@ -105,8 +105,8 @@ const StepFour = forwardRef<StepFourRef>((props, ref) => {
     <div className="w-full lg:w-[90%] mx-auto">
       <SectionHeading
         marginBottom="8"
-        sectionTitle="Add Attachments"
-        description="Provide the picture as instructed below and the documents"
+        sectionTitle={t("add_attachments")}
+        description={t("upload_supporting_documents")}
       />
 
       <div
@@ -117,7 +117,7 @@ const StepFour = forwardRef<StepFourRef>((props, ref) => {
           <ImageUploadBlock
             imageFile={images.right_side_image}
             onCapture={(file) => updateImage("right_side_image", file)}
-            title="Right Side Image *"
+            title={t("right_side_image")}
             fieldKey="right_side_image"
           />
           {errors.right_side_image && (
@@ -131,7 +131,7 @@ const StepFour = forwardRef<StepFourRef>((props, ref) => {
           <ImageUploadBlock
             imageFile={images.left_side_image}
             onCapture={(file) => updateImage("left_side_image", file)}
-            title="Left Side Image *"
+            title={t("left_side_image")}
             fieldKey="left_side_image"
           />
           {errors.left_side_image && (
@@ -145,7 +145,7 @@ const StepFour = forwardRef<StepFourRef>((props, ref) => {
           <ImageUploadBlock
             imageFile={images.image_with_owner}
             onCapture={(file) => updateImage("image_with_owner", file)}
-            title="Owner & Cow Image *"
+            title={t("image_with_owner")}
             fieldKey="image_with_owner"
           />
           {errors.image_with_owner && (
@@ -159,7 +159,7 @@ const StepFour = forwardRef<StepFourRef>((props, ref) => {
           <ImageUploadBlock
             imageFile={images.special_mark}
             onCapture={(file) => updateImage("special_mark", file)}
-            title="Birthmark Image *"
+            title={t("special_marks_image")}
             fieldKey="special_mark"
           />
           {errors.special_mark && (
@@ -171,7 +171,7 @@ const StepFour = forwardRef<StepFourRef>((props, ref) => {
           <ImageUploadBlock
             imageFile={images.vet_certificate}
             onCapture={(file) => updateImage("vet_certificate", file)}
-            title="Vet Certificate *"
+            title={t("vet_certificate")}
             fieldKey="vet_certificate"
           />
           {errors.vet_certificate && (
@@ -185,7 +185,7 @@ const StepFour = forwardRef<StepFourRef>((props, ref) => {
           <ImageUploadBlock
             imageFile={images.challan_paper}
             onCapture={(file) => updateImage("challan_paper", file)}
-            title="Challan Image (Optional)"
+            title={t("challan_paper_optional")}
             fieldKey="challan_paper"
           />
         </div>
@@ -194,7 +194,7 @@ const StepFour = forwardRef<StepFourRef>((props, ref) => {
           <ImageUploadBlock
             imageFile={images.chairman_certificate}
             onCapture={(file) => updateImage("chairman_certificate", file)}
-            title="Chairman Certificate (Optional)"
+            title={t("chairman_certificate_optional")}
             fieldKey="chairman_certificate"
           />
         </div>

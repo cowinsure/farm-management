@@ -26,10 +26,12 @@ import ModalGeneral from "@/modal/DialogGeneral";
 import MuzzleGuidlines from "@/components/Livestock/MuzzleGuidlines";
 import { Stepper } from "@/helper/Stepper";
 import SectionHeading from "@/helper/SectionHeading";
+import { useLocalization } from "@/context/LocalizationContext";
 
 const steps = ["Muzzel Detection", "Cow Details", "Attachments"];
 
 export default function StepForm() {
+  const { t, locale, setLocale } = useLocalization();
   const router = useRouter();
   const [sessionExpired, setSessionExpired] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
@@ -172,8 +174,8 @@ export default function StepForm() {
       <div className="">
         <SectionHeading
           marginBottom="4"
-          sectionTitle="Add Cattle Details"
-          description="Add detailed information about the animal"
+          sectionTitle={t("add_cattle_details")}
+          description={t("add_detailed_cattle_info")}
         />
       </div>
 
@@ -194,7 +196,7 @@ export default function StepForm() {
               onClick={() => setIsGuidanceModal(true)}
               className="text-green-600 font-bold underline hover:text-green-800 custom-hover hover:underline-offset-2 cursor-pointer md:mt-6"
             >
-              View Guidelines
+              {t("view_guidelines")}
             </button>
           )}
         </div>
@@ -215,7 +217,7 @@ export default function StepForm() {
                 : "block border cursor-pointer hover:bg-gray-200 border-green-600 text-green-800 font-semibold"
             }`}
           >
-            <IoIosArrowBack /> Prev
+            <IoIosArrowBack /> {t("previous")}
           </button>
         )}
         {currentStep === steps.length - 1 ? (
@@ -226,7 +228,7 @@ export default function StepForm() {
             className="bg-green-800 text-white hover:bg-green-900 cursor-pointer font-semibold px-4 py-2 rounded-lg flex items-center justify-center gap-1 "
           >
             <FaCircleCheck className="text-green-400" />
-            Submit
+            {t("submit")}
           </button>
         ) : (
           <button
@@ -238,7 +240,9 @@ export default function StepForm() {
                 : "bg-green-800 text-white hover:bg-green-900 cursor-pointer font-semibold"
             }`}
           >
-            {currentStep === steps.length - 1 ? "Submit" : "Next"}
+            {currentStep === steps.length - 1
+              ? `${t("submit")}`
+              : `${t("next")}`}
             <IoIosArrowForward className="font-bold" />
           </button>
         )}
@@ -250,7 +254,7 @@ export default function StepForm() {
           <div className="flex flex-col items-center">
             <div className="loader"></div>
             <p className="text-gray-700 font-semibold text-xl mt-5">
-              Submitting, please wait...
+              {t("submitting")}
             </p>
           </div>
         </div>
@@ -279,7 +283,7 @@ export default function StepForm() {
             priority
           />
           <div className="mt-4 p-4 bg-red-100 border border-red-300 rounded-md text-red-700">
-            <p>Your session has expired. Please log in again.</p>
+            <p>{t("session_expired")}</p>
             <button
               onClick={() => {
                 localStorage.removeItem("accessToken"); // Clear token
@@ -287,7 +291,7 @@ export default function StepForm() {
               }}
               className="mt-2 py-2 px-4 bg-red-500 text-white font-semibold rounded-md hover:bg-red-600"
             >
-              Login Again
+              {t("login_again")}
             </button>
           </div>
         </div>
@@ -316,7 +320,7 @@ export default function StepForm() {
               }}
               className="mt-2 py-2 px-4 bg-red-500 text-white font-semibold rounded-md hover:bg-red-600"
             >
-              Close
+              {t("close")}
             </button>
           </div>
         </div>
@@ -359,7 +363,7 @@ export default function StepForm() {
                 }}
                 className="mt-2 py-2 px-4 bg-green-500 text-white font-semibold rounded-md hover:bg-green-600"
               >
-                ok
+                {t("ok")}
               </button>
             </div>
           )}

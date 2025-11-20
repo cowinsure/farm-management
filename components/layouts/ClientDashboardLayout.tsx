@@ -15,7 +15,7 @@ export default function ClientDashboardLayout({
 }: {
   children: React.ReactNode;
 }) {
-   const { t, setLocale, locale } = useLocalization();
+  const { t, setLocale, locale } = useLocalization();
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [open, setOpen] = useState(false);
   const timeoutRef = useRef<NodeJS.Timeout | null>(null);
@@ -52,16 +52,16 @@ export default function ClientDashboardLayout({
                 </div>
                 <div className="hidden md:block">
                   <h1 className="text-lg lg:text-xl font-bold text-gray-900">
-                    LivestockPro ERP
+                    {t("livestock_erp")}
                   </h1>
                   <p className="text-sm text-gray-600">
-                    Farm Management System
+                    {t("farmmanagement_system")}
                   </p>
                 </div>
               </div>
-               <button onClick={() => setLocale(locale === "en" ? "bn" : "en")}>
-        {t("language")}
-      </button>
+              <button onClick={() => setLocale(locale === "en" ? "bn" : "en")}>
+                {t("language")}
+              </button>
 
               {/* <div className="relative">
                 <Bell className="w-6 h-6 text-gray-600 cursor-pointer hover:text-green-600" />
@@ -93,15 +93,12 @@ export default function ClientDashboardLayout({
                         title="Logout"
                       >
                         <LogOut className="w-5 h-5 mr-2" />
-                        Logout
+                        {t("logout")}
                       </Button>
                     </motion.div>
                   )}
                 </AnimatePresence>
               </div>
-
-
-
 
               {/* <button
               className="md:hidden p-2"

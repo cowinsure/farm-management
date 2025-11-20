@@ -8,6 +8,7 @@ import { usePathname } from "next/navigation";
 import { MdOutlineCalendarToday } from "react-icons/md";
 import { LuPin, LuPinOff } from "react-icons/lu";
 import { FaArrowTrendUp } from "react-icons/fa6";
+import { useLocalization } from "@/context/LocalizationContext";
 
 interface NavigationProps {
   activeModule: string;
@@ -15,41 +16,42 @@ interface NavigationProps {
 }
 
 const Navigation = ({ activeModule, setActiveModule }: NavigationProps) => {
+  const { t, locale, setLocale } = useLocalization();
   const { logout } = useAuth();
   const pathname = usePathname();
 
   const [pinned, setPinned] = useState(false); // 👈 New toggle state
 
   const menuItems = [
-    { id: "/", label: "Dashboard", icon: Home, color: "text-blue-600" },
+    { id: "/", label: `${t("dashboard")}`, icon: Home, color: "text-blue-600" },
     {
       id: "/livestock",
-      label: "Livestock Inventory",
+      label: `${t("title_livestock_inventory")}`,
       icon: Users,
       color: "text-green-600",
     },
     {
       id: "/health",
-      label: "Health & Vaccination",
+      label: `${t("health_vaccination")}`,
       icon: Heart,
       color: "text-red-600",
     },
     // This page has been made. Commenting out for now
     {
       id: "/breeding",
-      label: "Breeding & Reproduction",
+      label: `${t("breeding_reproduction")}`,
       icon: FaArrowTrendUp,
       color: "text-purple-600",
     },
     {
       id: "/production",
-      label: "Production Tracking",
+      label: `${t("production_tracking")}`,
       icon: MdOutlineCalendarToday,
       color: "text-orange-600",
     },
     {
       id: "/financial",
-      label: "Financial Management",
+      label: `${t("financial_management")}`,
       icon: DollarSign,
       color: "text-yellow-600",
     },

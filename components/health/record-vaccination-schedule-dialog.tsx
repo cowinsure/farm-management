@@ -278,7 +278,7 @@ export function RecordVaccinationScheduleDialog({
           <form className="space-y-4" onSubmit={handleSubmit}>
             <div>
               <label className="block text-sm font-medium mb-1">
-                {t("asset")}
+                {t("cattle")}
               </label>
               <Select
                 value={form.asset_id}
@@ -292,7 +292,9 @@ export function RecordVaccinationScheduleDialog({
                 <SelectTrigger className="w-full">
                   <SelectValue
                     placeholder={
-                      loadingAssets ? `${t("loading")}` : `${t("select_asset")}`
+                      loadingAssets
+                        ? `${t("loading")}`
+                        : `${t("select_cattle_id")}`
                     }
                   />
                 </SelectTrigger>
@@ -307,7 +309,7 @@ export function RecordVaccinationScheduleDialog({
             </div>
             <div>
               <label className="block text-sm font-medium mb-1">
-                {t("muzzel_verification")} ({t("optional")})
+                {t("muzzle_verification")} ({t("optional")})
               </label>
               <UploadVideo
                 onVideoCapture={(file) => {
@@ -344,28 +346,32 @@ export function RecordVaccinationScheduleDialog({
                 }`}
               >
                 <div>
-                  <span className="font-semibold">Selected Reference ID:</span>{" "}
+                  <span className="font-semibold">
+                    {t("selected_reference_id")}:
+                  </span>{" "}
                   {selectedReferenceId}
                 </div>
                 <div>
-                  <span className="font-semibold">Muzzle Matched ID:</span>{" "}
+                  <span className="font-semibold">{t("muzzle_match_id")}:</span>{" "}
                   {muzzleResponse.matched_id}
                 </div>
                 <div className="mt-1 font-medium">
                   {selectedReferenceId === muzzleResponse.matched_id
-                    ? "✅ Asset matched!"
-                    : "❌ Asset does not match!"}
+                    ? `✅${t("asset_match")}`
+                    : `❌${t("asset_not_match")}`}
                 </div>
               </div>
             )}
             <div>
-              <label className="block text-sm font-medium mb-1">Vaccine</label>
+              <label className="block text-sm font-medium mb-1">
+                {t("vaccine")}
+              </label>
               <Select
                 value={form.vaccine_id}
                 onValueChange={(v) => handleSelect("vaccine_id", v)}
               >
                 <SelectTrigger className="w-full">
-                  <SelectValue placeholder="Select vaccine" />
+                  <SelectValue placeholder={t("select_vaccine")} />
                 </SelectTrigger>
                 <SelectContent>
                   {vaccines.map((v) => (
@@ -378,7 +384,7 @@ export function RecordVaccinationScheduleDialog({
             </div>
             <div>
               <label className="block text-sm font-medium mb-1">
-                Treatment Date
+                {t("treatment_date")}
               </label>
               <Input
                 type="datetime-local"
@@ -389,7 +395,9 @@ export function RecordVaccinationScheduleDialog({
               />
             </div>
             <div>
-              <label className="block text-sm font-medium mb-1">Remarks</label>
+              <label className="block text-sm font-medium mb-1">
+                {t("remarks")}
+              </label>
               <Input
                 name="remarks"
                 value={form.remarks}
@@ -398,11 +406,11 @@ export function RecordVaccinationScheduleDialog({
             </div>
             <DialogFooter>
               <Button type="submit" disabled={submitting} className="w-full">
-                {submitting ? "Submitting..." : "Submit"}
+                {submitting ? `${t("submitting")}` : `${t("submit")}`}
               </Button>
               <DialogClose asChild>
                 <Button type="button" variant="outline" className="w-full">
-                  Cancel
+                  {t("cancel")}
                 </Button>
               </DialogClose>
             </DialogFooter>

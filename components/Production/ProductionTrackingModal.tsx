@@ -18,6 +18,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { useToast } from "@/hooks/use-toast";
+import { useLocalization } from "@/context/LocalizationContext";
 
 interface RecordProductionTrackingModalProps {
   open: boolean;
@@ -37,6 +38,7 @@ export function RecordProductionTrackingModal({
   onOpenChange,
   onSuccess,
 }: RecordProductionTrackingModalProps) {
+  const { t, locale, setLocale } = useLocalization();
   const { toast } = useToast();
   const [submitting, setSubmitting] = useState(false);
   const [isAnimals, setAnimals] = useState<any[]>([]);
@@ -191,7 +193,7 @@ export function RecordProductionTrackingModal({
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent>
         <DialogHeader>
-          <DialogTitle>Record Production</DialogTitle>
+          <DialogTitle>{t("record_production")}</DialogTitle>
         </DialogHeader>
         <div className="max-h-[70vh] overflow-y-auto pr-2">
           <form className="space-y-8" onSubmit={handleSubmit}>
@@ -199,7 +201,7 @@ export function RecordProductionTrackingModal({
               {/* Animal ID */}
               <div>
                 <label className="block text-sm font-medium mb-1">
-                  Animal ID
+                  {t("animal_id")}
                 </label>
                 <Select
                   value={formData.asset_id?.toString() || ""}
@@ -208,7 +210,7 @@ export function RecordProductionTrackingModal({
                   }
                 >
                   <SelectTrigger className="w-full">
-                    <SelectValue placeholder="Select Cattle">
+                    <SelectValue placeholder={t("select_cattle_id")}>
                       {selectedCattle?.reference_id}
                     </SelectValue>
                   </SelectTrigger>
@@ -232,7 +234,7 @@ export function RecordProductionTrackingModal({
               {/* Production Type */}
               <div>
                 <label className="block text-sm font-medium mb-1">
-                  Production Type
+                  {t("production_type")}
                 </label>
                 <Select
                   value={formData.production_type_id}
@@ -241,7 +243,7 @@ export function RecordProductionTrackingModal({
                   }
                 >
                   <SelectTrigger className="w-full">
-                    <SelectValue placeholder="Select type">
+                    <SelectValue placeholder={t("select_type")}>
                       {selectedProductionType?.type_name}
                     </SelectValue>
                   </SelectTrigger>
@@ -258,7 +260,7 @@ export function RecordProductionTrackingModal({
               {/* Quantity */}
               <div>
                 <label className="block text-sm font-medium mb-1">
-                  Quantity
+                  {t("quantity")}
                 </label>
                 <Input
                   type="text"
@@ -272,7 +274,9 @@ export function RecordProductionTrackingModal({
 
               {/* Date */}
               <div>
-                <label className="block text-sm font-medium mb-1">Date</label>
+                <label className="block text-sm font-medium mb-1">
+                  {t("date")}
+                </label>
                 <Input
                   type="date"
                   className="w-full"
@@ -309,7 +313,7 @@ export function RecordProductionTrackingModal({
             <DialogFooter className="">
               <DialogClose asChild>
                 <Button type="button" variant="outline" className="w-[20%]">
-                  Cancel
+                  {t("cancel")}
                 </Button>
               </DialogClose>
               <Button
@@ -317,7 +321,7 @@ export function RecordProductionTrackingModal({
                 disabled={submitting}
                 className="bg-purple-600 text-white w-[40%]"
               >
-                {submitting ? "Submitting..." : "Record"}
+                {submitting ? `${t("submitting")}` : `${t("record")}`}
               </Button>
             </DialogFooter>
           </form>

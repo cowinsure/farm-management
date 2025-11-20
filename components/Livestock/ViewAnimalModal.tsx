@@ -206,6 +206,7 @@ import { TfiRuler } from "react-icons/tfi";
 import { LiaWeightSolid } from "react-icons/lia";
 import { LuSyringe } from "react-icons/lu";
 import FallbackImage from "../FallBackImage";
+import { useLocalization } from "@/context/LocalizationContext";
 
 interface CattleData {
   id: number;
@@ -250,6 +251,7 @@ export default function ViewAnimalModal({
   onClose,
   cattle,
 }: ViewAnimalModalProps) {
+  const { t, locale, setLocale } = useLocalization();
   if (!cattle) return null;
   console.log(cattle);
   return (
@@ -299,13 +301,16 @@ export default function ViewAnimalModal({
                     </div>
 
                     <div className="w-full space-y-3">
-                      <CowCardData label="Cow ID" value={cattle.reference_id} />
                       <CowCardData
-                        label="Asset Type"
+                        label={t("cow_id")}
+                        value={cattle.reference_id}
+                      />
+                      <CowCardData
+                        label={t("asset_type")}
                         value={cattle.asset_type}
                       />
-                      <CowCardData label="Breed" value={cattle.breed} />
-                      <CowCardData label="Gender" value={cattle.gender} />
+                      <CowCardData label={t("breed")} value={cattle.breed} />
+                      <CowCardData label={t("gender")} value={cattle.gender} />
                     </div>
                   </div>
                 </div>
@@ -316,33 +321,33 @@ export default function ViewAnimalModal({
                   <div className="bg-white border border-gray-200 rounded-2xl p-5 shadow-xs">
                     <ModalHeader
                       icon={<MdOutlineCalendarToday />}
-                      header="Basic Information"
+                      header={t("basic_information")}
                     />
                     <div className="grid xs:grid-cols-1 sm:grid-cols-2 gap-8 mt-8">
                       <DetailsSection
                         icon={<MdOutlineCalendarToday size={20} />}
-                        label="Age"
+                        label={t("age")}
                         value={cattle.age_in_months}
                         text="months"
                         className="text-green-700 bg-green-200"
                       />
                       <DetailsSection
                         icon={<LiaWeightSolid size={25} />}
-                        label="Weight"
+                        label={t("weight")}
                         value={cattle.weight_kg}
                         text="kg"
                         className="text-blue-700 bg-blue-200"
                       />
                       <DetailsSection
                         icon={<TfiRuler size={20} />}
-                        label="Height"
+                        label={t("height")}
                         value={cattle.height}
                         text="ft"
                         className="text-purple-700 bg-purple-200"
                       />
                       <DetailsSection
                         icon={<IoColorPaletteSharp />}
-                        label="Color"
+                        label={t("color")}
                         value={cattle.color}
                         className="text-yellow-700 bg-yellow-200"
                       />
@@ -353,30 +358,30 @@ export default function ViewAnimalModal({
                   <div className="bg-white border border-gray-200 rounded-2xl p-5 shadow-xs space-y-8">
                     <ModalHeader
                       icon={<FaRegHeart />}
-                      header="Health Information"
+                      header={t("health_information")}
                     />
                     <div className="grid sm:grid-cols-2 gap-8">
                       <DetailsSection
                         icon={<LuSyringe size={20} />}
-                        label="Vaccination"
+                        label={t("vaccination")}
                         value={cattle.vaccine_status || "N/A"}
                         className="text-blue-700 bg-blue-200"
                       />
                       <DetailsSection
                         icon={<LuSyringe size={20} />}
-                        label="Last Vaccination"
+                        label={t("last_vaccination_date")}
                         value={cattle.last_vaccination_date || "N/A"}
                         className="text-red-700 bg-red-200"
                       />
                       <DetailsSection
                         icon={<IoMdInformationCircleOutline size={25} />}
-                        label="Deworming"
+                        label={t("deworming")}
                         value={cattle.deworming_status || "N/A"}
                         className="text-blue-700 bg-blue-200"
                       />
                       <DetailsSection
                         icon={<IoMdInformationCircleOutline size={25} />}
-                        label="Last Deworming"
+                        label={t("last_deworming_date")}
                         value={cattle.last_deworming_date || "N/A"}
                         className="text-red-700 bg-red-200"
                       />
@@ -387,11 +392,11 @@ export default function ViewAnimalModal({
                   <div className="bg-white border border-gray-200 rounded-2xl p-5 shadow-xs space-y-8">
                     <ModalHeader
                       icon={<FaDollarSign />}
-                      header="Purchase & Ownership"
+                      header={t("purchase_ownership")}
                     />
                     <div className="grid md:grid-cols-2 gap-8">
                       <DetailsSection
-                        label="Purchase Amount"
+                        label={t("purchase_amount")}
                         value={
                           cattle.purchase_amount
                             ? parseInt(cattle.purchase_amount).toLocaleString()
@@ -401,19 +406,19 @@ export default function ViewAnimalModal({
                         className="text-green-700 bg-green-200"
                       />
                       <DetailsSection
-                        label="Purchase Date"
+                        label={t("purchase_date")}
                         value={cattle.purchase_date}
                         icon={<FaCalendarAlt />}
                         className="text-blue-700 bg-blue-200"
                       />
                       <DetailsSection
-                        label="Purchase From"
+                        label={t("purchase_from")}
                         value={cattle.purchase_from}
                         icon={<MdOutlineLocationOn />}
                         className="text-purple-700 bg-purple-200"
                       />
                       <DetailsSection
-                        label="Owner"
+                        label={t("owner")}
                         value={cattle.owner}
                         icon={<FaUser />}
                         className="text-yellow-700 bg-yellow-200"
@@ -425,16 +430,19 @@ export default function ViewAnimalModal({
                   <div className="bg-white border border-gray-200 rounded-2xl p-5 shadow-xs">
                     <ModalHeader
                       icon={<MdOutlinePermMedia />}
-                      header="Media Information"
+                      header={t("media_information")}
                     />
                     <div className="grid md:grid-cols-2 gap-4 mt-8">
                       {[
-                        ["Right Side Image", cattle.right_side_image],
-                        ["Special Mark", cattle.special_mark],
-                        ["Image with Owner", cattle.image_with_owner],
-                        ["Challan Paper", cattle.challan_paper],
-                        ["Vet Certificate", cattle.vet_certificate],
-                        ["Chairman Certificate", cattle.chairman_certificate],
+                        [`${t("right_side_image")}`, cattle.right_side_image],
+                        [`${t("special_marks_image")}`, cattle.special_mark],
+                        [`${t("image_with_owner")}`, cattle.image_with_owner],
+                        [`${t("challan_paper")}`, cattle.challan_paper],
+                        [`${t("vet_certificate")}`, cattle.vet_certificate],
+                        [
+                          `${t("chairman_certificate")}`,
+                          cattle.chairman_certificate,
+                        ],
                       ].map(([label, url]) => (
                         <div
                           key={label as string}
@@ -456,7 +464,7 @@ export default function ViewAnimalModal({
                       {/* Muzzle Video */}
                       <div className="flex flex-col gap-3 items-center justify-center p-4 rounded-xl border text-center bg-white">
                         <span className="font-semibold text-sm">
-                          Muzzle Video
+                          {t("muzzle_video")}
                         </span>
                         {cattle.muzzle_video ? (
                           <video
@@ -466,7 +474,7 @@ export default function ViewAnimalModal({
                           />
                         ) : (
                           <span className="text-gray-400 text-sm">
-                            No Video
+                            {t("no_video")}
                           </span>
                         )}
                       </div>

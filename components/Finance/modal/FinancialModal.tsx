@@ -215,7 +215,9 @@ const FinancialModal = ({ type }: FinancialModalProps) => {
       <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>
           <DialogTitle>
-            Record {type === "income" ? "Income" : "Expense"}
+            {type === "income"
+              ? `${t("record_income")}`
+              : `${t("record_expense")}`}
           </DialogTitle>
         </DialogHeader>
         <form onSubmit={handleSubmit} className="space-y-4">
@@ -230,7 +232,9 @@ const FinancialModal = ({ type }: FinancialModalProps) => {
               <SelectTrigger>
                 <SelectValue
                   placeholder={
-                    loadingLedgers ? "Loading..." : "Select category"
+                    loadingLedgers
+                      ? `${t("loading")}`
+                      : `${t("select_category")}`
                   }
                 />
               </SelectTrigger>

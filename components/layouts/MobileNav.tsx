@@ -24,8 +24,8 @@ const MobileNav = () => {
   const menuItems = [
     {
       id: "/",
-      label: "Dashboard",
-      smallLabel: "Dashboard",
+      label: `${"dashboard"}`,
+      smallLabel: `${"dashboard"}`,
       icon: Home,
       color: "text-blue-600",
     },

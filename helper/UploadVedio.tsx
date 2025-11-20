@@ -337,11 +337,8 @@ export default function UploadVideo({
           </button>
         </div>
 
-        <h1 className="text-4xl font-bold mb-2">Register Your Cow</h1>
-        <p className="text-gray-600 mb-6">
-          Upload a clear video of your cow's muzzle for our system to register
-          its unique pattern.
-        </p>
+        <h1 className="text-4xl font-bold mb-2">{t("register_cow")}</h1>
+        <p className="text-gray-600 mb-6">{t("upload_clear_video")}</p>
 
         <div className="rounded-lg overflow-hidden border border-gray-200 mb-4">
           <div className="relative bg-black" style={{ minHeight: "300px" }}>
@@ -358,7 +355,7 @@ export default function UploadVideo({
               {/* Text at the top of the guide */}
               <div className="absolute top-4 left-1/2 transform -translate-x-1/2 bg-gray-200 bg-opacity-70 px-4 py-2 rounded text-center z-10">
                 <p className="text-emerald-600 font-medium">
-                  Align cow's muzzle with the outline
+                  {t("align_cow_muzzle")}
                 </p>
               </div>
 
@@ -392,12 +389,12 @@ export default function UploadVideo({
               {isRecording ? (
                 <>
                   <Square className="h-5 w-5 mr-2" />
-                  Stop Recording
+                  {t("stop_recording")}
                 </>
               ) : (
                 <>
                   <div className="w-5 h-5 rounded-full bg-white mr-2"></div>
-                  Start Recording
+                  {t("start_recording")}
                 </>
               )}
             </button>
@@ -407,14 +404,14 @@ export default function UploadVideo({
               className="flex items-center justify-center py-4 bg-gray-200 text-gray-700 font-medium"
             >
               <RotateCcw className="h-5 w-5 mr-2" />
-              Switch Camera
+              {t("switch_camera")}
             </button>
 
             <button
               onClick={cancelCamera}
               className="flex items-center justify-center py-4 bg-white text-gray-700 font-medium border-t border-gray-200"
             >
-              Cancel
+              {t("cancel")}
             </button>
           </div>
         </div>
@@ -444,7 +441,7 @@ export default function UploadVideo({
             className="mt-4 mb-4 px-6 py-2 border border-emerald-600 text-emerald-600 font-medium rounded-lg flex items-center justify-center"
           >
             <RefreshCw className="h-5 w-5 mr-2" />
-            Retry
+            {t("retry")}
           </button>
         </div>
       ) : (
@@ -461,10 +458,8 @@ export default function UploadVideo({
             <div className="bg-emerald-100 p-4 rounded-full">
               <Upload className="h-10 w-10 text-emerald-600" />
             </div>
-            <p className="text-lg font-medium">Drag and drop your video here</p>
-            <p className="text-sm text-gray-500">
-              Or use one of the options below
-            </p>
+            <p className="text-lg font-medium">{t("drag_and_drop")}</p>
+            <p className="text-sm text-gray-500">{t("use_another_option")}</p>
 
             <div className="flex gap-4 mt-2">
               <button
@@ -472,13 +467,13 @@ export default function UploadVideo({
                 className="font-semibold text-gray-600 px-4 py-2 border border-emerald-500 rounded-lg hover:bg-emerald-50"
                 onClick={() => document.getElementById("file-upload")?.click()}
               >
-                Select Video
+                {t("select_video")}
               </button>
               <button
                 className="font-semibold text-gray-600 px-4 py-2 border border-emerald-500 rounded-lg hover:bg-emerald-50 flex items-center"
                 onClick={openCamera}
               >
-                <Camera className="h-4 w-4 mr-2" /> Use Camera
+                <Camera className="h-4 w-4 mr-2" /> {t("use_camera")}
               </button>
               <input
                 id="file-upload"
@@ -489,10 +484,7 @@ export default function UploadVideo({
               />
             </div>
           </div>
-          <p className="text-sm text-gray-500 m-4">
-            Supported formats: MP4, AVI, MOV, MKV, FLV, MPEG, WMV (Max 15
-            seconds)
-          </p>
+          <p className="text-sm text-gray-500 m-4">{t("supported_formats")}</p>
         </div>
       )}
 

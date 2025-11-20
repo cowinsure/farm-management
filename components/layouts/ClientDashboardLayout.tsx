@@ -5,10 +5,12 @@ import { Button } from "@/components/ui/button";
 import { useAuth } from "@/hooks/useAuth";
 import Navigation from "./Navigation";
 import MobileNav from "./MobileNav";
-import { FaUserCircle } from "react-icons/fa";
+import { FaUserCircle, FaGlobe } from "react-icons/fa";
 import { motion, AnimatePresence } from "framer-motion";
 import { usePathname } from "next/navigation";
 import { useLocalization } from "@/context/LocalizationContext";
+import { Switch } from "@headlessui/react";
+import LocalizationToggle from "../localizationButton";
 
 export default function ClientDashboardLayout({
   children,
@@ -24,6 +26,7 @@ export default function ClientDashboardLayout({
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const handleLogout = () => logout();
   const pathname = usePathname();
+  const [enabled, setEnabled] = useState(false);
 
   // Close menu with delay for smooth exit animation
   const handleMouseLeave = () => {
@@ -59,45 +62,46 @@ export default function ClientDashboardLayout({
                   </p>
                 </div>
               </div>
-              <button onClick={() => setLocale(locale === "en" ? "bn" : "en")}>
-                {t("language")}
-              </button>
 
               {/* <div className="relative">
                 <Bell className="w-6 h-6 text-gray-600 cursor-pointer hover:text-green-600" />
                 <span className="absolute -top-2 -right-2 bg-red-500 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">3</span>
               </div> */}
-              <div
-                className="hidden md:flex items-center space-x-4 relative z-50"
-                onMouseEnter={handleMouseEnter}
-                onMouseLeave={handleMouseLeave}
-              >
-                <div className="w-9 h-9 bg-white rounded-full flex items-center justify-center cursor-pointer">
-                  <FaUserCircle className="w-9 h-9 text-green-800" />
-                </div>
+              <div className="flex space-x-4 items-center">
+                <LocalizationToggle />
 
-                <AnimatePresence>
-                  {open && (
-                    <motion.div
-                      initial={{ opacity: 0, y: -10 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      exit={{ opacity: 0, y: -10 }}
-                      transition={{ duration: 0.2 }}
-                      className="absolute top-full right-0 mt-2 w-40 bg-white rounded-md shadow-lg border border-gray-200 z-50"
-                    >
-                      <Button
-                        variant="ghost"
-                        size="sm"
-                        onClick={handleLogout}
-                        className="w-full text-left text-gray-600 hover:text-red-600 hover:bg-red-50 rounded-md flex items-center px-4 py-2"
-                        title="Logout"
+                <div
+                  className="hidden md:flex items-center space-x-4 relative z-50"
+                  onMouseEnter={handleMouseEnter}
+                  onMouseLeave={handleMouseLeave}
+                >
+                  <div className="w-9 h-9 bg-white rounded-full flex items-center justify-center cursor-pointer">
+                    <FaUserCircle className="w-9 h-9 text-green-800" />
+                  </div>
+
+                  <AnimatePresence>
+                    {open && (
+                      <motion.div
+                        initial={{ opacity: 0, y: -10 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        exit={{ opacity: 0, y: -10 }}
+                        transition={{ duration: 0.2 }}
+                        className="absolute top-full right-0 mt-2 w-40 bg-white rounded-md shadow-lg border border-gray-200 z-50"
                       >
-                        <LogOut className="w-5 h-5 mr-2" />
-                        {t("logout")}
-                      </Button>
-                    </motion.div>
-                  )}
-                </AnimatePresence>
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          onClick={handleLogout}
+                          className="w-full text-left text-gray-600 hover:text-red-600 hover:bg-red-50 rounded-md flex items-center px-4 py-2"
+                          title="Logout"
+                        >
+                          <LogOut className="w-5 h-5 mr-2" />
+                          {t("logout")}
+                        </Button>
+                      </motion.div>
+                    )}
+                  </AnimatePresence>
+                </div>
               </div>
 
               {/* <button

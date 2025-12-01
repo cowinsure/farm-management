@@ -11,7 +11,7 @@ import { Eye, EyeOff, Phone, Lock } from "lucide-react"
 import Link from "next/link"
 import { useRouter } from "next/navigation"
 import { authService, ApiError, type LoginRequest } from "@/lib/api/auth"
-import { AuthGuard } from "@/components/auth-guard"
+import AuthGuard from "@/components/auth-guard"
 
 export default function LoginPage() {
   const [phoneNumber, setPhoneNumber] = useState("")

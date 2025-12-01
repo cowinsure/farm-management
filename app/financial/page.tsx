@@ -1,23 +1,13 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import {
-  Bell,
-  DollarSign,
   Edit,
   Eye,
-  Heart,
-  Home,
-  Menu,
-  Plus,
   Search,
-  Settings,
   CreditCard,
   TrendingUp,
   Trash2,
-  Users,
-  Zap,
-  LogOut,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -30,14 +20,10 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Badge } from "@/components/ui/badge";
-import { Progress } from "@/components/ui/progress";
-import Link from "next/link";
-import { MobileOverlay } from "@/components/mobile-overlay";
 import { useAuth } from "@/hooks/useAuth";
-import { AuthGuard } from "@/components/auth-guard";
+import AuthGuard from "@/components/auth-guard";
 import ViewTransactionModal from "@/components/Finance/modal/ViewTransactionModal";
 import FinancialModal from "@/components/Finance/modal/FinancialModal";
-import { Span } from "next/dist/trace";
 import { GrMoney } from "react-icons/gr";
 import { FaPercent } from "react-icons/fa";
 import Heading from "@/components/ui/Heading";
@@ -225,11 +211,14 @@ export default function FinancialManagement() {
                       Click to add details
                     </p>
                   </div>
-                  <div className="flex items-center gap-2 *:w-[50%]">
+                  <div className="flex items-center gap-2">
                     {/* Btn for mobile */}
-
-                    <FinancialModal type="income" />
-                    <FinancialModal type="expense" />
+                    <div className="w-[50%]">
+                      <FinancialModal type="income" />
+                    </div>
+                    <div className="w-[50%]">
+                      <FinancialModal type="expense" />
+                    </div>
                   </div>
                 </div>
               </div>
@@ -239,7 +228,7 @@ export default function FinancialManagement() {
           {/* Summary Cards */}
           <div className="mt-6 lg:mt-0 mb-6 lg:mb-8 border lg:border-none rounded-lg lg:rounded-none p-4 lg:p-0 bg-green-50 lg:bg-transparent">
             <Heading heading="Quick Stats" />
-            <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 lg:gap-6 lg:mb-8">
+            <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 lg:gap-6 mb-8">
               <Card
                 className="animate__animated animate__fadeInRight"
                 style={{ animationDelay: "0s" }}
@@ -344,6 +333,7 @@ export default function FinancialManagement() {
                 </div>
               </CardContent>
             </Card>
+            </div>
           </div>
 
           {/* Main Content Grid */}

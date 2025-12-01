@@ -1,5 +1,5 @@
 "use client";
-import { AuthGuard } from "@/components/auth-guard";
+import AuthGuard from "@/components/auth-guard";
 import { RecordProductionTrackingModal } from "@/components/Production/ProductionTrackingModal";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -323,6 +323,7 @@ const ProductionTracking = () => {
                 </div>
               </CardContent>
             </Card>
+            </div>
           </div>
 
           {/* Main Content Grid */}

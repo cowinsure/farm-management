@@ -10,7 +10,7 @@ import { FaUserCircle, FaGlobe } from "react-icons/fa";
 import { motion, AnimatePresence } from "framer-motion";
 import { usePathname } from "next/navigation";
 import { useLocalization } from "@/context/LocalizationContext";
-import { Switch } from "@headlessui/react";
+
 import LocalizationToggle from "../localizationButton";
 
 export default function ClientDashboardLayout({
@@ -82,15 +82,9 @@ export default function ClientDashboardLayout({
                     />
                     <span className="text-sm font-medium">BN</span>
                   </div>
-                <div className="w-9 h-9 bg-white rounded-full flex items-center justify-center cursor-pointer">
-                  <FaUserCircle className="w-9 h-9 text-green-800" />
-                </div>
+              
 
-                <div
-                  className="hidden md:flex items-center space-x-4 relative z-50"
-                  onMouseEnter={handleMouseEnter}
-                  onMouseLeave={handleMouseLeave}
-                >
+                <div className="hidden md:flex items-center space-x-4 relative z-50">
                   <div className="w-9 h-9 bg-white rounded-full flex items-center justify-center cursor-pointer">
                     <FaUserCircle className="w-9 h-9 text-green-800" />
                   </div>

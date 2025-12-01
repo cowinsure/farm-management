@@ -2,6 +2,7 @@
 import React, { useRef, useState } from "react";
 import { LogOut } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { Switch } from "@/components/ui/switch";
 import { useAuth } from "@/hooks/useAuth";
 import Navigation from "./Navigation";
 import MobileNav from "./MobileNav";
@@ -15,7 +16,7 @@ export default function ClientDashboardLayout({
 }: {
   children: React.ReactNode;
 }) {
-   const { t, setLocale, locale } = useLocalization();
+  const { t, setLocale, locale } = useLocalization();
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [open, setOpen] = useState(false);
   const timeoutRef = useRef<NodeJS.Timeout | null>(null);
@@ -45,7 +46,7 @@ export default function ClientDashboardLayout({
       {addCowRoute ? null : (
         <header className="bg-green-50 border-b-4 border-green-400 shadow-[5px_1px_20px_rgba(34,197,94,0.7)] block">
           <div className="w-full px-4 sm:px-6 lg:px-8">
-            <div className="flex justify-between items-center h-16">
+            <div className="flex justify-between items-center h-16 mx-auto">
               <div className="flex items-center space-x-3">
                 <div className="w-10 h-10 bg-green-600 rounded-lg flex items-center justify-center">
                   <span className="text-white font-bold text-xl">🐄</span>
@@ -59,9 +60,7 @@ export default function ClientDashboardLayout({
                   </p>
                 </div>
               </div>
-               <button onClick={() => setLocale(locale === "en" ? "bn" : "en")}>
-        {t("language")}
-      </button>
+            
 
               {/* <div className="relative">
                 <Bell className="w-6 h-6 text-gray-600 cursor-pointer hover:text-green-600" />
@@ -72,6 +71,14 @@ export default function ClientDashboardLayout({
                 onMouseEnter={handleMouseEnter}
                 onMouseLeave={handleMouseLeave}
               >
+                  <div className="flex items-center space-x-2">
+                    <span className="text-sm font-medium">EN</span>
+                    <Switch
+                      checked={locale === "en"}
+                      onCheckedChange={(checked) => setLocale(checked ? "en" : "bn")}
+                    />
+                    <span className="text-sm font-medium">BN</span>
+                  </div>
                 <div className="w-9 h-9 bg-white rounded-full flex items-center justify-center cursor-pointer">
                   <FaUserCircle className="w-9 h-9 text-green-800" />
                 </div>

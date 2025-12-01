@@ -41,7 +41,7 @@ export default function LivestockInventory() {
   const [genderFilter, setGenderFilter] = useState("all");
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const { logout } = useAuth();
-  const [page, setPage] = useState(1);
+  const [startRecord, setStartRecord] = useState(1);
   const [pageSize, setPageSize] = useState(10);
   const [total, setTotal] = useState(0);
   const [active, setActive] = useState(0);
@@ -54,17 +54,18 @@ export default function LivestockInventory() {
 
   const router = useRouter();
 
+  const page = startRecord;
+  const totalPages = pageSize > 0 && total > 0 ? Math.ceil(total / pageSize) : 1;
+
   useEffect(() => {
-    console.log("Page:", page, "PageSize:", pageSize);
+    console.log("StartRecord:", startRecord, "PageSize:", pageSize);
     setLoading(true);
     setError(null);
     const token =
       typeof window !== "undefined"
         ? localStorage.getItem("access_token")
         : null;
-    console.log("Access token:", token);
-    // Calculate start_record for 1-based pagination: 1, 11, 21, ...
-    const startRecord = (page - 1) * pageSize + 1;
+
     fetch(
       `${process.env.NEXT_PUBLIC_API_BASE_URL}/lms/assets-service?start_record=${startRecord}&page_size=${pageSize}`,
       {
@@ -83,26 +84,26 @@ export default function LivestockInventory() {
       })
       .then((data: any) => {
         console.log("Fetched data:", data);
-        setAnimals(data.data.list);
+        if (!data.data) {
+          throw new Error("Invalid response format: missing data");
+        }
+        setAnimals(data.data.list || []);
+        const summary = data.data.summary || {};
         const newTotal =
-          typeof data.data.summary.Total === "number"
-            ? data.data.summary.Total
+          typeof summary.Total === "number"
+            ? summary.Total
             : 0;
         setTotal(newTotal);
-        setActive(data.data.summary.Active);
-        setSick(data.data.summary.Sick);
-        setQuarantine(data.data.summary.Quarantine);
-        // If the current page is now out of range, reset to last valid page
-        const lastPage =
-          pageSize > 0 ? Math.max(1, Math.ceil(newTotal / pageSize)) : 1;
-        if (page > lastPage) setPage(lastPage);
+        setActive(summary.Active || 0);
+        setSick(summary.Sick || 0);
+        setQuarantine(summary.Quarantine || 0);
       })
       .catch((err: any) => {
         setError("Failed to fetch data: " + err.message);
         console.error("Fetch error:", err);
       })
       .finally(() => setLoading(false));
-  }, [page, pageSize]);
+  }, [startRecord, pageSize]);
 
   const handleLogout = () => {
     logout();
@@ -616,33 +617,19 @@ export default function LivestockInventory() {
                     <Button
                       variant="outline"
                       size="sm"
-                      onClick={() => setPage((p) => Math.max(1, p - 1))}
-                      disabled={page === 1}
+                      onClick={() => setStartRecord(prev => Math.max(1, prev - 1))}
+                      disabled={startRecord === 1}
                     >
                       {t("previous")}
                     </Button>
                     <span>
-                      {t("page")} {page} {t("of")}{" "}
-                      {pageSize > 0 && total > 0
-                        ? Math.max(1, Math.ceil(total / pageSize))
-                        : 1}
+                      {t("page")} {page} {t("of")} {totalPages}
                     </span>
                     <Button
                       variant="outline"
                       size="sm"
-                      onClick={() => {
-                        const lastPage =
-                          pageSize > 0 && total > 0
-                            ? Math.max(1, Math.ceil(total / pageSize))
-                            : 1;
-                        if (page < lastPage) setPage(page + 1);
-                      }}
-                      disabled={
-                        page >=
-                        (pageSize > 0 && total > 0
-                          ? Math.max(1, Math.ceil(total / pageSize))
-                          : 1)
-                      }
+                      onClick={() => setStartRecord(prev => prev + 1)}
+                      disabled={page >= totalPages}
                     >
                       {t("next")}
                     </Button>

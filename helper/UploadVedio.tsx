@@ -1,79 +1,94 @@
-"use client"
+"use client";
 
-import type React from "react"
+import type React from "react";
 
-import { useState, useRef, useEffect } from "react"
-import { Upload, Camera, ArrowLeft, RotateCcw, Square, RefreshCw } from "lucide-react"
+import { useState, useRef, useEffect } from "react";
+import {
+  Upload,
+  Camera,
+  ArrowLeft,
+  RotateCcw,
+  Square,
+  RefreshCw,
+} from "lucide-react";
 import { useCowRegistration } from "@/context/CowRegistrationContext";
+import { useLocalization } from "@/context/LocalizationContext";
 
-export default function UploadVideo({ onVideoCapture }: { onVideoCapture?: (file: File) => void }) {
-    const {data, updateStep, validateStep, reset } = useCowRegistration();
- 
-  const [dragActive, setDragActive] = useState(false)
-  const [cameraMode, setCameraMode] = useState(false)
-  const [isRecording, setIsRecording] = useState(false)
-  const [recordedVideo, setRecordedVideo] = useState<string | null>(null)
-  const [selectedFile, setSelectedFile] = useState<File | null>(null)
-  const [recordingTime, setRecordingTime] = useState(0)
-  const [facingMode, setFacingMode] = useState<"user" | "environment">("environment")
-  const [cameraReady, setCameraReady] = useState(false)
+export default function UploadVideo({
+  onVideoCapture,
+}: {
+  onVideoCapture?: (file: File) => void;
+}) {
+  const { t, locale, setLocale } = useLocalization();
+  const { data, updateStep, validateStep, reset } = useCowRegistration();
 
-  const videoRef = useRef<HTMLVideoElement>(null)
-  const mediaRecorderRef = useRef<MediaRecorder | null>(null)
-  const streamRef = useRef<MediaStream | null>(null)
-  const chunksRef = useRef<Blob[]>([])
-  const timerRef = useRef<NodeJS.Timeout | null>(null)
+  const [dragActive, setDragActive] = useState(false);
+  const [cameraMode, setCameraMode] = useState(false);
+  const [isRecording, setIsRecording] = useState(false);
+  const [recordedVideo, setRecordedVideo] = useState<string | null>(null);
+  const [selectedFile, setSelectedFile] = useState<File | null>(null);
+  const [recordingTime, setRecordingTime] = useState(0);
+  const [facingMode, setFacingMode] = useState<"user" | "environment">(
+    "environment"
+  );
+  const [cameraReady, setCameraReady] = useState(false);
+
+  const videoRef = useRef<HTMLVideoElement>(null);
+  const mediaRecorderRef = useRef<MediaRecorder | null>(null);
+  const streamRef = useRef<MediaStream | null>(null);
+  const chunksRef = useRef<Blob[]>([]);
+  const timerRef = useRef<NodeJS.Timeout | null>(null);
 
   // Handle drag events
   const handleDrag = (e: React.DragEvent) => {
-    e.preventDefault()
-    e.stopPropagation()
+    e.preventDefault();
+    e.stopPropagation();
     if (e.type === "dragenter" || e.type === "dragover") {
-      setDragActive(true)
+      setDragActive(true);
     } else if (e.type === "dragleave") {
-      setDragActive(false)
+      setDragActive(false);
     }
-  }
+  };
 
   // Handle drop event
   const handleDrop = (e: React.DragEvent) => {
-    e.preventDefault()
-    e.stopPropagation()
-    setDragActive(false)
+    e.preventDefault();
+    e.stopPropagation();
+    setDragActive(false);
 
     if (e.dataTransfer.files && e.dataTransfer.files[0]) {
-      const file = e.dataTransfer.files[0]
+      const file = e.dataTransfer.files[0];
       if (file.type.startsWith("video/")) {
-        handleFile(file)
+        handleFile(file);
       } else {
-        alert("Please upload a video file")
+        alert(`${t("please_upload_video")}`); // Alert if not a video file
       }
     }
-  }
+  };
 
   // Handle file selection
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files[0]) {
-      const file = e.target.files[0]
-      handleFile(file)
+      const file = e.target.files[0];
+      handleFile(file);
     }
-  }
+  };
 
   // Process the selected file
   const handleFile = (file: File) => {
-    setSelectedFile(file)
-    const videoUrl = URL.createObjectURL(file)
-    setRecordedVideo(videoUrl)
+    setSelectedFile(file);
+    const videoUrl = URL.createObjectURL(file);
+    setRecordedVideo(videoUrl);
 
     if (onVideoCapture) {
-      onVideoCapture(file)
+      onVideoCapture(file);
       // console.log("vedioref");
-          
+
       updateStep({
         muzzle_video: file,
       });
     }
-  }
+  };
   // useEffect(() => {
   //   if (data?.muzzle_video) {
   //     setSelectedFile(data.muzzle_video);
@@ -89,15 +104,14 @@ export default function UploadVideo({ onVideoCapture }: { onVideoCapture?: (file
   //   }
   // }, [data]);
 
-
   // Reset video and go back to upload state
   const resetVideo = () => {
     if (recordedVideo) {
-      URL.revokeObjectURL(recordedVideo)
+      URL.revokeObjectURL(recordedVideo);
     }
-    setRecordedVideo(null)
-    setSelectedFile(null)
-  }
+    setRecordedVideo(null);
+    setSelectedFile(null);
+  };
 
   // Try different camera configurations
   const initializeCamera = async () => {
@@ -111,19 +125,19 @@ export default function UploadVideo({ onVideoCapture }: { onVideoCapture?: (file
             height: { ideal: 720 },
           },
           audio: true,
-        })
+        });
 
-        streamRef.current = stream
+        streamRef.current = stream;
         if (videoRef.current) {
-          videoRef.current.srcObject = stream
+          videoRef.current.srcObject = stream;
           videoRef.current.onloadedmetadata = () => {
-            setCameraReady(true)
-          }
+            setCameraReady(true);
+          };
         }
-        setFacingMode("environment")
-        return
+        setFacingMode("environment");
+        return;
       } catch (err) {
-        console.log("Back camera failed, trying front camera")
+        console.log("Back camera failed, trying front camera");
       }
 
       // If back camera fails, try front camera
@@ -134,54 +148,54 @@ export default function UploadVideo({ onVideoCapture }: { onVideoCapture?: (file
           height: { ideal: 720 },
         },
         audio: true,
-      })
+      });
 
-      streamRef.current = stream
+      streamRef.current = stream;
       if (videoRef.current) {
-        videoRef.current.srcObject = stream
+        videoRef.current.srcObject = stream;
         videoRef.current.onloadedmetadata = () => {
-          setCameraReady(true)
-        }
+          setCameraReady(true);
+        };
       }
-      setFacingMode("user")
+      setFacingMode("user");
     } catch (error) {
-      console.error("Error accessing camera:", error)
-      alert("Could not access camera. Please check permissions.")
+      console.error("Error accessing camera:", error);
+      alert(`${t("no_camera_access")}`); // Alert if camera access fails
     }
-  }
+  };
 
   // Open camera
   const openCamera = async () => {
-    setCameraMode(true)
+    setCameraMode(true);
     // We'll initialize the camera after the component renders
-  }
+  };
 
   // Initialize camera when entering camera mode
   useEffect(() => {
     if (cameraMode) {
-      initializeCamera()
+      initializeCamera();
     }
 
     return () => {
       // Clean up when component unmounts or camera mode changes
       if (streamRef.current) {
-        streamRef.current.getTracks().forEach((track) => track.stop())
+        streamRef.current.getTracks().forEach((track) => track.stop());
       }
-    }
-  }, [cameraMode])
+    };
+  }, [cameraMode]);
 
   // Switch camera
   const switchCamera = async () => {
     // Stop current stream
     if (streamRef.current) {
-      streamRef.current.getTracks().forEach((track) => track.stop())
+      streamRef.current.getTracks().forEach((track) => track.stop());
     }
 
-    setCameraReady(false)
+    setCameraReady(false);
 
     // Toggle facing mode
-    const newFacingMode = facingMode === "user" ? "environment" : "user"
-    setFacingMode(newFacingMode)
+    const newFacingMode = facingMode === "user" ? "environment" : "user";
+    setFacingMode(newFacingMode);
 
     // Restart camera with new facing mode
     try {
@@ -192,146 +206,157 @@ export default function UploadVideo({ onVideoCapture }: { onVideoCapture?: (file
           height: { ideal: 720 },
         },
         audio: true,
-      })
+      });
 
-      streamRef.current = newStream
+      streamRef.current = newStream;
       if (videoRef.current) {
-        videoRef.current.srcObject = newStream
+        videoRef.current.srcObject = newStream;
         videoRef.current.onloadedmetadata = () => {
-          setCameraReady(true)
-        }
+          setCameraReady(true);
+        };
       }
     } catch (error) {
-      console.error("Error switching camera:", error)
-      alert("Could not switch camera. Please check permissions.")
+      console.error("Error switching camera:", error);
+      alert(`${t("no_camera_switch_access")}`); // Alert if camera switch fails
     }
-  }
+  };
 
   // Start recording
   const startRecording = () => {
-    if (!streamRef.current) return
+    if (!streamRef.current) return;
 
-    const mediaRecorder = new MediaRecorder(streamRef.current)
-    mediaRecorderRef.current = mediaRecorder
+    const mediaRecorder = new MediaRecorder(streamRef.current);
+    mediaRecorderRef.current = mediaRecorder;
 
     mediaRecorder.ondataavailable = (e) => {
       if (e.data.size > 0) {
-        chunksRef.current.push(e.data)
+        chunksRef.current.push(e.data);
       }
-    }
+    };
 
     mediaRecorder.onstop = () => {
-      const blob = new Blob(chunksRef.current, { type: "video/mp4" })
-      const videoUrl = URL.createObjectURL(blob)
-      setRecordedVideo(videoUrl)
+      const blob = new Blob(chunksRef.current, { type: "video/mp4" });
+      const videoUrl = URL.createObjectURL(blob);
+      setRecordedVideo(videoUrl);
 
-      const file = new File([blob], "recorded-video.mp4", { type: "video/mp4" })
-      setSelectedFile(file)
+      const file = new File([blob], "recorded-video.mp4", {
+        type: "video/mp4",
+      });
+      setSelectedFile(file);
 
       if (onVideoCapture) {
-        onVideoCapture(file)
+        onVideoCapture(file);
       }
 
-      chunksRef.current = []
-      setCameraMode(false)
-    }
+      chunksRef.current = [];
+      setCameraMode(false);
+    };
 
     // Start timer
-    setRecordingTime(0)
+    setRecordingTime(0);
     timerRef.current = setInterval(() => {
-      setRecordingTime((prev) => prev + 1)
-    }, 1000)
+      setRecordingTime((prev) => prev + 1);
+    }, 1000);
 
-    mediaRecorder.start()
-    setIsRecording(true)
-  }
+    mediaRecorder.start();
+    setIsRecording(true);
+  };
 
   // Stop recording
   const stopRecording = () => {
     if (mediaRecorderRef.current && isRecording) {
-      mediaRecorderRef.current.stop()
-      setIsRecording(false)
+      mediaRecorderRef.current.stop();
+      setIsRecording(false);
 
       // Clear timer
       if (timerRef.current) {
-        clearInterval(timerRef.current)
-        timerRef.current = null
+        clearInterval(timerRef.current);
+        timerRef.current = null;
       }
     }
-  }
+  };
 
   // Cancel camera/recording
   const cancelCamera = () => {
     if (isRecording && mediaRecorderRef.current) {
-      mediaRecorderRef.current.stop()
-      setIsRecording(false)
+      mediaRecorderRef.current.stop();
+      setIsRecording(false);
 
       // Clear timer
       if (timerRef.current) {
-        clearInterval(timerRef.current)
-        timerRef.current = null
+        clearInterval(timerRef.current);
+        timerRef.current = null;
       }
     }
 
     // Stop stream
     if (streamRef.current) {
-      streamRef.current.getTracks().forEach((track) => track.stop())
+      streamRef.current.getTracks().forEach((track) => track.stop());
     }
 
-    setCameraMode(false)
-    setRecordingTime(0)
-  }
+    setCameraMode(false);
+    setRecordingTime(0);
+  };
 
   // Format time for display
   const formatTime = (seconds: number) => {
     const mins = Math.floor(seconds / 60)
       .toString()
-      .padStart(2, "0")
-    const secs = (seconds % 60).toString().padStart(2, "0")
-    return `${mins}:${secs}`
-  }
+      .padStart(2, "0");
+    const secs = (seconds % 60).toString().padStart(2, "0");
+    return `${mins}:${secs}`;
+  };
 
   // Clean up on unmount
   useEffect(() => {
     return () => {
       if (timerRef.current) {
-        clearInterval(timerRef.current)
+        clearInterval(timerRef.current);
       }
 
       if (streamRef.current) {
-        streamRef.current.getTracks().forEach((track) => track.stop())
+        streamRef.current.getTracks().forEach((track) => track.stop());
       }
 
       if (recordedVideo) {
-        URL.revokeObjectURL(recordedVideo)
+        URL.revokeObjectURL(recordedVideo);
       }
-    }
-  }, [recordedVideo])
+    };
+  }, [recordedVideo]);
 
   if (cameraMode) {
     return (
       <div className="w-full">
         <div className="flex items-center mb-4">
-          <button onClick={cancelCamera} className="flex items-center text-emerald-500">
+          <button
+            onClick={cancelCamera}
+            className="flex items-center text-emerald-500"
+          >
             <ArrowLeft className="h-5 w-5 mr-2" />
-            <span className="text-lg">Back to Home</span>
+            <span className="text-lg">{t("back_to_home")}</span>
           </button>
         </div>
 
-        <h1 className="text-4xl font-bold mb-2">Register Your Cow</h1>
-        <p className="text-gray-600 mb-6">
-          Upload a clear video of your cow's muzzle for our system to register its unique pattern.
-        </p>
+        <h1 className="text-4xl font-bold mb-2">{t("register_cow")}</h1>
+        <p className="text-gray-600 mb-6">{t("upload_clear_video")}</p>
 
         <div className="rounded-lg overflow-hidden border border-gray-200 mb-4">
           <div className="relative bg-black" style={{ minHeight: "300px" }}>
-            <video ref={videoRef} autoPlay playsInline muted className="w-full h-auto" />
+            <video
+              ref={videoRef}
+              autoPlay
+              playsInline
+              muted
+              className="w-full h-auto"
+            />
 
             {/* Alignment guide overlay */}
             <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
               {/* Text at the top of the guide */}
               <div className="absolute top-4 left-1/2 transform -translate-x-1/2 bg-gray-200 bg-opacity-70 px-4 py-2 rounded text-center z-10">
-                <p className="text-emerald-600 font-medium">Align cow's muzzle with the outline</p>
+                <p className="text-emerald-600 font-medium">
+                  {t("align_cow_muzzle")}
+                </p>
               </div>
 
               {/* Circular outline */}
@@ -364,12 +389,12 @@ export default function UploadVideo({ onVideoCapture }: { onVideoCapture?: (file
               {isRecording ? (
                 <>
                   <Square className="h-5 w-5 mr-2" />
-                  Stop Recording
+                  {t("stop_recording")}
                 </>
               ) : (
                 <>
                   <div className="w-5 h-5 rounded-full bg-white mr-2"></div>
-                  Start Recording
+                  {t("start_recording")}
                 </>
               )}
             </button>
@@ -379,23 +404,23 @@ export default function UploadVideo({ onVideoCapture }: { onVideoCapture?: (file
               className="flex items-center justify-center py-4 bg-gray-200 text-gray-700 font-medium"
             >
               <RotateCcw className="h-5 w-5 mr-2" />
-              Switch Camera
+              {t("switch_camera")}
             </button>
 
             <button
               onClick={cancelCamera}
               className="flex items-center justify-center py-4 bg-white text-gray-700 font-medium border-t border-gray-200"
             >
-              Cancel
+              {t("cancel")}
             </button>
           </div>
         </div>
-{/* 
+        {/* 
         <button className="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-medium py-4 rounded">
           Register Cow
         </button> */}
       </div>
-    )
+    );
   }
 
   return (
@@ -416,7 +441,7 @@ export default function UploadVideo({ onVideoCapture }: { onVideoCapture?: (file
             className="mt-4 mb-4 px-6 py-2 border border-emerald-600 text-emerald-600 font-medium rounded-lg flex items-center justify-center"
           >
             <RefreshCw className="h-5 w-5 mr-2" />
-            Retry
+            {t("retry")}
           </button>
         </div>
       ) : (
@@ -433,29 +458,33 @@ export default function UploadVideo({ onVideoCapture }: { onVideoCapture?: (file
             <div className="bg-emerald-100 p-4 rounded-full">
               <Upload className="h-10 w-10 text-emerald-600" />
             </div>
-            <p className="text-lg font-medium">Drag and drop your video here</p>
-            <p className="text-sm text-gray-500">Or use one of the options below</p>
+            <p className="text-lg font-medium">{t("drag_and_drop")}</p>
+            <p className="text-sm text-gray-500">{t("use_another_option")}</p>
 
             <div className="flex gap-4 mt-2">
               <button
-              type="button"
+                type="button"
                 className="font-semibold text-gray-600 px-4 py-2 border border-emerald-500 rounded-lg hover:bg-emerald-50"
                 onClick={() => document.getElementById("file-upload")?.click()}
               >
-                Select Video
+                {t("select_video")}
               </button>
               <button
                 className="font-semibold text-gray-600 px-4 py-2 border border-emerald-500 rounded-lg hover:bg-emerald-50 flex items-center"
                 onClick={openCamera}
               >
-                <Camera className="h-4 w-4 mr-2" /> Use Camera
+                <Camera className="h-4 w-4 mr-2" /> {t("use_camera")}
               </button>
-              <input id="file-upload" type="file" accept="video/*" className="hidden" onChange={handleFileChange} />
+              <input
+                id="file-upload"
+                type="file"
+                accept="video/*"
+                className="hidden"
+                onChange={handleFileChange}
+              />
             </div>
           </div>
-          <p className="text-sm text-gray-500 m-4">
-            Supported formats: MP4, AVI, MOV, MKV, FLV, MPEG, WMV (Max 15 seconds)
-          </p>
+          <p className="text-sm text-gray-500 m-4">{t("supported_formats")}</p>
         </div>
       )}
 
@@ -470,5 +499,5 @@ export default function UploadVideo({ onVideoCapture }: { onVideoCapture?: (file
         Register Cow
       </button> */}
     </div>
-  )
+  );
 }

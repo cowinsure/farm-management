@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react"
+import React, { useEffect, useState } from "react";
 import {
   Dialog,
   DialogContent,
@@ -6,18 +6,25 @@ import {
   DialogTitle,
   DialogFooter,
   DialogClose,
-} from "@/components/ui/dialog"
-import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import { useToast } from "@/hooks/use-toast"
-import UploadVideo from "@/helper/UploadVedio"
-import { Camera } from "lucide-react"
+} from "@/components/ui/dialog";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { useToast } from "@/hooks/use-toast";
+import UploadVideo from "@/helper/UploadVedio";
+import { Camera } from "lucide-react";
+import { useLocalization } from "@/context/LocalizationContext";
 
 interface RecordVaccinationScheduleDialogProps {
-  open: boolean
-  onOpenChange: (open: boolean) => void
-  onSuccess?: () => void
+  open: boolean;
+  onOpenChange: (open: boolean) => void;
+  onSuccess?: () => void;
 }
 
 // Dummy data for vaccines
@@ -26,8 +33,9 @@ const vaccines = [
   { id: 2, name: "Brucellosis" },
   { id: 3, name: "Anthrax" },
   { id: 4, name: "Rabies" },
-]
-const jwt = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJmcmVzaCI6ZmFsc2UsImlhdCI6MTc0NzU2NTY5NiwianRpIjoiNzViZThkMjYtNGMwZC00YTc4LWEzM2ItMjAyODU4OGVkZmU4IiwidHlwZSI6ImFjY2VzcyIsInN1YiI6InRlc3QiLCJuYmYiOjE3NDc1NjU2OTYsImNzcmYiOiI2Y2VjNWM1Mi0xMDJkLTRmYjUtOTE3NS1lNzZkZTBkMDM3YTYifQ.n5moEixJyO4eaXpYI8yG6Qnjf3jjBrWA7W19gW_4h8c"
+];
+const jwt =
+  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJmcmVzaCI6ZmFsc2UsImlhdCI6MTc0NzU2NTY5NiwianRpIjoiNzViZThkMjYtNGMwZC00YTc4LWEzM2ItMjAyODU4OGVkZmU4IiwidHlwZSI6ImFjY2VzcyIsInN1YiI6InRlc3QiLCJuYmYiOjE3NDc1NjU2OTYsImNzcmYiOiI2Y2VjNWM1Mi0xMDJkLTRmYjUtOTE3NS1lNzZkZTBkMDM3YTYifQ.n5moEixJyO4eaXpYI8yG6Qnjf3jjBrWA7W19gW_4h8c";
 interface MuzzleResponse {
   geo_location: string;
   matched_id: string;
@@ -35,32 +43,44 @@ interface MuzzleResponse {
   segmentation_image: string;
 }
 
-export function RecordVaccinationScheduleDialog({ open, onOpenChange, onSuccess }: RecordVaccinationScheduleDialogProps) {
-  const { toast } = useToast()
-  const [assets, setAssets] = useState<{ id: number; name: string; reference_id: string }[]>([])
-  const [loadingAssets, setLoadingAssets] = useState(false)
-    const [selectedReferenceId, setSelectedReferenceId] = useState<string | null>(null);
-  
+export function RecordVaccinationScheduleDialog({
+  open,
+  onOpenChange,
+  onSuccess,
+}: RecordVaccinationScheduleDialogProps) {
+  const { t, locale, setLocale } = useLocalization();
+  const { toast } = useToast();
+  const [assets, setAssets] = useState<
+    { id: number; name: string; reference_id: string }[]
+  >([]);
+  const [loadingAssets, setLoadingAssets] = useState(false);
+  const [selectedReferenceId, setSelectedReferenceId] = useState<string | null>(
+    null
+  );
+
   const [form, setForm] = useState({
     asset_id: "",
     vaccine_id: "",
     due_date: "",
     remarks: "",
-  })
-  const [submitting, setSubmitting] = useState(false)
+  });
+  const [submitting, setSubmitting] = useState(false);
   const [vaccines, setVaccines] = useState<{ id: number; name: string }[]>([]);
   const [isUploading, setIsUploading] = useState(false);
-  const [muzzleResponse, setMuzzleResponse] = useState<MuzzleResponse | null>(null);
-  const [erromuzzleResponse, setErroMuzzleResponse] = useState<MuzzleResponse | null>(null);
+  const [muzzleResponse, setMuzzleResponse] = useState<MuzzleResponse | null>(
+    null
+  );
+  const [erromuzzleResponse, setErroMuzzleResponse] =
+    useState<MuzzleResponse | null>(null);
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
-
-
-
 
   // Fetch vaccines from the API when dialog opens
   useEffect(() => {
     if (open) {
-      const token = typeof window !== "undefined" ? localStorage.getItem("access_token") : null;
+      const token =
+        typeof window !== "undefined"
+          ? localStorage.getItem("access_token")
+          : null;
       fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/lms/vaccine-service`, {
         headers: {
           "Content-Type": "application/json",
@@ -79,8 +99,11 @@ export function RecordVaccinationScheduleDialog({ open, onOpenChange, onSuccess 
   // Fetch assets when dialog opens
   useEffect(() => {
     if (open) {
-      setLoadingAssets(true)
-      const token = typeof window !== "undefined" ? localStorage.getItem("access_token") : null
+      setLoadingAssets(true);
+      const token =
+        typeof window !== "undefined"
+          ? localStorage.getItem("access_token")
+          : null;
       fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/lms/assets-service`, {
         headers: {
           ...(token ? { Authorization: `Bearer ${token}` } : {}),
@@ -88,69 +111,85 @@ export function RecordVaccinationScheduleDialog({ open, onOpenChange, onSuccess 
       })
         .then((res) => res.json())
         .then((data) => {
-          const list = data?.data?.list || data?.list || []
-          setAssets(list.map((a: any) => ({
-            id: a.id,
-            name: a.name || a.asset_ref_id || `Asset ${a.id}`,
-            reference_id: a.reference_id
-          })))
+          const list = data?.data?.list || data?.list || [];
+          setAssets(
+            list.map((a: any) => ({
+              id: a.id,
+              name: a.name || a.asset_ref_id || `Asset ${a.id}`,
+              reference_id: a.reference_id,
+            }))
+          );
         })
         .catch(() => setAssets([]))
-        .finally(() => setLoadingAssets(false))
+        .finally(() => setLoadingAssets(false));
     }
-  }, [open])
+  }, [open]);
 
   // Handle input changes
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-    setForm({ ...form, [e.target.name]: e.target.value })
-  }
+  const handleChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+  ) => {
+    setForm({ ...form, [e.target.name]: e.target.value });
+  };
 
   // Handle select changes
   const handleSelect = (name: string, value: string) => {
-    setForm({ ...form, [name]: value })
-  }
+    setForm({ ...form, [name]: value });
+  };
 
   // Handle form submit
   const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault()
-    setSubmitting(true)
+    e.preventDefault();
+    setSubmitting(true);
     try {
-      const token = typeof window !== "undefined" ? localStorage.getItem("access_token") : null
+      const token =
+        typeof window !== "undefined"
+          ? localStorage.getItem("access_token")
+          : null;
       const payload = {
         ...form,
         asset_id: Number(form.asset_id),
         vaccine_id: Number(form.vaccine_id),
-      }
+      };
       console.log(payload);
 
-      const res = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/lms/vaccination-schedule-service/`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          ...(token ? { Authorization: `Bearer ${token}` } : {}),
-        },
-        body: JSON.stringify(payload),
-      })
-      const data = await res.json()
+      const res = await fetch(
+        `${process.env.NEXT_PUBLIC_API_BASE_URL}/lms/vaccination-schedule-service/`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            ...(token ? { Authorization: `Bearer ${token}` } : {}),
+          },
+          body: JSON.stringify(payload),
+        }
+      );
+      const data = await res.json();
       if (data.status === "success") {
-        toast({ title: "Success", description: data.message || "Vaccination scheduled successfully" })
-        onOpenChange(false)
-        if (onSuccess) onSuccess()
+        toast({
+          title: "Success",
+          description: data.message || "Vaccination scheduled successfully",
+        });
+        onOpenChange(false);
+        if (onSuccess) onSuccess();
         setForm({
           asset_id: "",
           vaccine_id: "",
           due_date: "",
           remarks: "",
-        })
+        });
       } else {
-        throw new Error(data.message || "Failed to schedule vaccination")
+        throw new Error(data.message || "Failed to schedule vaccination");
       }
     } catch (err: any) {
-      toast({ title: "Error", description: err.message || "Failed to schedule vaccination" })
+      toast({
+        title: "Error",
+        description: err.message || "Failed to schedule vaccination",
+      });
     } finally {
-      setSubmitting(false)
+      setSubmitting(false);
     }
-  }
+  };
 
   const handleVideoUpload = async (file: File) => {
     // setModalOpen(false)
@@ -164,24 +203,22 @@ export function RecordVaccinationScheduleDialog({ open, onOpenChange, onSuccess 
     //   claim_muzzle: file
     // }));
 
-
-
-
-
     try {
       setIsUploading(true);
-      const response = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL_AI}/claim`, {
-        method: "POST",
-        body: formData,
-        headers: {
-          // "Content-Type": "application/json",
-          Authorization: `Bearer ${jwt}`,
-        },
-      });
+      const response = await fetch(
+        `${process.env.NEXT_PUBLIC_API_BASE_URL_AI}/claim`,
+        {
+          method: "POST",
+          body: formData,
+          headers: {
+            // "Content-Type": "application/json",
+            Authorization: `Bearer ${jwt}`,
+          },
+        }
+      );
       // 3.110.218.87:8000
 
       // console.log(await response.json());
-
 
       if (response.status === 400) {
         const data = await response.json();
@@ -235,36 +272,51 @@ export function RecordVaccinationScheduleDialog({ open, onOpenChange, onSuccess 
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent>
         <DialogHeader>
-          <DialogTitle>Schedule Vaccination</DialogTitle>
+          <DialogTitle>{t("schedule_vaccination")}</DialogTitle>
         </DialogHeader>
         <div className="max-h-[70vh] overflow-y-auto pr-2">
           <form className="space-y-4" onSubmit={handleSubmit}>
             <div>
-              <label className="block text-sm font-medium mb-1">Asset</label>
-              <Select value={form.asset_id} onValueChange={(v) =>{
-                 handleSelect("asset_id", v)
-                   const animal = assets.find((a) => String(a.id) === v);
-                setSelectedReferenceId(animal ? animal.reference_id : null);
-                 
-              }} disabled={loadingAssets}>
+              <label className="block text-sm font-medium mb-1">
+                {t("cattle")}
+              </label>
+              <Select
+                value={form.asset_id}
+                onValueChange={(v) => {
+                  handleSelect("asset_id", v);
+                  const animal = assets.find((a) => String(a.id) === v);
+                  setSelectedReferenceId(animal ? animal.reference_id : null);
+                }}
+                disabled={loadingAssets}
+              >
                 <SelectTrigger className="w-full">
-                  <SelectValue placeholder={loadingAssets ? "Loading..." : "Select asset"} />
+                  <SelectValue
+                    placeholder={
+                      loadingAssets
+                        ? `${t("loading")}`
+                        : `${t("select_cattle_id")}`
+                    }
+                  />
                 </SelectTrigger>
                 <SelectContent>
                   {assets.map((a) => (
-                    <SelectItem key={a.id} value={String(a.id)}>{a.reference_id}</SelectItem>
+                    <SelectItem key={a.id} value={String(a.id)}>
+                      {a.reference_id}
+                    </SelectItem>
                   ))}
                 </SelectContent>
               </Select>
             </div>
-                <div>
-              <label className="block text-sm font-medium mb-1">Muzzel Verification (optional)</label>
-              <UploadVideo onVideoCapture={(file) => {
-                console.log("Captured video file:", file);
-                setSelectedFile(file);
-
-              }} />
-
+            <div>
+              <label className="block text-sm font-medium mb-1">
+                {t("muzzle_verification")} ({t("optional")})
+              </label>
+              <UploadVideo
+                onVideoCapture={(file) => {
+                  console.log("Captured video file:", file);
+                  setSelectedFile(file);
+                }}
+              />
             </div>
             <Button
               type="button"
@@ -274,17 +326,18 @@ export function RecordVaccinationScheduleDialog({ open, onOpenChange, onSuccess 
                 if (selectedFile) {
                   handleVideoUpload(selectedFile); // Call the upload function when the video is captured
                 } else {
-                  alert("Please select a video file before uploading.");
+                  alert(`${t("please_select_video")}`); // Alert if no file is selected
                 }
               }}
             >
               <Camera className="h-5 w-5 text-green-600" />
-              {isUploading ? "Uploading..." : "Upload Muzzle Video"}
+              {isUploading
+                ? `${t("uploading")}`
+                : `${t("upload_muzzle_video")}`}
               {/* {isUploading ? "Uploading..." : "Claim Cow"} */}
             </Button>
 
-
-               {selectedReferenceId && muzzleResponse && (
+            {selectedReferenceId && muzzleResponse && (
               <div
                 className={`p-3 rounded mb-2 flex flex-col items-start ${
                   selectedReferenceId === muzzleResponse.matched_id
@@ -293,52 +346,77 @@ export function RecordVaccinationScheduleDialog({ open, onOpenChange, onSuccess 
                 }`}
               >
                 <div>
-                  <span className="font-semibold">Selected Reference ID:</span>{" "}
+                  <span className="font-semibold">
+                    {t("selected_reference_id")}:
+                  </span>{" "}
                   {selectedReferenceId}
                 </div>
                 <div>
-                  <span className="font-semibold">Muzzle Matched ID:</span>{" "}
+                  <span className="font-semibold">{t("muzzle_match_id")}:</span>{" "}
                   {muzzleResponse.matched_id}
                 </div>
                 <div className="mt-1 font-medium">
                   {selectedReferenceId === muzzleResponse.matched_id
-                    ? "✅ Asset matched!"
-                    : "❌ Asset does not match!"}
+                    ? `✅${t("asset_match")}`
+                    : `❌${t("asset_not_match")}`}
                 </div>
               </div>
             )}
             <div>
-              <label className="block text-sm font-medium mb-1">Vaccine</label>
-              <Select value={form.vaccine_id} onValueChange={(v) => handleSelect("vaccine_id", v)}>
+              <label className="block text-sm font-medium mb-1">
+                {t("vaccine")}
+              </label>
+              <Select
+                value={form.vaccine_id}
+                onValueChange={(v) => handleSelect("vaccine_id", v)}
+              >
                 <SelectTrigger className="w-full">
-                  <SelectValue placeholder="Select vaccine" />
+                  <SelectValue placeholder={t("select_vaccine")} />
                 </SelectTrigger>
                 <SelectContent>
                   {vaccines.map((v) => (
-                    <SelectItem key={v.id} value={String(v.id)}>{v.name}</SelectItem>
+                    <SelectItem key={v.id} value={String(v.id)}>
+                      {v.name}
+                    </SelectItem>
                   ))}
                 </SelectContent>
               </Select>
             </div>
             <div>
-              <label className="block text-sm font-medium mb-1">Treatment Date</label>
-              <Input type="datetime-local" name="due_date" value={form.due_date} onChange={handleChange} required />
+              <label className="block text-sm font-medium mb-1">
+                {t("treatment_date")}
+              </label>
+              <Input
+                type="datetime-local"
+                name="due_date"
+                value={form.due_date}
+                onChange={handleChange}
+                required
+              />
             </div>
             <div>
-              <label className="block text-sm font-medium mb-1">Remarks</label>
-              <Input name="remarks" value={form.remarks} onChange={handleChange} />
+              <label className="block text-sm font-medium mb-1">
+                {t("remarks")}
+              </label>
+              <Input
+                name="remarks"
+                value={form.remarks}
+                onChange={handleChange}
+              />
             </div>
             <DialogFooter>
               <Button type="submit" disabled={submitting} className="w-full">
-                {submitting ? "Submitting..." : "Submit"}
+                {submitting ? `${t("submitting")}` : `${t("submit")}`}
               </Button>
               <DialogClose asChild>
-                <Button type="button" variant="outline" className="w-full">Cancel</Button>
+                <Button type="button" variant="outline" className="w-full">
+                  {t("cancel")}
+                </Button>
               </DialogClose>
             </DialogFooter>
           </form>
         </div>
       </DialogContent>
     </Dialog>
-  )
-} 
+  );
+}

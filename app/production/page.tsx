@@ -28,9 +28,11 @@ import { LuMilk } from "react-icons/lu";
 import { TbMeat } from "react-icons/tb";
 import { toast, Toaster } from "sonner";
 import { FeedLogDialog } from "@/components/Production/FeedLogDialog";
+import { useLocalization } from "@/context/LocalizationContext";
 import SectionHeading from "@/helper/SectionHeading";
 
 const ProductionTracking = () => {
+  const { t, setLocale, locale } = useLocalization();
   const [isRecordProductionModal, setRecordProductionModal] = useState(false);
   const [isFeedLogDialogOpen, setIsFeedLogDialogOpen] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -169,14 +171,14 @@ const ProductionTracking = () => {
                 onClick={() => setRecordProductionModal(true)}
               >
                 <IoDocuments className="w-4 h-4 mr-2" />
-                Record Production
+                {t("record_production")}
               </Button>
               <Button
                 className="bg-green-600 hover:bg-green-700"
                 onClick={() => setIsFeedLogDialogOpen(true)}
               >
                 <Plus className="w-4 h-4 mr-2" />
-                Add Feed Log
+                {t("add_feed_log")}
               </Button>
             </div>
             <RecordProductionTrackingModal
@@ -248,15 +250,17 @@ const ProductionTracking = () => {
                       <LuMilk />
                     </span>
 
-                    <div>
-                      <div className="text-2xl font-bold text-right text-blue-600">
-                        500 L
-                      </div>
-                      <div className="text-sm text-gray-600">Today's Milk</div>
+                  <div>
+                    <div className="text-2xl font-bold text-right text-blue-600">
+                      500 L
+                    </div>
+                    <div className="text-sm text-gray-600">
+                      {t("todays_milk")}
                     </div>
                   </div>
-                </CardContent>
-              </Card>
+                </div>
+              </CardContent>
+            </Card>
 
               <Card
                 className="animate__animated animate__fadeInRight"
@@ -266,18 +270,17 @@ const ProductionTracking = () => {
                   <div className="flex items-center justify-between space-x-2">
                     <TrendingUp className="w-8 h-8 text-green-600" />
 
-                    <div>
-                      <div className="text-2xl font-bold text-right text-green-600">
-                        5%
-                      </div>
-                      <div className="text-sm text-gray-600">
-                        <span className="hidden md:inline-flex">Weekly</span>{" "}
-                        Growth
-                      </div>
+                  <div>
+                    <div className="text-2xl font-bold text-right text-green-600">
+                      5%
+                    </div>
+                    <div className="text-sm text-gray-600">
+                      {t("weekly_growth")}
                     </div>
                   </div>
-                </CardContent>
-              </Card>
+                </div>
+              </CardContent>
+            </Card>
 
               <Card
                 className="animate__animated animate__fadeInRight"
@@ -287,15 +290,17 @@ const ProductionTracking = () => {
                   <div className="flex items-center justify-between space-x-2">
                     <TbMeat className="w-8 h-8 text-orange-600" />
 
-                    <div>
-                      <div className="text-2xl font-bold text-right text-orange-600">
-                        16.5
-                      </div>
-                      <div className="text-sm text-gray-600"><span className="hidden md:inline-block">Avg</span> L/animal</div>
+                  <div>
+                    <div className="text-2xl font-bold text-right text-orange-600">
+                      16.5
+                    </div>
+                    <div className="text-sm text-gray-600">
+                      {t("avg_litres_per_animal")}
                     </div>
                   </div>
-                </CardContent>
-              </Card>
+                </div>
+              </CardContent>
+            </Card>
 
               <Card
                 className="animate__animated animate__fadeInRight"
@@ -307,16 +312,17 @@ const ProductionTracking = () => {
                       <FaPercent className="w-6 h-6 text-purple-600 font-bold" />
                     </div>
 
-                    <div>
-                      <div className="text-2xl font-bold text-right text-purple-600">
-                        89
-                      </div>
-                      <div className="text-sm text-gray-600">Quality Rate</div>
+                  <div>
+                    <div className="text-2xl font-bold text-right text-purple-600">
+                      89
+                    </div>
+                    <div className="text-sm text-gray-600">
+                      {t("quality_rate")}
                     </div>
                   </div>
-                </CardContent>
-              </Card>
-            </div>
+                </div>
+              </CardContent>
+            </Card>
           </div>
 
           {/* Main Content Grid */}
@@ -327,13 +333,13 @@ const ProductionTracking = () => {
                   <div className="flex flex-col lg:flex-row items-start lg:items-center justify-between gap-4">
                     <CardTitle className="flex items-center text-lg lg:text-xl">
                       <LuMilk className="w-5 h-5 mr-2 text-blue-600" />
-                      Daily Milk Production
+                      {t("daily_milk_production")}
                     </CardTitle>
                     <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2 w-full lg:w-auto">
                       <div className="relative">
                         <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
                         <Input
-                          placeholder="Search animal..."
+                          placeholder={t("search_animals")}
                           value={""}
                           onChange={(e) => console.log(e)}
                           className="pl-10 w-full sm:w-48"
@@ -344,9 +350,11 @@ const ProductionTracking = () => {
                           <SelectValue placeholder="All Types" />
                         </SelectTrigger>
                         <SelectContent>
-                          <SelectItem value="all">All Types</SelectItem>
-                          <SelectItem value="income">Income</SelectItem>
-                          <SelectItem value="expense">Expense</SelectItem>
+                          <SelectItem value="all">{t("all_types")}</SelectItem>
+                          <SelectItem value="income">{t("income")}</SelectItem>
+                          <SelectItem value="expense">
+                            {t("expense")}
+                          </SelectItem>
                         </SelectContent>
                       </Select>
                     </div>
@@ -409,21 +417,21 @@ const ProductionTracking = () => {
                   >
                     {loading ? (
                       <div className="text-center py-8 text-gray-500">
-                        Loading...
+                        {t("loading")}
                       </div>
                     ) : [1, 2, 3, 4, 5, 6].length === 0 ? (
                       <div className="text-center py-8 text-gray-500">
-                        No data found
+                        {t("no_data")}
                       </div>
                     ) : (
                       <table className="w-full animate__animated animate__fadeInUp">
                         <thead>
                           <tr className="border-b border-gray-200">
                             <th className="text-left py-3 px-2 font-medium text-gray-600 text-sm">
-                              Animal
+                              {t("animal")}
                             </th>
                             <th className="text-left py-3 px-2 font-medium text-gray-600 text-sm">
-                              Quantity
+                              {t("quantity")}
                             </th>
                             {/* <th className="text-left py-3 px-2 font-medium text-gray-600 text-sm">
                               Evening
@@ -432,10 +440,10 @@ const ProductionTracking = () => {
                               Total
                             </th> */}
                             <th className="text-left py-3 px-2 font-medium text-gray-600 text-sm">
-                              Production
+                              {t("production")}
                             </th>
                             <th className="text-left py-3 px-2 font-medium text-gray-600 text-sm">
-                              Actions
+                              {t("actions")}
                             </th>
                           </tr>
                         </thead>
@@ -500,10 +508,10 @@ const ProductionTracking = () => {
                       onClick={() => setCurrentPage((p) => Math.max(1, p - 1))}
                       disabled={currentPage === 1}
                     >
-                      Prev
+                      {t("previous")}
                     </Button>
                     <span>
-                      Page {currentPage} of{" "}
+                      {t("page")} {currentPage} {t("of")}{" "}
                       {Math.ceil(productionRecords.length / pageSize)}
                     </span>
                     <Button
@@ -514,7 +522,7 @@ const ProductionTracking = () => {
                         currentPage * pageSize >= productionRecords.length
                       }
                     >
-                      Next
+                      {t("next")}
                     </Button>
                   </div>
                 </CardContent>
@@ -538,7 +546,7 @@ const ProductionTracking = () => {
                 <CardHeader>
                   <CardTitle className="flex items-center text-lg lg:text-xl">
                     <TbMeat className="w-5 h-5 mr-2 text-green-600" />
-                    Feed Consumption
+                    {t("feed_consumption")}
                   </CardTitle>
                 </CardHeader>
                 <CardContent>
@@ -569,7 +577,9 @@ const ProductionTracking = () => {
                   </div>
                   <div className="mt-4 p-3 bg-gray-50 rounded-lg">
                     <div className="flex justify-between items-center">
-                      <span className="font-medium">Total Feed Cost:</span>
+                      <span className="font-medium">
+                        {t("total_feed_cost")}:
+                      </span>
                       <span className="text-lg font-bold text-red-600">
                         $
                         {feedLogs

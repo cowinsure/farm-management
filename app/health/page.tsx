@@ -44,6 +44,7 @@ import { GrUpdate } from "react-icons/gr";
 import { Toaster } from "sonner";
 import { LuPawPrint } from "react-icons/lu";
 import { TiWarningOutline } from "react-icons/ti";
+import { useLocalization } from "@/context/LocalizationContext";
 import SectionHeading from "@/helper/SectionHeading";
 // Add type for health record
 export interface HealthRecord {
@@ -77,6 +78,7 @@ export interface HealthRecord {
 // }
 
 export default function HealthVaccination() {
+  const { t, locale, setLocale } = useLocalization();
   const [vaccinationSearch, setVaccinationSearch] = useState("");
   const [healthSearch, setHealthSearch] = useState("");
   const [vaccinationFilter, setVaccinationFilter] = useState("all");
@@ -213,19 +215,19 @@ export default function HealthVaccination() {
       case "due":
         return (
           <Badge className="bg-yellow-100 text-yellow-800 hover:bg-yellow-100">
-            Due
+            {t("due")}
           </Badge>
         );
       case "overdue":
         return (
           <Badge className="bg-red-100 text-red-800 hover:bg-red-100">
-            Overdue
+            {t("overdue")}
           </Badge>
         );
       case "complete":
         return (
           <Badge className="bg-green-100 text-green-800 hover:bg-green-100">
-            Complete
+            {t("complete")}
           </Badge>
         );
       default:
@@ -238,25 +240,25 @@ export default function HealthVaccination() {
       case "healthy":
         return (
           <Badge className="bg-green-100 text-green-800 hover:bg-green-100">
-            Healthy
+            {t("healthy")}
           </Badge>
         );
       case "under treatment":
         return (
           <Badge className="bg-orange-100 text-orange-800 hover:bg-orange-100">
-            Under Treatment
+            {t("under_treatment")}
           </Badge>
         );
       case "complete":
         return (
           <Badge className="bg-green-100 text-green-800 hover:bg-green-100">
-            Complete
+            {t("complete")}
           </Badge>
         );
       case "sick":
         return (
           <Badge className="bg-red-100 text-red-800 hover:bg-red-100">
-            Sick
+            {t("sick")}
           </Badge>
         );
       default:
@@ -298,14 +300,14 @@ export default function HealthVaccination() {
                 onClick={() => setVaccinationDialogOpen(true)}
               >
                 <Calendar className="w-4 h-4 mr-2" />
-                Schedule Vaccination
+                {t("schedule_vaccination")}
               </Button>
               <Button
                 className="bg-red-600 hover:bg-red-700"
                 onClick={() => setRecordDialogOpen(true)}
               >
                 <Plus className="w-4 h-4 mr-2" />
-                Record Health Issue
+                {t("record_health_issue")}
               </Button>
             </div>
           </div>
@@ -373,81 +375,133 @@ export default function HealthVaccination() {
           />
 
           {/* Summary Cards */}
-          <div className="mt-6 lg:mt-0 mb-6 lg:mb-8 border lg:border-none rounded-lg lg:rounded-none p-4 lg:p-0 bg-green-50 lg:bg-transparent">
-            <Heading heading="Quick Stats" />
-            <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 lg:gap-6 lg:mb-8">
-              {/* Total animals */}
-              <Card
-                className="animate__animated animate__fadeInRight"
-                style={{ animationDelay: "0s" }}
-              >
-                <CardContent className="p-4">
-                  <div className="flex items-center justify-between space-x-2">
-                    <LuPawPrint className="w-8 h-8 text-purple-600" />
-                    <div>
-                      <div className="text-2xl font-bold text-right text-purple-600">
-                        {summary.Total}
-                      </div>
-                      <div className="text-sm text-gray-600"><span className="hidden md:inline-block">Total</span> Animals</div>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+            {/* Total animals */}
+            <Card
+              className="animate__animated animate__fadeInRight"
+              style={{ animationDelay: "0s" }}
+            >
+              <CardContent className="p-4">
+                <div className="flex items-center justify-between space-x-2">
+                  <LuPawPrint className="w-8 h-8 text-purple-600" />
+                  <div>
+                    <div className="text-2xl font-bold text-right text-purple-600">
+                      {summary.Total}
+                    </div>
+                    <div className="text-sm text-gray-600">
+                      {t("total_animals")}
                     </div>
                   </div>
-                </CardContent>
-              </Card>
-              {/* Due Vaccination */}
-              <Card
-                className="animate__animated animate__fadeInRight"
-                style={{ animationDelay: "0s" }}
-              >
-                <CardContent className="p-4">
-                  <div className="flex items-center justify-between space-x-2">
-                    <Syringe className="w-8 h-8 text-blue-600" />
-                    <div>
-                      <div className="text-2xl font-bold text-right text-blue-600">
-                        {vaccinationDue}
-                      </div>
-                      <div className="text-sm text-gray-600"><span className="hidden md:inline-block">Due</span> Vaccines</div>
+                </div>
+              </CardContent>
+            </Card>
+            {/* Due Vaccination */}
+            <Card
+              className="animate__animated animate__fadeInRight"
+              style={{ animationDelay: "0s" }}
+            >
+              <CardContent className="p-4">
+                <div className="flex items-center justify-between space-x-2">
+                  <Syringe className="w-8 h-8 text-blue-600" />
+                  <div>
+                    <div className="text-2xl font-bold text-right text-blue-600">
+                      {vaccinationDue}
+                    </div>
+                    <div className="text-sm text-gray-600">
+                      {t("due_vaccinations")}
                     </div>
                   </div>
-                </CardContent>
-              </Card>
-              {/* Sick animals */}
-              <Card
-                className="animate__animated animate__fadeInRight"
-                style={{ animationDelay: "0.25s" }}
-              >
-                <CardContent className="p-4">
-                  <div className="flex items-center justify-between space-x-2">
-                    <Heart className="w-8 h-8 text-red-600" />
-                    <div>
-                      <div className="text-2xl font-bold text-right text-red-600">
-                        {summary.Sick > 0 ? summary.Sick : 0}
-                      </div>
-                      <div className="text-sm text-gray-600">Sick Animals</div>
+                </div>
+              </CardContent>
+            </Card>
+            {/* Sick animals */}
+            <Card
+              className="animate__animated animate__fadeInRight"
+              style={{ animationDelay: "0.25s" }}
+            >
+              <CardContent className="p-4">
+                <div className="flex items-center justify-between space-x-2">
+                  <Heart className="w-8 h-8 text-red-600" />
+                  <div>
+                    <div className="text-2xl font-bold text-right text-red-600">
+                      {summary.Sick > 0 ? summary.Sick : 0}
+                    </div>
+                    <div className="text-sm text-gray-600">
+                      {t("sick_animals")}
                     </div>
                   </div>
-                </CardContent>
-              </Card>
-              {/* Critical Animals */}
-              <Card
-                className="animate__animated animate__fadeInRight"
-                style={{ animationDelay: "0.25s" }}
-              >
-                <CardContent className="p-4">
-                  <div className="flex items-center justify-between space-x-2">
-                    <TiWarningOutline className="w-8 h-8 text-amber-600" />
-                    <div>
-                      <div className="text-2xl font-bold text-right text-amber-600">
-                        {summary.Critical > 0 ? summary.Critical : 0}
-                      </div>
-                      <div className="text-sm text-gray-600">
-                        Critical{" "}
-                        <span className="hidden md:inline-flex">Animals</span>
-                      </div>
+                </div>
+              </CardContent>
+            </Card>
+            {/* Critical Animals */}
+            <Card
+              className="animate__animated animate__fadeInRight"
+              style={{ animationDelay: "0.25s" }}
+            >
+              <CardContent className="p-4">
+                <div className="flex items-center justify-between space-x-2">
+                  <TiWarningOutline className="w-8 h-8 text-amber-600" />
+                  <div>
+                    <div className="text-2xl font-bold text-right text-amber-600">
+                      {summary.Critical > 0 ? summary.Critical : 0}
+                    </div>
+                    <div className="text-sm text-gray-600">
+                      {t("critical_animals")}
                     </div>
                   </div>
-                </CardContent>
-              </Card>
+                </div>
+              </CardContent>
+            </Card>
+
+            {/* <Card>
+          <CardContent className="p-4">
+            <div className="flex items-center space-x-2">
+              <TriangleAlert className="w-8 h-8 text-red-600" />
+              <div>
+                <div className="text-2xl font-bold text-red-600">{summary.Critical}</div>
+                <div className="text-sm text-gray-600">Critical Animals</div>
+              </div>
             </div>
+          </CardContent>
+        </Card> */}
+
+            {/* <Card>
+                <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                  <CardTitle className="text-sm font-medium text-gray-600">{summary.Critical}</CardTitle>
+                  <div className="w-4 h-4 bg-green-100 rounded flex items-center justify-center">
+                    <div className="w-2 h-2 bg-red-600 rounded-full"></div>
+                  </div>
+                </CardHeader>
+                <CardContent>
+                  <div className="text-sm text-gray-600">Critical Animals</div>
+                </CardContent>
+              </Card> */}
+
+            {/* <Card>
+                <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                  <CardTitle className="text-sm font-medium text-gray-600">85</CardTitle>
+                  <div className="w-4 h-4 bg-green-100 rounded flex items-center justify-center">
+                    <div className="w-2 h-2 bg-green-600 rounded-full"></div>
+                  </div>
+                </CardHeader>
+                <CardContent>
+                  <div className="text-sm text-gray-600">Healthy Animals</div>
+                </CardContent>
+              </Card> */}
+
+            {/* <Card>
+                <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                  <CardTitle className="text-sm font-medium text-gray-600">
+                    {summary.Total > 0 ? `${Math.round(((summary.Total - summary.Critical) / summary.Total) * 100)}%` : "0%"}
+                  </CardTitle>
+                  <div className="w-4 h-4 bg-purple-100 rounded flex items-center justify-center">
+                    <div className="w-2 h-2 bg-purple-600 rounded-full"></div>
+                  </div>
+                </CardHeader>
+                <CardContent>
+                  <div className="text-sm text-gray-600">Health Rate</div>
+                </CardContent>
+              </Card> */}
           </div>
 
           {/* Vaccination Schedule (API-driven) Table */}
@@ -477,13 +531,13 @@ export default function HealthVaccination() {
                 <div className="flex flex-col lg:flex-row items-start lg:items-center justify-between gap-4">
                   <CardTitle className="flex items-center text-lg lg:text-xl">
                     <Syringe className="w-5 h-5 mr-2 text-blue-600" />
-                    Vaccination Schedule
+                    {t("vaccination_schedule")}
                   </CardTitle>
                   <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2 w-full lg:w-auto">
                     <div className="relative">
                       <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
                       <Input
-                        placeholder="Search vaccinations..."
+                        placeholder={t("search_vaccination_schedule")}
                         value={vaccinationSearch}
                         onChange={(e) => setVaccinationSearch(e.target.value)}
                         className="pl-10 w-full sm:w-48"
@@ -495,13 +549,17 @@ export default function HealthVaccination() {
                         onValueChange={setVaccinationFilter}
                       >
                         <SelectTrigger className="w-full sm:w-28">
-                          <SelectValue placeholder="All Status" />
+                          <SelectValue placeholder={t("all_status")} />
                         </SelectTrigger>
                         <SelectContent>
-                          <SelectItem value="all">All Status</SelectItem>
-                          <SelectItem value="due">Due</SelectItem>
-                          <SelectItem value="overdue">Overdue</SelectItem>
-                          <SelectItem value="complete">Complete</SelectItem>
+                          <SelectItem value="all">{t("all_status")}</SelectItem>
+                          <SelectItem value="due">{t("due")}</SelectItem>
+                          <SelectItem value="overdue">
+                            {t("overdue")}
+                          </SelectItem>
+                          <SelectItem value="complete">
+                            {t("complete")}
+                          </SelectItem>
                         </SelectContent>
                       </Select>
                       <Button size="sm" variant="outline">
@@ -615,22 +673,22 @@ export default function HealthVaccination() {
                       <thead>
                         <tr className="border-b border-gray-200">
                           <th className="text-left py-3 px-2 font-medium text-gray-600 text-sm">
-                            Name
+                            {t("name")}
                           </th>
                           <th className="text-left py-3 px-2 font-medium text-gray-600 text-sm">
-                            Reference ID
+                            {t("reference_id")}
                           </th>
                           <th className="text-left py-3 px-2 font-medium text-gray-600 text-sm">
-                            Vaccine
+                            {t("vaccine")}
                           </th>
                           <th className="text-left py-3 px-2 font-medium text-gray-600 text-sm">
-                            Status
+                            {t("status")}
                           </th>
                           <th className="text-left py-3 px-2 font-medium text-gray-600 text-sm">
-                            Due Date
+                            {t("due_date")}
                           </th>
                           <th className="text-left py-3 px-2 font-medium text-gray-600 text-sm">
-                            Actions
+                            {t("actions")}
                           </th>
                         </tr>
                       </thead>
@@ -694,10 +752,10 @@ export default function HealthVaccination() {
                     }
                     disabled={currentVaccinationPage === 1}
                   >
-                    Prev
+                    {t("previous")}
                   </Button>
                   <span className="text-sm">
-                    Page {currentVaccinationPage} of{" "}
+                    {t("page")} {currentVaccinationPage} {t("of")}{" "}
                     {Math.ceil(vaccinationTotal / vaccinationPageSize) || 1}
                   </span>
                   <Button
@@ -709,7 +767,7 @@ export default function HealthVaccination() {
                       vaccinationTotal
                     }
                   >
-                    Next
+                    {t("next")}
                   </Button>
                 </div>
               </CardContent>
@@ -721,14 +779,14 @@ export default function HealthVaccination() {
                 <div className="flex flex-col lg:flex-row items-start lg:items-center justify-between gap-4">
                   <CardTitle className="flex items-center text-lg lg:text-xl">
                     <Heart className="w-5 h-5 mr-2 text-red-600" />
-                    Health Records
+                    {t("health_records")}
                   </CardTitle>
 
                   <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2 w-full lg:w-auto">
                     <div className="relative">
                       <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
                       <Input
-                        placeholder="Search health..."
+                        placeholder={t("search_health_records")}
                         value={healthSearch}
                         onChange={(e) => setHealthSearch(e.target.value)}
                         className="pl-10 w-full sm:w-48"
@@ -741,15 +799,19 @@ export default function HealthVaccination() {
                         onValueChange={setHealthFilter}
                       >
                         <SelectTrigger className="w-full sm:w-28">
-                          <SelectValue placeholder="All Status" />
+                          <SelectValue placeholder={t("all_status")} />
                         </SelectTrigger>
                         <SelectContent>
-                          <SelectItem value="all">All Status</SelectItem>
-                          <SelectItem value="healthy">Healthy</SelectItem>
-                          <SelectItem value="under treatment">
-                            Under Treatment
+                          <SelectItem value="all">{t("all_status")}</SelectItem>
+                          <SelectItem value="healthy">
+                            {t("healthy")}
                           </SelectItem>
-                          <SelectItem value="complete">Complete</SelectItem>
+                          <SelectItem value={t("under_treatment")}>
+                            {t("under_treatment")}
+                          </SelectItem>
+                          <SelectItem value="complete">
+                            {t("complete")}
+                          </SelectItem>
                         </SelectContent>
                       </Select>
                       <Button size="sm" variant="outline">
@@ -867,19 +929,19 @@ export default function HealthVaccination() {
                       <thead>
                         <tr className="border-b border-gray-200">
                           <th className="text-left py-3 px-2 font-medium text-gray-600 text-sm">
-                            Reference ID
+                            {t("reference_id")}
                           </th>
                           <th className="text-left py-3 px-2 font-medium text-gray-600 text-sm">
-                            Type
+                            {t("type")}
                           </th>
                           <th className="text-left py-3 px-2 font-medium text-gray-600 text-sm">
-                            Date
+                            {t("date")}
                           </th>
                           <th className="text-left py-3 px-2 font-medium text-gray-600 text-sm">
-                            Status
+                            {t("status")}
                           </th>
                           <th className="text-left py-3 px-2 font-medium text-gray-600 text-sm">
-                            Actions
+                            {t("actions")}
                           </th>
                         </tr>
                       </thead>
@@ -954,11 +1016,11 @@ export default function HealthVaccination() {
                     onClick={() => setCurrentPage((p) => Math.max(1, p - 1))}
                     disabled={currentPage === 1}
                   >
-                    Prev
+                    {t("previous")}
                   </Button>
 
                   <span className="text-sm">
-                    Page {currentPage} of{" "}
+                    {t("page")} {currentPage} {t("of")}{" "}
                     {Math.ceil(totalRecords / pageSize) || 1}
                   </span>
 
@@ -968,7 +1030,7 @@ export default function HealthVaccination() {
                     onClick={() => setCurrentPage((p) => p + 1)}
                     disabled={currentPage * pageSize >= totalRecords}
                   >
-                    Next
+                    {t("next")}
                   </Button>
                 </div>
               </CardContent>

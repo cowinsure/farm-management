@@ -18,6 +18,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { useToast } from "@/hooks/use-toast";
+import { useLocalization } from "@/context/LocalizationContext";
 
 interface BreedingTrackingModalModalProps {
   open: boolean;
@@ -38,13 +39,14 @@ export function BreedingTrackingModal({
   onOpenChange,
   onSuccess,
 }: BreedingTrackingModalModalProps) {
+  const { t, locale, setLocale } = useLocalization();
   const { toast } = useToast();
   const [submitting, setSubmitting] = useState(false);
   const [isAnimals, setAnimals] = useState<any[]>([]);
   // Static breeding methods (replaces production types)
   const breedingMethods = [
-    { id: "natural", name: "Natural" },
-    { id: "ai", name: "Artificial Insemination" },
+    { id: "natural", name: `${t("natural")}` },
+    { id: "ai", name: `${t("artificial_insemination")}` },
   ];
 
   // State to handle form values
@@ -173,7 +175,7 @@ export function BreedingTrackingModal({
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent>
         <DialogHeader>
-          <DialogTitle>Record Production</DialogTitle>
+          <DialogTitle>{t("record_production")}</DialogTitle>
         </DialogHeader>
         <div className="max-h-[70vh] overflow-y-auto pr-2">
           <form className="space-y-8" onSubmit={handleSubmit}>
@@ -181,7 +183,7 @@ export function BreedingTrackingModal({
               {/* Animal ID */}
               <div>
                 <label className="block text-sm font-medium mb-1">
-                  Animal ID
+                  {t("animal_id")}
                 </label>
                 <Select
                   value={formData.asset_id?.toString() || ""}
@@ -190,13 +192,16 @@ export function BreedingTrackingModal({
                   }
                 >
                   <SelectTrigger className="w-full">
-                    <SelectValue placeholder="Select Cattle">
+                    <SelectValue placeholder={t("select_cattle")}>
                       {selectedCattle?.reference_id}
                     </SelectValue>
                   </SelectTrigger>
                   <SelectContent>
                     {isAnimals.map((animal) => (
-                      <SelectItem value={animal.reference_id.toString()} key={animal.id}>
+                      <SelectItem
+                        value={animal.reference_id.toString()}
+                        key={animal.id}
+                      >
                         <div className="flex items-center gap-2 cursor-pointer">
                           <img
                             src={"/placeholder.png"}
@@ -214,7 +219,7 @@ export function BreedingTrackingModal({
               {/* Breeding Method */}
               <div>
                 <label className="block text-sm font-medium mb-1">
-                  Breeding Method
+                  {t("breeding_method")}
                 </label>
                 <Select
                   value={formData.production_type_id}
@@ -223,7 +228,7 @@ export function BreedingTrackingModal({
                   }
                 >
                   <SelectTrigger className="w-full">
-                    <SelectValue placeholder="Select method">
+                    <SelectValue placeholder={t("select_method")}>
                       {selectedProductionType?.name}
                     </SelectValue>
                   </SelectTrigger>
@@ -250,7 +255,9 @@ export function BreedingTrackingModal({
               </div> */}
               {/* Expecting Date */}
               <div>
-                <label className="block text-sm font-medium mb-1">Expecting Date</label>
+                <label className="block text-sm font-medium mb-1">
+                  {t("expecting_date")}
+                </label>
                 <Input
                   type="date"
                   className="w-full"
@@ -287,7 +294,7 @@ export function BreedingTrackingModal({
             <DialogFooter className="">
               <DialogClose asChild>
                 <Button type="button" variant="outline" className="w-[20%]">
-                  Cancel
+                  {t("cancel")}
                 </Button>
               </DialogClose>
               <Button
@@ -295,7 +302,7 @@ export function BreedingTrackingModal({
                 disabled={submitting}
                 className="bg-purple-600 text-white w-[40%]"
               >
-                {submitting ? "Submitting" : "Record"}
+                {submitting ? `${t("submitting")}` : `${t("record")}`}
               </Button>
             </DialogFooter>
           </form>

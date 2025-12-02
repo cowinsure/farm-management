@@ -264,6 +264,8 @@ const BreedingReproduction = () => {
           <div className="grid grid-cols-1 xl:grid-cols-4 gap-4 lg:gap-6">
             {/* Breeding records */}
             <div className="xl:col-span-2">
+
+              
               <Card className="animate__animated animate__fadeIn">
                 <CardHeader>
                   <div className="flex flex-col lg:flex-row items-start lg:items-center justify-between gap-2">

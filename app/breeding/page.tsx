@@ -257,6 +257,7 @@ const BreedingReproduction = () => {
                 </div>
               </CardContent>
             </Card>
+            </div>
           </div>
 
           {/* Main Content Grid */}

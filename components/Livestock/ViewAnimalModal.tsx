@@ -292,7 +292,7 @@ export default function ViewAnimalModal({
                     {/* Left Image */}
                     <div className="w-64 bg-gray-100 flex items-center justify-center rounded-lg overflow-hidden">
                       <FallbackImage
-                        src={cattle.left_side_image || ""}
+                         src={`${process.env.NEXT_PUBLIC_API_BASE_IMAGE_URL}${cattle.left_side_image}`}
                         alt="Left Side Image"
                         width={256}
                         height={256}
@@ -452,7 +452,7 @@ export default function ViewAnimalModal({
                             {label}
                           </span>
                           <FallbackImage
-                            src={url as string}
+                            src={`${process.env.NEXT_PUBLIC_API_BASE_IMAGE_URL}${url}`}
                             alt={label as string}
                             width={200}
                             height={140}
@@ -468,7 +468,7 @@ export default function ViewAnimalModal({
                         </span>
                         {cattle.muzzle_video ? (
                           <video
-                            src={cattle.muzzle_video}
+                            src={`${process.env.NEXT_PUBLIC_API_BASE_IMAGE_URL}${cattle.muzzle_video}`}
                             controls
                             className="w-full h-64 rounded-md object-cover"
                           />

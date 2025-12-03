@@ -54,7 +54,7 @@ export function BreedingStatusUpdateDialog({
     const records = JSON.parse(localStorage.getItem("breedingLogs") || "[]");
 
     // Update the specific record
-    const updatedRecords = records.map((r: any) =>
+    const updatedRecords = records?.map((r: any) =>
       r.cowId === record.cowId && r.breedingDate === record.breedingDate
         ? updatedRecord
         : r

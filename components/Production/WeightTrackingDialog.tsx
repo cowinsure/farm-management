@@ -129,7 +129,7 @@ export function WeightTrackingDialog({ open, onClose }: WeightTrackingDialogProp
                 <Select
                   value={formData.animalId}
                   onValueChange={(value) => {
-                    const selectedAnimal = animals.find((animal: Animal) => animal.id.toString() === value);
+                    const selectedAnimal = animals?.find((animal: Animal) => animal.id.toString() === value);
                     setFormData({
                       ...formData,
                       animalId: value,
@@ -141,7 +141,7 @@ export function WeightTrackingDialog({ open, onClose }: WeightTrackingDialogProp
                     <SelectValue placeholder={t("select_cattle_id")} />
                   </SelectTrigger>
                   <SelectContent className="w-screen max-w-md">
-                    {animals.map((animal: Animal) => (
+                    {animals?.map((animal: Animal) => (
                       <SelectItem value={animal.reference_id.toString()} key={animal.id}>
                         <div className="flex items-center gap-2 cursor-pointer w-full min-w-0">
                           <img

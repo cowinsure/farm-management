@@ -179,11 +179,11 @@ export function RecordProductionTrackingModal({
     }
   };
 
-  const selectedCattle = isAnimals.find(
+  const selectedCattle = isAnimals?.find(
     (animal) => animal.id === formData.asset_id
   );
 
-  const selectedProductionType = productionType.find(
+  const selectedProductionType = productionType?.find(
     (product) => product.type_name === formData.production_type_id
   );
 
@@ -215,7 +215,7 @@ export function RecordProductionTrackingModal({
                     </SelectValue>
                   </SelectTrigger>
                   <SelectContent>
-                    {isAnimals.map((animal) => (
+                    {isAnimals?.map((animal) => (
                       <SelectItem value={animal.id.toString()} key={animal.id}>
                         <div className="flex items-center gap-2 cursor-pointer">
                           <img

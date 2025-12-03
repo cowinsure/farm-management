@@ -161,7 +161,7 @@ export function BreedingTrackingModal({
     // Continue to submit to server in background; report API errors if they occur
   };
 
-  const selectedCattle = isAnimals.find(
+  const selectedCattle = isAnimals?.find(
     (animal) => String(animal.id) === formData.asset_id
   );
 
@@ -197,7 +197,7 @@ export function BreedingTrackingModal({
                     </SelectValue>
                   </SelectTrigger>
                   <SelectContent>
-                    {isAnimals.map((animal) => (
+                    {isAnimals?.map((animal) => (
                       <SelectItem
                         value={animal.reference_id.toString()}
                         key={animal.id}

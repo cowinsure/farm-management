@@ -185,7 +185,7 @@ export function BirthTrackingModal({
     }
   };
 
-  const selectedCattle = isAnimals.find(
+  const selectedCattle = isAnimals?.find(
     (animal) => String(animal.id) === formData.asset_id
   );
 
@@ -217,7 +217,7 @@ export function BirthTrackingModal({
                     </SelectValue>
                   </SelectTrigger>
                   <SelectContent>
-                    {isAnimals.map((animal) => (
+                    {isAnimals?.map((animal) => (
                       <SelectItem value={animal.id.toString()} key={animal.id}>
                         <div className="flex items-center gap-2 cursor-pointer">
                           <img

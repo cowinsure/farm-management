@@ -28,6 +28,7 @@ import { LuMilk } from "react-icons/lu";
 import { TbMeat } from "react-icons/tb";
 import { toast, Toaster } from "sonner";
 import { FeedLogDialog } from "@/components/Production/FeedLogDialog";
+import { WeightTrackingDialog } from "@/components/Production/WeightTrackingDialog";
 import { useLocalization } from "@/context/LocalizationContext";
 import SectionHeading from "@/helper/SectionHeading";
 
@@ -35,6 +36,7 @@ const ProductionTracking = () => {
   const { t, setLocale, locale } = useLocalization();
   const [isRecordProductionModal, setRecordProductionModal] = useState(false);
   const [isFeedLogDialogOpen, setIsFeedLogDialogOpen] = useState(false);
+  const [isWeightTrackingDialogOpen, setIsWeightTrackingDialogOpen] = useState(false);
   const [loading, setLoading] = useState(false);
   const [productionRecords, setProductionRecords] = useState<any[]>([]);
   const [currentPage, setCurrentPage] = useState(1);
@@ -127,6 +129,7 @@ const ProductionTracking = () => {
   );
 
   const [feedLogs, setFeedLogs] = useState<any[]>([]);
+  const [weightLogs, setWeightLogs] = useState<any[]>([]);
 
   // Function to load feed logs from localStorage
   const loadFeedLogs = () => {
@@ -136,20 +139,34 @@ const ProductionTracking = () => {
     }
   };
 
+  // Function to load weight logs from localStorage
+  const loadWeightLogs = () => {
+    const logs = localStorage.getItem("weightLogs");
+    if (logs) {
+      setWeightLogs(JSON.parse(logs));
+    }
+  };
+
   // Load feed logs initially and set up storage event listener
   useEffect(() => {
     loadFeedLogs(); // Initial load
+    loadWeightLogs(); // Initial load
 
     // Update when storage changes
     window.addEventListener("storage", loadFeedLogs);
+    window.addEventListener("storage", loadWeightLogs);
 
     // Custom event listener for immediate updates
     const handleFeedLogUpdate = () => loadFeedLogs();
+    const handleWeightLogUpdate = () => loadWeightLogs();
     window.addEventListener("feedLogUpdated", handleFeedLogUpdate);
+    window.addEventListener("weightLogUpdated", handleWeightLogUpdate);
 
     return () => {
       window.removeEventListener("storage", loadFeedLogs);
+      window.removeEventListener("storage", loadWeightLogs);
       window.removeEventListener("feedLogUpdated", handleFeedLogUpdate);
+      window.removeEventListener("weightLogUpdated", handleWeightLogUpdate);
     };
   }, []);
 
@@ -179,6 +196,13 @@ const ProductionTracking = () => {
               >
                 <Plus className="w-4 h-4 mr-2" />
                 {t("add_feed_log")}
+              </Button>
+              <Button
+                className="bg-blue-600 hover:bg-blue-700"
+                onClick={() => setIsWeightTrackingDialogOpen(true)}
+              >
+                <Plus className="w-4 h-4 mr-2" />
+                {t("record")} {t("weight")}
               </Button>
             </div>
             <RecordProductionTrackingModal
@@ -229,6 +253,13 @@ const ProductionTracking = () => {
                     >
                       <Plus className="w-4 h-4" />
                       Feed Log
+                    </button>
+                    <button
+                      className=" bg-blue-700 rounded-lg py-2 px-2 flex items-center justify-center gap-2 font-semibold text-white lg:hidden"
+                      onClick={() => setIsWeightTrackingDialogOpen(true)}
+                    >
+                      <Plus className="w-4 h-4" />
+                      {t("record")} {t("weight")}
                     </button>
                   </div>
                 </div>
@@ -595,11 +626,64 @@ const ProductionTracking = () => {
                 </CardContent>
               </Card>
             </div>
+            <div>
+              <Card className="animate__animated animate__fadeIn">
+                <CardHeader>
+                  <CardTitle className="flex items-center text-lg lg:text-xl">
+                    <TbMeat className="w-5 h-5 mr-2 text-blue-600" />
+                    {t("weight")} Tracking
+                  </CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <div className="space-y-4">
+                    {weightLogs.map((log, index) => (
+                      <div key={index} className="space-y-2">
+                        <div className="border rounded-md p-3 flex justify-between">
+                          <div className="space-y-1">
+                            <h1 className="font-semibold">{log.animalId}</h1>
+                            <p className="text-sm font-medium text-gray-500">
+                              {log.animalType}
+                            </p>
+                            <p className="text-sm font-medium text-gray-500">
+                              {new Date(log.date).toLocaleDateString()}
+                            </p>
+                          </div>
+                          <div className="flex flex-col items-end space-y-1">
+                            <span className="font-semibold">
+                              {log.weight} KG
+                            </span>
+                            <span className="text-sm font-medium text-blue-500">
+                              {log.notes || "No notes"}
+                            </span>
+                          </div>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                  {weightLogs.length > 0 && (
+                    <div className="mt-4 p-3 bg-gray-50 rounded-lg">
+                      <div className="flex justify-between items-center">
+                        <span className="font-medium">
+                          Total Weight Records:
+                        </span>
+                        <span className="text-lg font-bold text-blue-600">
+                          {weightLogs.length} records
+                        </span>
+                      </div>
+                    </div>
+                  )}
+                </CardContent>
+              </Card>
+            </div>
           </div>
         </main>
         <FeedLogDialog
           open={isFeedLogDialogOpen}
           onClose={() => setIsFeedLogDialogOpen(false)}
+        />
+        <WeightTrackingDialog
+          open={isWeightTrackingDialogOpen}
+          onClose={() => setIsWeightTrackingDialogOpen(false)}
         />
         <Toaster richColors />
       </div>

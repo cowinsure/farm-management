@@ -41,12 +41,12 @@ export default function ClientDashboardLayout({
   };
   // console.log(user);
   // console.log(pathname);
-  const addCowRoute = pathname === "/livestock/add_cow";
+  // const addCowRoute = pathname === "/livestock/add_cow";
   return (
     // <div className="min-h-screen bg-gradient-to-br from-[#edf7f4] to-[#f8fafc]">
     <div className="min-h-screen bg-gradient-to-br from-[#edf7f4] to-[#f8fafc]">
       {/* Header */}
-      {addCowRoute ? null : (
+      { (
         <header className="bg-green-50 border-b-4 border-green-400 shadow-[5px_1px_20px_rgba(34,197,94,0.7)] block">
           <div className="w-full px-4 sm:px-6 lg:px-8">
             <div className="flex justify-between items-center h-16 mx-auto">

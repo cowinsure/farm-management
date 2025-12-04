@@ -35,12 +35,12 @@ const Navigation = ({ activeModule, setActiveModule }: NavigationProps) => {
       color: "text-red-600",
     },
     // This page has been made. Commenting out for now
-    // {
-    //   id: "/breeding",
-    //   label: "Breeding & Reproduction",
-    //   icon: FaArrowTrendUp,
-    //   color: "text-purple-600",
-    // },
+    {
+      id: "/breeding",
+      label: "Breeding & Reproduction",
+      icon: FaArrowTrendUp,
+      color: "text-purple-600",
+    },
     {
       id: "/production",
       label: "Production Tracking",
@@ -71,7 +71,7 @@ const Navigation = ({ activeModule, setActiveModule }: NavigationProps) => {
         pinned ? "w-64" : "w-[70px] hover:w-64"
       } transition-all duration-300 ease-in-out`}
     >
-      <div className="bg-white rounded-lg p-4 sticky top-5 h-[80vh] overflow-hidden transition-all duration-300">
+      <div className="bg-white rounded-lg p-4 sticky top-5 h-[95vh] overflow-hidden transition-all duration-300">
         {/* 🔘 Toggle Button */}
         <div className="flex justify-end mb-4">
           <button

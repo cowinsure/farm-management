@@ -7,6 +7,7 @@ import ClientRootLayout from "@/components/layouts/ClientRootLayout";
 import { CowRegistrationProvider } from "@/context/CowRegistrationContext";
 import "animate.css";
 import { Urbanist } from "next/font/google";
+import { Toaster } from "@/components/ui/toaster";
 
 export const urbanist = Urbanist({
   subsets: ["latin"],
@@ -18,7 +19,7 @@ export const urbanist = Urbanist({
 export const metadata: Metadata = {
   title: "LivestockPro",
   description: "Your Trusted Partner in Livestock Insurance",
-  generator: "v0.dev",
+
   icons: { icon: "/favicon.ico" },
 };
 
@@ -36,6 +37,7 @@ export default function RootLayout({
         <CowRegistrationProvider>
           <ClientRootLayout>{children}</ClientRootLayout>
         </CowRegistrationProvider>
+        <Toaster  />
       </body>
     </html>
   );

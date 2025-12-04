@@ -401,8 +401,8 @@ export default function UploadVideo({ onVideoCapture }: { onVideoCapture?: (file
   return (
     <div className="w-full">
       {recordedVideo ? (
-        <div className="mb-4 flex flex-col items-center">
-          <div className="relative w-full max-w-md aspect-video border rounded-md overflow-hidden bg-black">
+        <div className="flex flex-col items-center">
+          <div className="relative w-full max-w-lg aspect-video border rounded-md overflow-hidden bg-black">
             <video
               src={recordedVideo}
               className="absolute top-0 left-0 w-full h-full object-contain"
@@ -413,7 +413,7 @@ export default function UploadVideo({ onVideoCapture }: { onVideoCapture?: (file
           {/* Retry button */}
           <button
             onClick={resetVideo}
-            className="w-full mt-4 mb-4 py-3 border border-emerald-600 text-emerald-600 font-medium rounded flex items-center justify-center"
+            className="mt-4 mb-4 px-6 py-2 border border-emerald-600 text-emerald-600 font-medium rounded-lg flex items-center justify-center"
           >
             <RefreshCw className="h-5 w-5 mr-2" />
             Retry
@@ -421,7 +421,7 @@ export default function UploadVideo({ onVideoCapture }: { onVideoCapture?: (file
         </div>
       ) : (
         <div
-          className={`border border-dashed rounded-md  text-center mb-4 ${
+          className={`border border-dashed rounded-md text-center pb-4 ${
             dragActive ? "border-emerald-500 bg-emerald-50" : "border-gray-300"
           }`}
           onDragEnter={handleDrag}
@@ -431,7 +431,7 @@ export default function UploadVideo({ onVideoCapture }: { onVideoCapture?: (file
         >
           <div className="flex flex-col items-center justify-center gap-4 p-4">
             <div className="bg-emerald-100 p-4 rounded-full">
-              <Upload className="h-6 w-6 text-emerald-600" />
+              <Upload className="h-10 w-10 text-emerald-600" />
             </div>
             <p className="text-lg font-medium">Drag and drop your video here</p>
             <p className="text-sm text-gray-500">Or use one of the options below</p>
@@ -439,13 +439,13 @@ export default function UploadVideo({ onVideoCapture }: { onVideoCapture?: (file
             <div className="flex gap-4 mt-2">
               <button
               type="button"
-                className="px-4 py-2 border border-emerald-500 text-emerald-600 rounded hover:bg-emerald-50"
+                className="font-semibold text-gray-600 px-4 py-2 border border-emerald-500 rounded-lg hover:bg-emerald-50"
                 onClick={() => document.getElementById("file-upload")?.click()}
               >
                 Select Video
               </button>
               <button
-                className="px-4 py-2 border border-emerald-500 text-emerald-600 rounded hover:bg-emerald-50 flex items-center"
+                className="font-semibold text-gray-600 px-4 py-2 border border-emerald-500 rounded-lg hover:bg-emerald-50 flex items-center"
                 onClick={openCamera}
               >
                 <Camera className="h-4 w-4 mr-2" /> Use Camera
@@ -453,7 +453,7 @@ export default function UploadVideo({ onVideoCapture }: { onVideoCapture?: (file
               <input id="file-upload" type="file" accept="video/*" className="hidden" onChange={handleFileChange} />
             </div>
           </div>
-          <p className="text-xs text-gray-500 m-4">
+          <p className="text-sm text-gray-500 m-4">
             Supported formats: MP4, AVI, MOV, MKV, FLV, MPEG, WMV (Max 15 seconds)
           </p>
         </div>

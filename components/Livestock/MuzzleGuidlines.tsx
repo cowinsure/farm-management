@@ -64,21 +64,6 @@ const MuzzleGuidlines = ({ close }: GuidlineProps) => {
         </span>
       </p>
 
-      <div className="space-y-3 hidden md:block">
-        {muzzleTechSteps.map((step, index) => (
-          <div
-            key={index}
-            className="flex items-start gap-4 bg-gray-100 p-4 rounded-lg"
-          >
-            <step.icon className="text-green-700 text-4xl mt-1" />
-            <div>
-              <p className="font-semibold">{step.title}</p>
-              <p className="font-medium text-gray-500">{step.description}</p>
-            </div>
-          </div>
-        ))}
-      </div>
-
       <div className="space-y-3">
         {muzzleTechSteps.map((step, index) => (
           <div

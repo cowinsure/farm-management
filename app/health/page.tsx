@@ -1,8 +1,9 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useRef } from "react";
 import {
   Calendar,
+  ChevronDown,
   Edit,
   Eye,
   Filter,
@@ -143,6 +144,9 @@ export default function HealthVaccination() {
   const [selectedRecordData, setSelectedRecordData] = useState<
     HealthRecord | undefined
   >(undefined);
+  const [showScrollIndicator, setShowScrollIndicator] = useState(true);
+  const vaccinationSectionRef = useRef<HTMLDivElement>(null);
+  const healthSectionRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     async function fetchHealthRecords() {
@@ -210,6 +214,25 @@ export default function HealthVaccination() {
     fetchVaccinationSchedules();
   }, [currentVaccinationPage, vaccinationPageSize]);
 
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      (entries) => {
+        // Check if ANY section except the first is visible
+        const anySectionVisible = entries.some((entry) => entry.isIntersecting);
+
+        setShowScrollIndicator(!anySectionVisible);
+      },
+      { threshold: 0.01 }
+    );
+
+    if (vaccinationSectionRef.current)
+      observer.observe(vaccinationSectionRef.current);
+
+    if (healthSectionRef.current) observer.observe(healthSectionRef.current);
+
+    return () => observer.disconnect();
+  }, []);
+
   const getVaccinationStatusBadge = (status: string) => {
     switch (status.toLowerCase()) {
       case "due":
@@ -265,6 +288,8 @@ export default function HealthVaccination() {
         return <Badge variant="secondary">{status}</Badge>;
     }
   };
+
+  console.log(showScrollIndicator);
 
   const handleHealthRecrodStatus = (record: HealthRecord) => {
     setSelectedRecordData(record);
@@ -375,133 +400,87 @@ export default function HealthVaccination() {
           />
 
           {/* Summary Cards */}
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-            {/* Total animals */}
-            <Card
-              className="animate__animated animate__fadeInRight"
-              style={{ animationDelay: "0s" }}
-            >
-              <CardContent className="p-4">
-                <div className="flex items-center justify-between space-x-2">
-                  <LuPawPrint className="w-8 h-8 text-purple-600" />
-                  <div>
-                    <div className="text-2xl font-bold text-right text-purple-600">
-                      {summary.Total}
-                    </div>
-                    <div className="text-sm text-gray-600">
-                      {t("total_animals")}
-                    </div>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
-            {/* Due Vaccination */}
-            <Card
-              className="animate__animated animate__fadeInRight"
-              style={{ animationDelay: "0s" }}
-            >
-              <CardContent className="p-4">
-                <div className="flex items-center justify-between space-x-2">
-                  <Syringe className="w-8 h-8 text-blue-600" />
-                  <div>
-                    <div className="text-2xl font-bold text-right text-blue-600">
-                      {vaccinationDue}
-                    </div>
-                    <div className="text-sm text-gray-600">
-                      {t("due_vaccinations")}
+          <div className="mt-6 lg:mt-0 mb-6 lg:mb-8 border lg:border-none rounded-lg lg:rounded-none p-4 lg:p-0 bg-green-50 lg:bg-transparent">
+            <Heading heading="Quick Stats" />
+            <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 lg:gap-6 lg:mb-8">
+              {/* Total animals */}
+              <Card
+                className="animate__animated animate__fadeInRight"
+                style={{ animationDelay: "0s" }}
+              >
+                <CardContent className="p-4">
+                  <div className="flex items-center justify-between space-x-2">
+                    <LuPawPrint className="w-8 h-8 text-purple-600" />
+                    <div>
+                      <div className="text-2xl font-bold text-right text-purple-600">
+                        {summary.Total}
+                      </div>
+                      <div className="text-sm text-gray-600">
+                        <span className="hidden md:inline-block">Total</span>{" "}
+                        Animals
+                      </div>
                     </div>
                   </div>
-                </div>
-              </CardContent>
-            </Card>
-            {/* Sick animals */}
-            <Card
-              className="animate__animated animate__fadeInRight"
-              style={{ animationDelay: "0.25s" }}
-            >
-              <CardContent className="p-4">
-                <div className="flex items-center justify-between space-x-2">
-                  <Heart className="w-8 h-8 text-red-600" />
-                  <div>
-                    <div className="text-2xl font-bold text-right text-red-600">
-                      {summary.Sick > 0 ? summary.Sick : 0}
-                    </div>
-                    <div className="text-sm text-gray-600">
-                      {t("sick_animals")}
-                    </div>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
-            {/* Critical Animals */}
-            <Card
-              className="animate__animated animate__fadeInRight"
-              style={{ animationDelay: "0.25s" }}
-            >
-              <CardContent className="p-4">
-                <div className="flex items-center justify-between space-x-2">
-                  <TiWarningOutline className="w-8 h-8 text-amber-600" />
-                  <div>
-                    <div className="text-2xl font-bold text-right text-amber-600">
-                      {summary.Critical > 0 ? summary.Critical : 0}
-                    </div>
-                    <div className="text-sm text-gray-600">
-                      {t("critical_animals")}
+                </CardContent>
+              </Card>
+              {/* Due Vaccination */}
+              <Card
+                className="animate__animated animate__fadeInRight"
+                style={{ animationDelay: "0s" }}
+              >
+                <CardContent className="p-4">
+                  <div className="flex items-center justify-between space-x-2">
+                    <Syringe className="w-8 h-8 text-blue-600" />
+                    <div>
+                      <div className="text-2xl font-bold text-right text-blue-600">
+                        {vaccinationDue}
+                      </div>
+                      <div className="text-sm text-gray-600">
+                        <span className="hidden md:inline-block">Due</span>{" "}
+                        Vaccines
+                      </div>
                     </div>
                   </div>
-                </div>
-              </CardContent>
-            </Card>
-
-            {/* <Card>
-          <CardContent className="p-4">
-            <div className="flex items-center space-x-2">
-              <TriangleAlert className="w-8 h-8 text-red-600" />
-              <div>
-                <div className="text-2xl font-bold text-red-600">{summary.Critical}</div>
-                <div className="text-sm text-gray-600">Critical Animals</div>
-              </div>
+                </CardContent>
+              </Card>
+              {/* Sick animals */}
+              <Card
+                className="animate__animated animate__fadeInRight"
+                style={{ animationDelay: "0.25s" }}
+              >
+                <CardContent className="p-4">
+                  <div className="flex items-center justify-between space-x-2">
+                    <Heart className="w-8 h-8 text-red-600" />
+                    <div>
+                      <div className="text-2xl font-bold text-right text-red-600">
+                        {summary.Sick > 0 ? summary.Sick : 0}
+                      </div>
+                      <div className="text-sm text-gray-600">Sick Animals</div>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+              {/* Critical Animals */}
+              <Card
+                className="animate__animated animate__fadeInRight"
+                style={{ animationDelay: "0.25s" }}
+              >
+                <CardContent className="p-4">
+                  <div className="flex items-center justify-between space-x-2">
+                    <TiWarningOutline className="w-8 h-8 text-amber-600" />
+                    <div>
+                      <div className="text-2xl font-bold text-right text-amber-600">
+                        {summary.Critical > 0 ? summary.Critical : 0}
+                      </div>
+                      <div className="text-sm text-gray-600">
+                        Critical{" "}
+                        <span className="hidden md:inline-flex">Animals</span>
+                      </div>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
             </div>
-          </CardContent>
-        </Card> */}
-
-            {/* <Card>
-                <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                  <CardTitle className="text-sm font-medium text-gray-600">{summary.Critical}</CardTitle>
-                  <div className="w-4 h-4 bg-green-100 rounded flex items-center justify-center">
-                    <div className="w-2 h-2 bg-red-600 rounded-full"></div>
-                  </div>
-                </CardHeader>
-                <CardContent>
-                  <div className="text-sm text-gray-600">Critical Animals</div>
-                </CardContent>
-              </Card> */}
-
-            {/* <Card>
-                <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                  <CardTitle className="text-sm font-medium text-gray-600">85</CardTitle>
-                  <div className="w-4 h-4 bg-green-100 rounded flex items-center justify-center">
-                    <div className="w-2 h-2 bg-green-600 rounded-full"></div>
-                  </div>
-                </CardHeader>
-                <CardContent>
-                  <div className="text-sm text-gray-600">Healthy Animals</div>
-                </CardContent>
-              </Card> */}
-
-            {/* <Card>
-                <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                  <CardTitle className="text-sm font-medium text-gray-600">
-                    {summary.Total > 0 ? `${Math.round(((summary.Total - summary.Critical) / summary.Total) * 100)}%` : "0%"}
-                  </CardTitle>
-                  <div className="w-4 h-4 bg-purple-100 rounded flex items-center justify-center">
-                    <div className="w-2 h-2 bg-purple-600 rounded-full"></div>
-                  </div>
-                </CardHeader>
-                <CardContent>
-                  <div className="text-sm text-gray-600">Health Rate</div>
-                </CardContent>
-              </Card> */}
           </div>
 
           {/* Vaccination Schedule (API-driven) Table */}
@@ -822,105 +801,105 @@ export default function HealthVaccination() {
                 </div>
               </CardHeader>
 
-              <CardContent>
-                {/* 🌿 MOBILE CARD VIEW */}
-                <div className="lg:hidden space-y-4">
-                  {healthRecords.length === 0 ? (
-                    <div className="text-center py-10 text-gray-400 italic">
-                      No health records found.
-                    </div>
-                  ) : (
-                    healthRecords.map((record) => {
-                      // Status bar color mapping
-                      let statusColor = "bg-red-500";
-                      const st = (record.status_name || "").toLowerCase();
+                <CardContent>
+                  {/* 🌿 MOBILE CARD VIEW */}
+                  <div className="lg:hidden space-y-4">
+                    {healthRecords.length === 0 ? (
+                      <div className="text-center py-10 text-gray-400 italic">
+                        No health records found.
+                      </div>
+                    ) : (
+                      healthRecords.map((record) => {
+                        // Status bar color mapping
+                        let statusColor = "bg-red-500";
+                        const st = (record.status_name || "").toLowerCase();
 
-                      if (st === "healthy") statusColor = "bg-green-500";
-                      else if (st === "under treatment")
-                        statusColor = "bg-yellow-500";
-                      else if (st === "complete") statusColor = "bg-blue-500";
+                        if (st === "healthy") statusColor = "bg-green-500";
+                        else if (st === "under treatment")
+                          statusColor = "bg-yellow-500";
+                        else if (st === "complete") statusColor = "bg-blue-500";
 
-                      return (
-                        <Card
-                          key={record.id}
-                          className="relative p-4 rounded-xl shadow-lg bg-gradient-to-br from-white via-gray-50 to-gray-100 border border-gray-200 overflow-hidden animate__animated animate__fadeInUp"
-                        >
-                          {/* Top Status Bar */}
-                          <div
-                            className={`absolute top-0 left-0 w-full h-1 ${statusColor}`}
-                          />
+                        return (
+                          <Card
+                            key={record.id}
+                            className="relative p-4 rounded-xl shadow-lg bg-gradient-to-br from-white via-gray-50 to-gray-100 border border-gray-200 overflow-hidden animate__animated animate__fadeInUp"
+                          >
+                            {/* Top Status Bar */}
+                            <div
+                              className={`absolute top-0 left-0 w-full h-1 ${statusColor}`}
+                            />
 
-                          {/* Header */}
-                          <div className="flex items-center justify-between mb-4">
-                            <div>
-                              <h3 className="font-bold text-lg text-gray-800">
-                                {record.asset_ref_id}
-                              </h3>
-                              <p className="text-xs text-gray-500">
-                                Health Status
-                              </p>
+                            {/* Header */}
+                            <div className="flex items-center justify-between mb-4">
+                              <div>
+                                <h3 className="font-bold text-lg text-gray-800">
+                                  {record.asset_ref_id}
+                                </h3>
+                                <p className="text-xs text-gray-500">
+                                  Health Status
+                                </p>
+                              </div>
+
+                              {/* Using your existing badge method */}
+                              <div>
+                                {getHealthStatusBadge(record.status_name)}
+                              </div>
                             </div>
 
-                            {/* Using your existing badge method */}
-                            <div>
-                              {getHealthStatusBadge(record.status_name)}
+                            {/* Details Grid */}
+                            <div className="grid grid-cols-2 gap-4 text-sm mb-4">
+                              <div>
+                                <span className="text-gray-400 uppercase text-xs">
+                                  Condition
+                                </span>
+                                <p className="font-medium text-gray-700">
+                                  {record.condition_name || "—"}
+                                </p>
+                              </div>
+
+                              <div>
+                                <span className="text-gray-400 uppercase text-xs">
+                                  Date
+                                </span>
+                                <p className="font-medium text-gray-700">
+                                  {new Date().toLocaleDateString("en-US", {
+                                    year: "numeric",
+                                    month: "short",
+                                    day: "numeric",
+                                  })}
+                                </p>
+                              </div>
                             </div>
-                          </div>
 
-                          {/* Details Grid */}
-                          <div className="grid grid-cols-2 gap-4 text-sm mb-4">
-                            <div>
-                              <span className="text-gray-400 uppercase text-xs">
-                                Condition
-                              </span>
-                              <p className="font-medium text-gray-700">
-                                {record.condition_name || "—"}
-                              </p>
+                            {/* Actions */}
+                            <div className="flex justify-end space-x-4">
+                              <Button
+                                size="sm"
+                                variant="outline"
+                                className="h-8 w-8 p-0 border-gray-300 hover:bg-green-500 hover:text-white transition-all"
+                                onClick={() => {
+                                  setViewRecord(record);
+                                  setIsDialogOpen(true);
+                                }}
+                              >
+                                <Eye className="h-4 w-4" />
+                              </Button>
+
+                              <Button
+                                size="sm"
+                                variant="outline"
+                                title="Update health status"
+                                className="h-8 w-8 p-0 border-gray-300 hover:bg-blue-500 hover:text-white transition-all"
+                                onClick={() => handleHealthRecrodStatus(record)}
+                              >
+                                <GrUpdate className="h-4 w-4" />
+                              </Button>
                             </div>
-
-                            <div>
-                              <span className="text-gray-400 uppercase text-xs">
-                                Date
-                              </span>
-                              <p className="font-medium text-gray-700">
-                                {new Date().toLocaleDateString("en-US", {
-                                  year: "numeric",
-                                  month: "short",
-                                  day: "numeric",
-                                })}
-                              </p>
-                            </div>
-                          </div>
-
-                          {/* Actions */}
-                          <div className="flex justify-end space-x-4">
-                            <Button
-                              size="sm"
-                              variant="outline"
-                              className="h-8 w-8 p-0 border-gray-300 hover:bg-green-500 hover:text-white transition-all"
-                              onClick={() => {
-                                setViewRecord(record);
-                                setIsDialogOpen(true);
-                              }}
-                            >
-                              <Eye className="h-4 w-4" />
-                            </Button>
-
-                            <Button
-                              size="sm"
-                              variant="outline"
-                              title="Update health status"
-                              className="h-8 w-8 p-0 border-gray-300 hover:bg-blue-500 hover:text-white transition-all"
-                              onClick={() => handleHealthRecrodStatus(record)}
-                            >
-                              <GrUpdate className="h-4 w-4" />
-                            </Button>
-                          </div>
-                        </Card>
-                      );
-                    })
-                  )}
-                </div>
+                          </Card>
+                        );
+                      })
+                    )}
+                  </div>
 
                 {/* 🌿 DESKTOP TABLE (UNCHANGED) */}
                 <div className="hidden lg:block overflow-x-auto -mx-4 sm:mx-0">
@@ -946,67 +925,67 @@ export default function HealthVaccination() {
                         </tr>
                       </thead>
 
-                      <tbody>
-                        {healthRecords.map((record) => (
-                          <tr
-                            key={record.id}
-                            className="border-b border-gray-100 hover:bg-gray-50"
-                          >
-                            <td className="py-3 px-2">
-                              <div className="font-medium text-sm">
-                                {record.asset_ref_id}
-                              </div>
-                            </td>
+                        <tbody>
+                          {healthRecords.map((record) => (
+                            <tr
+                              key={record.id}
+                              className="border-b border-gray-100 hover:bg-gray-50"
+                            >
+                              <td className="py-3 px-2">
+                                <div className="font-medium text-sm">
+                                  {record.asset_ref_id}
+                                </div>
+                              </td>
 
-                            <td className="py-3 px-2 text-sm">
-                              {record.condition_name}
-                            </td>
+                              <td className="py-3 px-2 text-sm">
+                                {record.condition_name}
+                              </td>
 
-                            <td className="py-3 px-2 text-sm">
-                              {new Date().toLocaleDateString("en-US", {
-                                year: "numeric",
-                                month: "short",
-                                day: "numeric",
-                              })}
-                            </td>
+                              <td className="py-3 px-2 text-sm">
+                                {new Date().toLocaleDateString("en-US", {
+                                  year: "numeric",
+                                  month: "short",
+                                  day: "numeric",
+                                })}
+                              </td>
 
-                            <td className="py-3 px-2">
-                              {getHealthStatusBadge(record.status_name)}
-                            </td>
+                              <td className="py-3 px-2">
+                                {getHealthStatusBadge(record.status_name)}
+                              </td>
 
-                            <td className="py-3 px-2">
-                              <div className="flex items-center space-x-5">
-                                <Button
-                                  size="sm"
-                                  variant="ghost"
-                                  className="h-7 w-7 p-0 border hover:bg-green-400 hover:text-white hover:scale-105 hover:-translate-y-1 hover:drop-shadow-xl transition-all"
-                                  onClick={() => {
-                                    setViewRecord(record);
-                                    setIsDialogOpen(true);
-                                  }}
-                                >
-                                  <Eye className="h-3 w-3" />
-                                </Button>
+                              <td className="py-3 px-2">
+                                <div className="flex items-center space-x-5">
+                                  <Button
+                                    size="sm"
+                                    variant="ghost"
+                                    className="h-7 w-7 p-0 border hover:bg-green-400 hover:text-white hover:scale-105 hover:-translate-y-1 hover:drop-shadow-xl transition-all"
+                                    onClick={() => {
+                                      setViewRecord(record);
+                                      setIsDialogOpen(true);
+                                    }}
+                                  >
+                                    <Eye className="h-3 w-3" />
+                                  </Button>
 
-                                <Button
-                                  size="sm"
-                                  variant="ghost"
-                                  className="h-7 w-7 p-0 border hover:bg-blue-400 hover:text-white hover:scale-105 hover:-translate-y-1 hover:drop-shadow-xl transition-all"
-                                  onClick={() => {
-                                    handleHealthRecrodStatus(record);
-                                  }}
-                                  title="Update health status"
-                                >
-                                  <GrUpdate className="h-3 w-3" />
-                                </Button>
-                              </div>
-                            </td>
-                          </tr>
-                        ))}
-                      </tbody>
-                    </table>
+                                  <Button
+                                    size="sm"
+                                    variant="ghost"
+                                    className="h-7 w-7 p-0 border hover:bg-blue-400 hover:text-white hover:scale-105 hover:-translate-y-1 hover:drop-shadow-xl transition-all"
+                                    onClick={() => {
+                                      handleHealthRecrodStatus(record);
+                                    }}
+                                    title="Update health status"
+                                  >
+                                    <GrUpdate className="h-3 w-3" />
+                                  </Button>
+                                </div>
+                              </td>
+                            </tr>
+                          ))}
+                        </tbody>
+                      </table>
+                    </div>
                   </div>
-                </div>
 
                 {/* Pagination Controls */}
                 <div className="flex justify-end items-center gap-2 mt-4">
@@ -1037,33 +1016,42 @@ export default function HealthVaccination() {
             </Card>
           </div>
 
-          {/* View Dialog */}
-          <ViewHealthModal
-            open={isDialogOpen}
-            onOpenChange={setIsDialogOpen}
-            record={
-              viewRecord
-                ? {
-                    id: String(viewRecord.id),
-                    animalId: String(viewRecord.asset_id),
-                    animalName: viewRecord.asset_ref_id,
-                    checkupType: viewRecord.condition_name,
-                    date: viewRecord.treatment_date || viewRecord.created_at,
-                    status: viewRecord.status_name,
-                    notes: viewRecord.remarks || undefined,
-                  }
-                : null
-            }
-          />
-          {isHealthRecordModal && (
-            <HealthRecordUpdateModal
-              closeModal={() => setIsHealthRecordModal(false)}
-              data={selectedRecordData}
-              onUpdate={handleUpdate}
+            {/* View Dialog */}
+            <ViewHealthModal
+              open={isDialogOpen}
+              onOpenChange={setIsDialogOpen}
+              record={
+                viewRecord
+                  ? {
+                      id: String(viewRecord.id),
+                      animalId: String(viewRecord.asset_id),
+                      animalName: viewRecord.asset_ref_id,
+                      checkupType: viewRecord.condition_name,
+                      date: viewRecord.treatment_date || viewRecord.created_at,
+                      status: viewRecord.status_name,
+                      notes: viewRecord.remarks || undefined,
+                    }
+                  : null
+              }
             />
-          )}
+            {isHealthRecordModal && (
+              <HealthRecordUpdateModal
+                closeModal={() => setIsHealthRecordModal(false)}
+                data={selectedRecordData}
+                onUpdate={handleUpdate}
+              />
+            )}
+          </div>
         </main>
         <Toaster position="top-center" richColors />
+        {showScrollIndicator && (
+          <div className="fixed bottom-4 left-1/2 transform -translate-x-1/2 bg-white/90 backdrop-blur-sm border border-gray-200 rounded-full px-4 py-2 shadow-lg">
+            <div className="flex items-center gap-2 text-gray-600">
+              <ChevronDown className="w-4 h-4" />
+              <span className="text-sm font-medium">Health Records Below</span>
+            </div>
+          </div>
+        )}
       </div>
     </AuthGuard>
   );

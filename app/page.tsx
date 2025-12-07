@@ -30,6 +30,8 @@ import { useRouter } from "next/navigation";
 import { RecordVaccinationScheduleDialog } from "@/components/health/record-vaccination-schedule-dialog";
 import { RecordHealthIssueDialog } from "@/components/health/record-health-issue-dialog";
 import { Toaster } from "sonner";
+import "animate.css";
+import { motion } from "framer-motion";
 
 export default function Dashboard() {
   const [sidebarOpen, setSidebarOpen] = useState(false);
@@ -121,7 +123,8 @@ export default function Dashboard() {
                         {dashboardSummary?.Health_Status || 0}%
                       </div>
                       <div className="text-sm text-gray-600 text-right">
-                        Health <span className="hidden md:inline-block">Status</span>
+                        Health{" "}
+                        <span className="hidden md:inline-block">Status</span>
                       </div>
                     </div>
                   </div>
@@ -162,35 +165,73 @@ export default function Dashboard() {
                   onClick={() => {
                     router.push("/livestock/add_cow");
                   }}
-                  className="bg-green-600 hover:bg-green-700 lg:h-20"
+                  className="bg-green-100 hover:bg-gray-100 w-full flex justify-between text-gray-800 h-14 rounded-full group"
                 >
-                  <Plus className="w-4 h-4 mr-2" />
-                  Add Animal
+                  <motion.div
+                    className="flex items-center gap-3"
+                    whileHover="hover"
+                  >
+                    <motion.div
+                      variants={{
+                        hover: { rotate: 360 },
+                      }}
+                      transition={{ duration: 0.5 }}
+                      className="bg-green-500 rounded-full p-2"
+                    >
+                      <Plus className="text-white w-6 h-6" />
+                    </motion.div>
+                    Add Animal
+                  </motion.div>
+
+                  <div className="bg-green-300 rounded-full text-gray-500 text-center">
+                    <ChevronRight />
+                  </div>
                 </Button>
 
                 <Button
                   onClick={() => {
                     setVaccinationDialogOpen(true);
                   }}
-                  className="bg-blue-600 hover:bg-blue-700 lg:h-20"
+                  className="bg-blue-100 hover:bg-gray-100 w-full flex justify-between text-gray-800 h-14 rounded-full  "
                 >
-                  <Calendar className="w-4 h-4 mr-2" />
-                  Schedule Vaccination
+                  <div className="flex items-center gap-3">
+                    <div className="bg-blue-500 rounded-full p-2">
+                      <Calendar className="text-white w-6 h-6 " />
+                    </div>{" "}
+                    Schedule Vaccination
+                  </div>
+                  <div className="bg-blue-300 rounded-full text-gray-500 text-center">
+                    <ChevronRight />
+                  </div>
                 </Button>
 
-                <Button className="bg-purple-600 hover:bg-purple-700 lg:h-20">
-                  <TrendingUp className="w-4 h-4 mr-2" />
-                  Record Production
+                <Button className="bg-purple-100 hover:bg-gray-100 w-full flex justify-between text-gray-800 h-14 rounded-full ">
+                  <div className="flex items-center gap-3">
+                    <div className="bg-purple-500 rounded-full p-2">
+                      <TrendingUp className="text-white w-6 h-6 " />
+                    </div>{" "}
+                    Record Production
+                  </div>
+                  <div className="bg-purple-300 rounded-full text-gray-500 text-center">
+                    <ChevronRight />
+                  </div>
                 </Button>
 
                 <Button
                   onClick={() => {
                     setRecordDialogOpen(true);
                   }}
-                  className="bg-red-600 hover:bg-red-700 lg:h-20"
+                  className="bg-red-100 hover:bg-gray-100 w-full flex justify-between text-gray-800 h-14 rounded-full  "
                 >
-                  <Plus className="w-4 h-4 mr-2" />
-                  Record Health Issue
+                  <div className="flex items-center gap-3">
+                    <div className="bg-red-500 rounded-full p-2">
+                      <Plus className="text-white w-6 h-6 " />
+                    </div>{" "}
+                    Record Health Issue
+                  </div>
+                  <div className="bg-red-300 rounded-full text-gray-500 text-center">
+                    <ChevronRight />
+                  </div>
                 </Button>
               </div>
             </div>

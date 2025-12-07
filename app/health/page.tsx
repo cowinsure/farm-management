@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useRef } from "react";
+import { useState } from "react";
 import {
   Calendar,
   ChevronDown,
@@ -27,13 +27,7 @@ import Link from "next/link";
 import { MobileOverlay } from "@/components/mobile-overlay";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/hooks/useAuth";
-import AuthGuard from "@/components/auth-guard";
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-} from "@/components/ui/dialog";
+import { AuthGuard } from "@/components/auth-guard";
 import { useEffect } from "react";
 import { RecordHealthIssueDialog } from "@/components/health/record-health-issue-dialog";
 import { RecordVaccinationScheduleDialog } from "@/components/health/record-vaccination-schedule-dialog";
@@ -144,9 +138,6 @@ export default function HealthVaccination() {
   const [selectedRecordData, setSelectedRecordData] = useState<
     HealthRecord | undefined
   >(undefined);
-  const [showScrollIndicator, setShowScrollIndicator] = useState(true);
-  const vaccinationSectionRef = useRef<HTMLDivElement>(null);
-  const healthSectionRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     async function fetchHealthRecords() {
@@ -214,24 +205,6 @@ export default function HealthVaccination() {
     fetchVaccinationSchedules();
   }, [currentVaccinationPage, vaccinationPageSize]);
 
-  useEffect(() => {
-    const observer = new IntersectionObserver(
-      (entries) => {
-        // Check if ANY section except the first is visible
-        const anySectionVisible = entries.some((entry) => entry.isIntersecting);
-
-        setShowScrollIndicator(!anySectionVisible);
-      },
-      { threshold: 0.01 }
-    );
-
-    if (vaccinationSectionRef.current)
-      observer.observe(vaccinationSectionRef.current);
-
-    if (healthSectionRef.current) observer.observe(healthSectionRef.current);
-
-    return () => observer.disconnect();
-  }, []);
 
   const getVaccinationStatusBadge = (status: string) => {
     switch (status.toLowerCase()) {
@@ -289,7 +262,6 @@ export default function HealthVaccination() {
     }
   };
 
-  console.log(showScrollIndicator);
 
   const handleHealthRecrodStatus = (record: HealthRecord) => {
     setSelectedRecordData(record);
@@ -1044,14 +1016,6 @@ export default function HealthVaccination() {
           </div>
         </main>
         <Toaster position="top-center" richColors />
-        {showScrollIndicator && (
-          <div className="fixed bottom-4 left-1/2 transform -translate-x-1/2 bg-white/90 backdrop-blur-sm border border-gray-200 rounded-full px-4 py-2 shadow-lg">
-            <div className="flex items-center gap-2 text-gray-600">
-              <ChevronDown className="w-4 h-4" />
-              <span className="text-sm font-medium">Health Records Below</span>
-            </div>
-          </div>
-        )}
       </div>
     </AuthGuard>
   );

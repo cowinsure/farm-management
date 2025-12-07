@@ -46,7 +46,7 @@ export default function ClientDashboardLayout({
     // <div className="min-h-screen bg-gradient-to-br from-[#edf7f4] to-[#f8fafc]">
     <div className="min-h-screen bg-gradient-to-br from-[#edf7f4] to-[#f8fafc]">
       {/* Header */}
-      { (
+      {
         <header className="bg-green-50 border-b-4 border-green-400 shadow-[5px_1px_20px_rgba(34,197,94,0.7)] block">
           <div className="w-full px-4 sm:px-6 lg:px-8">
             <div className="flex justify-between items-center h-16 mx-auto">
@@ -113,87 +113,11 @@ export default function ClientDashboardLayout({
                   </AnimatePresence>
                 </div>
               </div>
-
-              {/* <button
-              className="md:hidden p-2"
-              onClick={() => setSidebarOpen(!sidebarOpen)}
-            >
-              {sidebarOpen ? (
-                <X className="w-6 h-6" />
-              ) : (
-                <Menu className="w-6 h-6" />
-              )}
-            </button> */}
             </div>
           </div>
         </header>
-      )}
+      }
       <div className="flex w-full">
-        {/* Mobile menu button */}
-        {/* <div className="lg:hidden fixed top-4 left-4 z-50">
-          <Button variant="outline" size="sm" onClick={() => setSidebarOpen(!sidebarOpen)} className="bg-white">
-            <Menu className="h-4 w-4" />
-          </Button>
-        </div> */}
-        {/* Sidebar */}
-        {/* <aside
-          className={`
-            fixed lg:static inset-y-0 left-0 z-40 w-64 bg-white border-r border-gray-200 transform transition-transform duration-300 ease-in-out
-            ${sidebarOpen ? "translate-x-0" : "-translate-x-full lg:translate-x-0"}
-          `}
-        >
-          <nav className="p-4 space-y-2">
-            <Link
-              onClick={() => setActiveModule('/')}
-              href="/"
-              className="flex items-center space-x-3 px-3 py-2 text-gray-600 hover:bg-gray-50 rounded-lg"
-            >
-              <Home className="w-5 h-5" />
-              <span>Dashboard</span>
-            </Link>
-            <Link
-              href="/livestock"
-              onClick={() => setActiveModule('livestock')}
-              className="flex items-center space-x-3 px-3 py-2 text-gray-600 hover:bg-gray-50 rounded-lg cursor-pointer"
-            >
-              <Users className="w-5 h-5" />
-              <span>Livestock Inventory</span>
-            </Link>
-            <Link
-              href="/health"
-              onClick={() => setActiveModule('health')}
-              className="flex items-center space-x-3 px-3 py-2 text-gray-600 hover:bg-gray-50 rounded-lg cursor-pointer"
-            >
-              <Heart className="w-5 h-5" />
-              <span>Health & Vaccination</span>
-            </Link>
-            <div className="flex items-center space-x-3 px-3 py-2 text-gray-600 hover:bg-gray-50 rounded-lg cursor-pointer">
-              <TrendingUp className="w-5 h-5" />
-              <span>Breeding & Reproduction</span>
-            </div>
-            <div className="flex items-center space-x-3 px-3 py-2 text-gray-600 hover:bg-gray-50 rounded-lg cursor-pointer">
-              <Zap className="w-5 h-5" />
-              <span>Production Tracking</span>
-            </div>
-            <Link
-              href="/financial"
-              onClick={() => setActiveModule('financial')}
-              className="flex items-center space-x-3 px-3 py-2 text-gray-600 hover:bg-gray-50 rounded-lg cursor-pointer"
-            >
-              <DollarSign className="w-5 h-5" />
-              <span>Financial Management</span>
-            </Link>
-            <div className="flex items-center space-x-3 px-3 py-2 text-gray-600 hover:bg-gray-50 rounded-lg cursor-pointer">
-              <TrendingUp className="w-5 h-5" />
-              <span>Reports & Analytics</span>
-            </div>
-            <div className="flex items-center space-x-3 px-3 py-2 text-gray-600 hover:bg-gray-50 rounded-lg cursor-pointer">
-              <Settings className="w-5 h-5" />
-              <span>Farm Settings</span>
-            </div>
-          </nav>
-        </aside> */}
-
         <div className="w-full mx-auto p-4">
           <div className="lg:flex relative">
             {/* Desktop Nav */}

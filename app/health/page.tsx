@@ -339,7 +339,7 @@ shadow-none w-full"
                         />
                       </div>
 
-                      <div className="flex gap-2">
+                      <div className="flex gap-2 z-30">
                         <Select
                           value={healthFilter}
                           onValueChange={setHealthFilter}

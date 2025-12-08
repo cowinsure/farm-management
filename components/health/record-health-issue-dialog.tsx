@@ -19,6 +19,7 @@ import {
 } from "@/components/ui/select";
 import { useToast } from "@/hooks/use-toast";
 import UploadVideo from "@/helper/UploadVedio";
+import VetSelection from "@/components/VetSelection";
 
 interface RecordHealthIssueDialogProps {
   open: boolean;
@@ -402,17 +403,11 @@ export function RecordHealthIssueDialog({
                 className="w-full border border-red-700"
               />
             </div>
-            <div>
-              <label className="block text-sm font-medium mb-1">
-                Veterinarian
-              </label>
-              <Input
-                name="veterinarian"
-                value={form.veterinarian}
-                onChange={handleChange}
-                required
-              />
-            </div>
+            <VetSelection
+              value={form.veterinarian}
+              onChange={(value) => handleSelect("veterinarian", value as string)}
+              label="Veterinarian"
+            />
             <div>
               <label className="block text-sm font-medium mb-1">Remarks</label>
               <Input

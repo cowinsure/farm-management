@@ -10,6 +10,7 @@ import {
   ChevronUp,
   ChevronDown,
   TrendingUp,
+  Syringe,
 } from "lucide-react";
 import Link from "next/link";
 import { useAuth } from "@/hooks/useAuth";
@@ -49,6 +50,12 @@ const MobileNav = () => {
       smallLabel: "Health",
       icon: Heart,
       color: "text-red-600",
+    },
+    {
+      id: "/vaccination",
+      label: "Vaccination Schedule",
+      icon: Syringe,
+      color: "text-rose-600",
     },
     {
       id: "/production",

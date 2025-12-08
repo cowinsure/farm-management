@@ -1,6 +1,6 @@
 "use client";
 import React, { useState } from "react";
-import { Users, Heart, DollarSign, Home } from "lucide-react";
+import { Users, Heart, DollarSign, Home, Syringe } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import { useAuth } from "@/hooks/useAuth";
@@ -30,11 +30,16 @@ const Navigation = ({ activeModule, setActiveModule }: NavigationProps) => {
     },
     {
       id: "/health",
-      label: "Health & Vaccination",
+      label: "Health Record",
       icon: Heart,
       color: "text-red-600",
     },
-    // This page has been made. Commenting out for now
+    {
+      id: "/vaccination",
+      label: "Vaccination Schedule",
+      icon: Syringe,
+      color: "text-rose-600",
+    },
     {
       id: "/breeding",
       label: "Breeding & Reproduction",

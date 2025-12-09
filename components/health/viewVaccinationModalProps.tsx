@@ -1,14 +1,9 @@
-import React from "react";
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-} from "@/components/ui/dialog";
-import { Badge } from "@/components/ui/badge";
-import { Card, CardContent } from "@/components/ui/card";
-import { Calendar, Syringe, MapPin, FileText } from "lucide-react";
-import { useLocalization } from "@/context/LocalizationContext";
+
+import React from 'react';
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
+import { Badge } from '@/components/ui/badge';
+import { Card, CardContent } from '@/components/ui/card';
+import { Calendar, Syringe, MapPin, FileText } from 'lucide-react';
 
 interface ViewVaccinationModalProps {
   open: boolean;
@@ -24,25 +19,15 @@ interface ViewVaccinationModalProps {
   } | null;
 }
 
-const ViewVaccinationModal = ({
-  open,
-  onOpenChange,
-  schedule,
-}: ViewVaccinationModalProps) => {
+const ViewVaccinationModal = ({ open, onOpenChange, schedule }: ViewVaccinationModalProps) => {
   if (!schedule) return null;
-
-  const { t, locale, setLocale } = useLocalization();
 
   const getStatusColor = (status: string) => {
     switch (status) {
-      case "Completed":
-        return "bg-green-100 text-green-800";
-      case "Due":
-        return "bg-yellow-100 text-yellow-800";
-      case "Overdue":
-        return "bg-red-100 text-red-800";
-      default:
-        return "bg-gray-100 text-gray-800";
+      case 'Completed': return 'bg-green-100 text-green-800';
+      case 'Due': return 'bg-yellow-100 text-yellow-800';
+      case 'Overdue': return 'bg-red-100 text-red-800';
+      default: return 'bg-gray-100 text-gray-800';
     }
   };
 
@@ -54,16 +39,16 @@ const ViewVaccinationModal = ({
             <div className="w-10 h-10 bg-blue-100 rounded-full flex items-center justify-center">
               <Syringe className="w-5 h-5 text-blue-600" />
             </div>
-            {t("vaccination_schedule")}
+            Vaccination Schedule
           </DialogTitle>
         </DialogHeader>
-
+        
         <div className="space-y-4">
           <Card className="border-l-4 border-l-blue-500">
             <CardContent className="p-4">
               <div className="flex justify-between items-center">
                 <div>
-                  <p className="text-sm text-gray-600">{t("schedule_id")}</p>
+                  <p className="text-sm text-gray-600">Schedule ID</p>
                   <p className="font-semibold">{schedule.id}</p>
                 </div>
                 <Badge className={getStatusColor(schedule.status)}>
@@ -80,10 +65,8 @@ const ViewVaccinationModal = ({
                   <span className="text-green-600 text-lg">🐄</span>
                 </div>
                 <div>
-                  <p className="text-sm text-gray-600">{t("reference_id")}</p>
-                  <p className="font-semibold">
-                    {schedule.animalName} ({schedule.animalId})
-                  </p>
+                  <p className="text-sm text-gray-600">Reference ID</p>
+                  <p className="font-semibold">{schedule.animalName} ({schedule.animalId})</p>
                 </div>
               </CardContent>
             </Card>
@@ -94,7 +77,7 @@ const ViewVaccinationModal = ({
                   <Syringe className="w-4 h-4 text-purple-600" />
                 </div>
                 <div>
-                  <p className="text-sm text-gray-600">{t("vaccine")}</p>
+                  <p className="text-sm text-gray-600">Vaccine</p>
                   <p className="font-semibold">{schedule.vaccine}</p>
                 </div>
               </CardContent>
@@ -106,7 +89,7 @@ const ViewVaccinationModal = ({
                   <Calendar className="w-4 h-4 text-orange-600" />
                 </div>
                 <div>
-                  <p className="text-sm text-gray-600">{t("due_date")}</p>
+                  <p className="text-sm text-gray-600">Due Date</p>
                   <p className="font-semibold">{schedule.dueDate}</p>
                 </div>
               </CardContent>
@@ -119,7 +102,7 @@ const ViewVaccinationModal = ({
                     <FileText className="w-4 h-4 text-gray-600" />
                   </div>
                   <div className="flex-1">
-                    <p className="text-sm text-gray-600">{t("notes")}</p>
+                    <p className="text-sm text-gray-600">Notes</p>
                     <p className="font-semibold">{schedule.notes}</p>
                   </div>
                 </CardContent>

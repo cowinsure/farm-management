@@ -9,14 +9,13 @@ import React, {
 import Image from "next/image";
 import { useCowRegistration } from "@/context/CowRegistrationContext";
 
-import logo from "../../../public/Logo-03.png";
+import logo from "../../../public/logo-03.png";
 
 import { toast } from "sonner";
 import UploadVideo from "@/helper/UploadVedio";
 import ModalGeneral from "@/modal/DialogGeneral";
 import CowIdentificationLoader from "@/components/loader/cow-identification-loader";
 import SectionHeading from "@/helper/SectionHeading";
-import { useLocalization } from "@/context/LocalizationContext";
 
 // Define an interface for the response data
 interface ResponseData {
@@ -37,7 +36,6 @@ export type StepOneRef = {
 };
 
 export const StepOne = forwardRef<StepOneRef>((props, ref) => {
-  const { t } = useLocalization();
   StepOne.displayName = "StepOne";
   // const router = useRouter();
   const [isModalOpen, setModalOpen] = useState(false);
@@ -163,8 +161,8 @@ export const StepOne = forwardRef<StepOneRef>((props, ref) => {
     <div className="w-full lg:w-[90%] mx-auto">
       <SectionHeading
         marginBottom="8"
-        sectionTitle={t("muzzle_detection")}
-        description={t("register_muzzle")}
+        sectionTitle="Muzzle Detection"
+        description="Register your cattle muzzle here"
       />
       <div className="">
         <div className="w-full flex flex-col justify-center items-center">
@@ -188,7 +186,7 @@ export const StepOne = forwardRef<StepOneRef>((props, ref) => {
               }}
               className="bg-emerald-600 hover:bg-emerald-700 text-white font-medium px-6 py-2 mt-10 rounded"
             >
-              {isUploading ? `${t("uploading")}` : `${t("register_animal")}`}
+              {isUploading ? "Uploading..." : "Register Cow"}
             </button>
           )}
         </div>
@@ -211,14 +209,13 @@ export const StepOne = forwardRef<StepOneRef>((props, ref) => {
               <div className="mt-4 p-4 bg-green-100 border border-green-300 rounded-md text-green-700">
                 <div className="mt-4 p-4 bg-gray-100 rounded-lg shadow-md">
                   <h3 className="text-xl font-semibold mb-2">
-                    {t("muzzle_registration_result")}
+                    Muzzel Registration Result
                   </h3>
                   <p>
-                    <strong>{t("animal_name")}:</strong>{" "}
-                    {responseData?.animal_name}
+                    <strong>Animal Name:</strong> {responseData?.animal_name}
                   </p>
                   <p>
-                    <strong>{t("registration_id")}:</strong>{" "}
+                    <strong>Registration ID:</strong>{" "}
                     {responseData?.registration_id}
                   </p>
                   {/* <p><strong>Geo Location:</strong> {responseData?.geo_location}</p> */}
@@ -227,7 +224,7 @@ export const StepOne = forwardRef<StepOneRef>((props, ref) => {
                   {/* <p><strong>Image:</strong></p> */}
                   {/* <Image src={`data:image/jpeg;base64,${responseData.image_url}`} alt="Cow Muzzle" className="mt-2 rounded shadow-md" /> */}
                   <p>
-                    <strong>{t("message")}:</strong> {responseData?.msg}
+                    <strong>Message:</strong> {responseData?.msg}
                   </p>
                 </div>
                 <button
@@ -236,7 +233,7 @@ export const StepOne = forwardRef<StepOneRef>((props, ref) => {
                   }}
                   className="mt-2 py-2 px-4 bg-green-500 text-white font-semibold rounded-md hover:bg-green-600"
                 >
-                  {t("close")}
+                  Close
                 </button>
               </div>
             </div>
@@ -260,14 +257,13 @@ export const StepOne = forwardRef<StepOneRef>((props, ref) => {
               <div className="mt-4 p-4 bg-red-100 border border-red-300 rounded-md text-red-700">
                 <div className="mt-4 p-4 bg-gray-100 rounded-lg shadow-md">
                   <h3 className="text-xl font-semibold mb-2">
-                    {t("registration_result")}
+                    Registration Result
                   </h3>
                   <p>
-                    <strong>{t("animal_name")}:</strong>{" "}
-                    {responseData?.animal_name}
+                    <strong>Animal Name:</strong> {responseData?.animal_name}
                   </p>
                   <p>
-                    <strong>{t("registration_id")}:</strong>{" "}
+                    <strong>Registration ID:</strong>{" "}
                     {responseData?.registration_id}
                   </p>
                   {/* <p><strong>Geo Location:</strong> {responseData?.geo_location}</p> */}
@@ -276,7 +272,7 @@ export const StepOne = forwardRef<StepOneRef>((props, ref) => {
                   {/* <p><strong>Image:</strong></p> */}
                   {/* <Image src={`data:image/jpeg;base64,${responseData.image_url}`} alt="Cow Muzzle" className="mt-2 rounded shadow-md" /> */}
                   <p>
-                    <strong>{t("message")}:</strong> {responseData?.msg}
+                    <strong>Message:</strong> {responseData?.msg}
                   </p>
                 </div>
                 <button
@@ -285,7 +281,7 @@ export const StepOne = forwardRef<StepOneRef>((props, ref) => {
                   }}
                   className="mt-2 py-2 px-4 bg-red-500 text-white font-semibold rounded-md hover:bg-red-600"
                 >
-                  {t("close")}
+                  Close
                 </button>
               </div>
             </div>

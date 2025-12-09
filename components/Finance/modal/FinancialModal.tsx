@@ -20,7 +20,6 @@ import { Textarea } from "@/components/ui/textarea";
 import { Plus, Receipt } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { log } from "console";
-import { useLocalization } from "@/context/LocalizationContext";
 
 interface FinancialModalProps {
   type: "income" | "expense";
@@ -69,7 +68,6 @@ const farmerName = [
 ];
 
 const FinancialModal = ({ type }: FinancialModalProps) => {
-  const { t, setLocale, locale } = useLocalization();
   const [open, setOpen] = useState(false);
   const [formData, setFormData] = useState({
     category: "",
@@ -209,20 +207,18 @@ const FinancialModal = ({ type }: FinancialModalProps) => {
           ) : (
             <Receipt className="w-4 h-4" />
           )}
-          {type === "income" ? `${t("add_income")}` : `${t("add_expense")}`}
+          Add {type === "income" ? "Income" : "Expense"}
         </Button>
       </DialogTrigger>
       <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>
           <DialogTitle>
-            {type === "income"
-              ? `${t("record_income")}`
-              : `${t("record_expense")}`}
+            Record {type === "income" ? "Income" : "Expense"}
           </DialogTitle>
         </DialogHeader>
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
-            <Label htmlFor="category">{t("category")}</Label>
+            <Label htmlFor="category">Category</Label>
             <Select
               value={formData.category}
               onValueChange={(value) =>
@@ -232,20 +228,18 @@ const FinancialModal = ({ type }: FinancialModalProps) => {
               <SelectTrigger>
                 <SelectValue
                   placeholder={
-                    loadingLedgers
-                      ? `${t("loading")}`
-                      : `${t("select_category")}`
+                    loadingLedgers ? "Loading..." : "Select category"
                   }
                 />
               </SelectTrigger>
               <SelectContent>
                 {loadingLedgers ? (
-                  <div className="px-4 py-2 text-gray-500">{t("loading")}</div>
+                  <div className="px-4 py-2 text-gray-500">Loading...</div>
                 ) : ledgerError ? (
                   <div className="px-4 py-2 text-red-500">{ledgerError}</div>
                 ) : ledgerOptions.length === 0 ? (
                   <div className="px-4 py-2 text-gray-500">
-                    {t("no_category")}
+                    No categories found
                   </div>
                 ) : (
                   ledgerOptions.map((ledger) => (
@@ -260,7 +254,7 @@ const FinancialModal = ({ type }: FinancialModalProps) => {
 
           {formData.category && formData.category.toString() === "2" ? (
             <div>
-              <Label htmlFor="category">{t("transfer_to")}</Label>
+              <Label htmlFor="category">Transfer To</Label>
               <Select
                 value={formData.farmerName}
                 onValueChange={(value) =>
@@ -270,22 +264,18 @@ const FinancialModal = ({ type }: FinancialModalProps) => {
                 <SelectTrigger>
                   <SelectValue
                     placeholder={
-                      loadingLedgers
-                        ? `${t("loading")}`
-                        : `${t("select_category")}`
+                      loadingLedgers ? "Loading..." : "Select category"
                     }
                   />
                 </SelectTrigger>
                 <SelectContent>
                   {loadingLedgers ? (
-                    <div className="px-4 py-2 text-gray-500">
-                      {t("loading")}
-                    </div>
+                    <div className="px-4 py-2 text-gray-500">Loading...</div>
                   ) : ledgerError ? (
                     <div className="px-4 py-2 text-red-500">{ledgerError}</div>
                   ) : ledgerOptions.length === 0 ? (
                     <div className="px-4 py-2 text-gray-500">
-                      {t("no_category")}
+                      No categories found
                     </div>
                   ) : (
                     farmerName.map((farmer) => (
@@ -303,7 +293,7 @@ const FinancialModal = ({ type }: FinancialModalProps) => {
 
           <div className="grid grid-cols-2 gap-4">
             <div>
-              <Label htmlFor="amount">{t("amount")} ($)</Label>
+              <Label htmlFor="amount">Amount ($)</Label>
               <Input
                 id="amount"
                 type="number"
@@ -316,7 +306,7 @@ const FinancialModal = ({ type }: FinancialModalProps) => {
               />
             </div>
             <div>
-              <Label htmlFor="date">{t("date")}</Label>
+              <Label htmlFor="date">Date</Label>
               <Input
                 id="date"
                 type="date"
@@ -330,14 +320,14 @@ const FinancialModal = ({ type }: FinancialModalProps) => {
           </div>
 
           <div>
-            <Label htmlFor="description">{t("description")}</Label>
+            <Label htmlFor="description">Description</Label>
             <Textarea
               id="description"
               value={formData.description}
               onChange={(e) =>
                 setFormData({ ...formData, description: e.target.value })
               }
-              placeholder={t("enter_description")}
+              placeholder="Enter description..."
               required
             />
           </div>
@@ -348,7 +338,7 @@ const FinancialModal = ({ type }: FinancialModalProps) => {
               variant="outline"
               onClick={() => setOpen(false)}
             >
-              {t("cancel")}
+              Cancel
             </Button>
             <Button
               type="submit"
@@ -359,7 +349,7 @@ const FinancialModal = ({ type }: FinancialModalProps) => {
               }
               disabled={submitting}
             >
-              {submitting ? `${t("saving...")}` : `${t("record")}`}
+              {submitting ? "Saving..." : "Record"}
             </Button>
           </div>
         </form>

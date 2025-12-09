@@ -23,17 +23,14 @@ import { Badge } from "@/components/ui/badge";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/hooks/useAuth";
-import AuthGuard from "@/components/auth-guard";
+import { AuthGuard } from "@/components/auth-guard";
 import ViewAnimalModal from "@/components/Livestock/ViewAnimalModal";
 import Heading from "@/components/ui/Heading";
 import SectionHeading from "@/helper/SectionHeading";
 import { MobileOverlay } from "@/components/mobile-overlay";
 import { MobileOverlayPro } from "@/components/MobileOverlayPro";
-import { useLocalization } from "@/context/LocalizationContext";
 
 export default function LivestockInventory() {
-  const { t, setLocale, locale } = useLocalization();
-
   const [animals, setAnimals] = useState<any[]>([]);
   const [searchTerm, setSearchTerm] = useState("");
   const [statusFilter, setStatusFilter] = useState("all");
@@ -41,7 +38,7 @@ export default function LivestockInventory() {
   const [genderFilter, setGenderFilter] = useState("all");
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const { logout } = useAuth();
-  const [startRecord, setStartRecord] = useState(1);
+  const [page, setPage] = useState(1);
   const [pageSize, setPageSize] = useState(10);
   const [total, setTotal] = useState(0);
   const [active, setActive] = useState(0);
@@ -54,18 +51,17 @@ export default function LivestockInventory() {
 
   const router = useRouter();
 
-  const page = startRecord;
-  const totalPages = pageSize > 0 && total > 0 ? Math.ceil(total / pageSize) : 1;
-
   useEffect(() => {
-    console.log("StartRecord:", startRecord, "PageSize:", pageSize);
+    console.log("Page:", page, "PageSize:", pageSize);
     setLoading(true);
     setError(null);
     const token =
       typeof window !== "undefined"
         ? localStorage.getItem("access_token")
         : null;
-
+    console.log("Access token:", token);
+    // Calculate start_record for 1-based pagination: 1, 11, 21, ...
+    const startRecord = (page - 1) * pageSize + 1;
     fetch(
       `${process.env.NEXT_PUBLIC_API_BASE_URL}/lms/assets-service?start_record=${startRecord}&page_size=${pageSize}`,
       {
@@ -84,26 +80,26 @@ export default function LivestockInventory() {
       })
       .then((data: any) => {
         console.log("Fetched data:", data);
-        if (!data.data) {
-          throw new Error("Invalid response format: missing data");
-        }
-        setAnimals(data.data.list || []);
-        const summary = data.data.summary || {};
+        setAnimals(data.data.list);
         const newTotal =
-          typeof summary.Total === "number"
-            ? summary.Total
+          typeof data.data.summary.Total === "number"
+            ? data.data.summary.Total
             : 0;
         setTotal(newTotal);
-        setActive(summary.Active || 0);
-        setSick(summary.Sick || 0);
-        setQuarantine(summary.Quarantine || 0);
+        setActive(data.data.summary.Active);
+        setSick(data.data.summary.Sick);
+        setQuarantine(data.data.summary.Quarantine);
+        // If the current page is now out of range, reset to last valid page
+        const lastPage =
+          pageSize > 0 ? Math.max(1, Math.ceil(newTotal / pageSize)) : 1;
+        if (page > lastPage) setPage(lastPage);
       })
       .catch((err: any) => {
         setError("Failed to fetch data: " + err.message);
         console.error("Fetch error:", err);
       })
       .finally(() => setLoading(false));
-  }, [startRecord, pageSize]);
+  }, [page, pageSize]);
 
   const handleLogout = () => {
     logout();
@@ -137,19 +133,19 @@ export default function LivestockInventory() {
       case "active":
         return (
           <Badge className="bg-green-100 text-green-800 hover:bg-green-100">
-            {t("active")}
+            Active
           </Badge>
         );
       case "sick":
         return (
           <Badge className="bg-red-100 text-red-800 hover:bg-red-100">
-            {t("sick")}
+            Sick
           </Badge>
         );
       case "quarantine":
         return (
           <Badge className="bg-orange-100 text-orange-800 hover:bg-orange-100">
-            {t("quarantine")}
+            Quarantine
           </Badge>
         );
       default:
@@ -177,8 +173,8 @@ export default function LivestockInventory() {
           {/* Page Header */}
           <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-6">
             <SectionHeading
-              sectionTitle={t("title_livestock_inventory")}
-              description={t("sub_title_add_and_manage_cattle")}
+              sectionTitle="Livestock Inventory"
+              description="Add and manage your cattles"
             />
             <Button
               onClick={() => {
@@ -187,7 +183,7 @@ export default function LivestockInventory() {
               className="bg-green-600 hover:bg-green-700 w-full sm:w-auto hidden lg:flex"
             >
               <Plus className="w-4 h-4 mr-2" />
-              {t("add_animal")}
+              Add Animal
             </Button>
           </div>
 
@@ -208,10 +204,10 @@ export default function LivestockInventory() {
                   />
                   <div>
                     <h1 className="font-bold text-gray-700 text-lg">
-                      {t("register_animal")}
+                      Register cow
                     </h1>
                     <p className="font-medium text-gray-500 text-sm">
-                      {t("click_to_add_new_animal")}
+                      Click to add new cow
                     </p>
                   </div>
                 </div>
@@ -225,7 +221,7 @@ export default function LivestockInventory() {
                       className="bg-green-950 rounded-lg py-2 px-2 flex items-center gap-1 font-semibold text-white lg:hidden"
                     >
                       <Plus className="w-5 h-5" />
-                      {t("register")}
+                      Register
                     </button>
                   </div>
                 </div>
@@ -252,9 +248,8 @@ export default function LivestockInventory() {
                         {total}
                       </div>
                       <div className="text-sm text-gray-600">
-                        <span className="hidden md:block">
-                          {t("total_animals")}
-                        </span>
+                        <span className="hidden md:inline-flex">Total</span>{" "}
+                        Animals
                       </div>
                     </div>
                   </div>
@@ -274,7 +269,7 @@ export default function LivestockInventory() {
                       <div className="text-2xl font-bold text-right text-blue-600">
                         {active}
                       </div>
-                      <div className="text-sm text-gray-600">{t("active")}</div>
+                      <div className="text-sm text-gray-600">Active</div>
                     </div>
                   </div>
                 </CardContent>
@@ -293,7 +288,7 @@ export default function LivestockInventory() {
                       <div className="text-2xl font-bold text-right text-red-600">
                         {sick}
                       </div>
-                      <div className="text-sm text-gray-600">{t("sick")}</div>
+                      <div className="text-sm text-gray-600">Sick</div>
                     </div>
                   </div>
                 </CardContent>
@@ -304,15 +299,15 @@ export default function LivestockInventory() {
           {/* Animal Registry */}
           <Card className="animate__animated animate__fadeIn">
             <CardHeader>
-              <CardTitle className="text-lg lg:text-xl">
-                {t("animal_registry")}
+              <CardTitle className="flex items-center text-lg lg:text-xl gap-2">
+                <PawPrint className="w-5 h-5 text-green-600" />
+                Animal Registry
               </CardTitle>
               <div className="flex flex-col lg:flex-row items-start lg:items-center justify-between gap-4">
                 <div className="flex justify-between w-full">
                   <p className="text-sm text-gray-600">
-                    {t("showing")}{" "}
-                    {filteredAnimals ? filteredAnimals.length : 0} {t("of")}{" "}
-                    {total} {t("animals")}
+                    Showing {filteredAnimals ? filteredAnimals.length : 0} of{" "}
+                    {total} animals
                   </p>
 
                   {/* Filter btn for mobile devices */}
@@ -334,7 +329,7 @@ export default function LivestockInventory() {
                         d="M3 4h18M6 10h12M9 16h6"
                       />
                     </svg>
-                    <span className="text-sm font-medium">{t("filters")}</span>
+                    <span className="text-sm font-medium">Filter</span>
                   </button>
                 </div>
 
@@ -344,7 +339,7 @@ export default function LivestockInventory() {
                   <div className="relative w-full xl:w-64">
                     <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
                     <Input
-                      placeholder={t("search_animals")}
+                      placeholder="Search animals..."
                       value={searchTerm}
                       onChange={(e) => setSearchTerm(e.target.value)}
                       className="pl-10 w-full"
@@ -364,28 +359,22 @@ export default function LivestockInventory() {
                       </SelectTrigger>{" "}
                       <SelectContent>
                         {" "}
-                        <SelectItem value="all">
-                          {t("all_status")}
-                        </SelectItem>{" "}
-                        <SelectItem value="active">{t("active")}</SelectItem>{" "}
-                        <SelectItem value="sick">{t("sick")}</SelectItem>{" "}
-                        <SelectItem value="quarantine">
-                          {t("quarantine")}
-                        </SelectItem>{" "}
+                        <SelectItem value="all">All Status</SelectItem>{" "}
+                        <SelectItem value="active">Active</SelectItem>{" "}
+                        <SelectItem value="sick">Sick</SelectItem>{" "}
+                        <SelectItem value="quarantine">Quarantine</SelectItem>{" "}
                       </SelectContent>{" "}
                     </Select>{" "}
                     <Select value={breedFilter} onValueChange={setBreedFilter}>
                       {" "}
                       <SelectTrigger className="w-full lg:w-32">
                         {" "}
-                        <SelectValue placeholder={t("all_types")} />{" "}
+                        <SelectValue placeholder="All Types" />{" "}
                       </SelectTrigger>{" "}
                       <SelectContent>
                         {" "}
-                        <SelectItem value="all">
-                          {t("all_types")}
-                        </SelectItem>{" "}
-                        <SelectItem value="cow">{t("cow")}</SelectItem>{" "}
+                        <SelectItem value="all">All Types</SelectItem>{" "}
+                        <SelectItem value="cow">Cow</SelectItem>{" "}
                         {/* Add more asset types as needed */}{" "}
                       </SelectContent>{" "}
                     </Select>{" "}
@@ -400,11 +389,9 @@ export default function LivestockInventory() {
                       </SelectTrigger>{" "}
                       <SelectContent>
                         {" "}
-                        <SelectItem value="all">
-                          {t("all_genders")}
-                        </SelectItem>{" "}
-                        <SelectItem value="male">{t("male")}</SelectItem>{" "}
-                        <SelectItem value="female">{t("female")}</SelectItem>{" "}
+                        <SelectItem value="all">All Genders</SelectItem>{" "}
+                        <SelectItem value="male">Male</SelectItem>{" "}
+                        <SelectItem value="female">Female</SelectItem>{" "}
                       </SelectContent>{" "}
                     </Select>{" "}
                   </div>
@@ -413,7 +400,7 @@ export default function LivestockInventory() {
             </CardHeader>
             <CardContent>
               {loading ? (
-                <div className="text-center py-10">{t("loading")}</div>
+                <div className="text-center py-10">Loading...</div>
               ) : error ? (
                 <div className="text-center text-red-600 py-10">{error}</div>
               ) : (
@@ -461,7 +448,7 @@ export default function LivestockInventory() {
                           <div className="grid grid-cols-2 gap-4 mb-4 text-sm">
                             <div>
                               <span className="text-gray-400 uppercase text-xs">
-                                {t("type")}
+                                Type
                               </span>
                               <p className="font-medium text-gray-700">
                                 {animal.asset_type}
@@ -469,7 +456,7 @@ export default function LivestockInventory() {
                             </div>
                             <div>
                               <span className="text-gray-400 uppercase text-xs">
-                                {t("age")}
+                                Age (months)
                               </span>
                               <p className="font-medium text-gray-700">
                                 {animal.age_in_months}
@@ -477,7 +464,7 @@ export default function LivestockInventory() {
                             </div>
                             <div>
                               <span className="text-gray-400 uppercase text-xs">
-                                {t("weight")}
+                                Weight (kg)
                               </span>
                               <p className="font-medium text-gray-700">
                                 {animal.weight_kg}
@@ -485,7 +472,7 @@ export default function LivestockInventory() {
                             </div>
                             <div>
                               <span className="text-gray-400 uppercase text-xs">
-                                {t("gender")}
+                                Gender
                               </span>
                               <p className="font-medium text-gray-700">
                                 {animal.gender}
@@ -513,7 +500,7 @@ export default function LivestockInventory() {
 
                     {filteredAnimals.length === 0 && (
                       <div className="text-center py-10 text-gray-400 italic">
-                        {t("no_animals_found")}
+                        No animals found.
                       </div>
                     )}
                   </div>
@@ -527,26 +514,26 @@ export default function LivestockInventory() {
                       <thead>
                         <tr className="border-b border-gray-200 text-sm">
                           <th className="text-left py-3 px-4 font-medium text-gray-600">
-                            {t("id")}
+                            ID
                           </th>
                           <th className="text-center py-3 px-4 font-medium text-gray-600">
-                            {t("name")}
+                            Name
                           </th>
                           <th className="text-center py-3 px-4 font-medium text-gray-600">
-                            {t("type")}
+                            Type
                           </th>
                           <th className="text-center py-3 px-4 font-medium text-gray-600">
-                            {t("age")}
+                            Age (months)
                           </th>
                           <th className="text-center py-3 px-4 font-medium text-gray-600">
-                            {t("weight")}
+                            Weight (kg)
                           </th>
                           <th className="text-center py-3 px-4 font-medium text-gray-600">
-                            {t("status")}
+                            Status
                           </th>
                           {/* <th className="text-center py-3 px-4 font-medium text-gray-600">Location</th> */}
                           <th className="text-center py-3 px-4 font-medium text-gray-600">
-                            {t("actions")}
+                            Actions
                           </th>
                         </tr>
                       </thead>
@@ -604,7 +591,7 @@ export default function LivestockInventory() {
                               colSpan={7}
                               className="text-center py-10 text-gray-500"
                             >
-                              {t("no_animals_found")}
+                              No animals found.
                             </td>
                           </tr>
                         )}
@@ -617,21 +604,35 @@ export default function LivestockInventory() {
                     <Button
                       variant="outline"
                       size="sm"
-                      onClick={() => setStartRecord(prev => Math.max(1, prev - 1))}
-                      disabled={startRecord === 1}
+                      onClick={() => setPage((p) => Math.max(1, p - 1))}
+                      disabled={page === 1}
                     >
-                      {t("previous")}
+                      Previous
                     </Button>
                     <span>
-                      {t("page")} {page} {t("of")} {totalPages}
+                      Page {page} of{" "}
+                      {pageSize > 0 && total > 0
+                        ? Math.max(1, Math.ceil(total / pageSize))
+                        : 1}
                     </span>
                     <Button
                       variant="outline"
                       size="sm"
-                      onClick={() => setStartRecord(prev => prev + 1)}
-                      disabled={page >= totalPages}
+                      onClick={() => {
+                        const lastPage =
+                          pageSize > 0 && total > 0
+                            ? Math.max(1, Math.ceil(total / pageSize))
+                            : 1;
+                        if (page < lastPage) setPage(page + 1);
+                      }}
+                      disabled={
+                        page >=
+                        (pageSize > 0 && total > 0
+                          ? Math.max(1, Math.ceil(total / pageSize))
+                          : 1)
+                      }
                     >
-                      {t("next")}
+                      Next
                     </Button>
                   </div>
                 </>
@@ -654,40 +655,38 @@ export default function LivestockInventory() {
         onClose={() => setSidebarOpen(false)}
       >
         <div className="p-4 space-y-4">
-          <h2 className="text-lg font-semibold text-gray-700 mb-3">
-            {t("filters")}
-          </h2>
+          <h2 className="text-lg font-semibold text-gray-700 mb-3">Filters</h2>
 
           <Select value={statusFilter} onValueChange={setStatusFilter}>
             <SelectTrigger className="w-full">
-              <SelectValue placeholder={t("all_status")} />
+              <SelectValue placeholder="All Status" />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="all">{t("all_status")}</SelectItem>
-              <SelectItem value="active">{t("active")}</SelectItem>
-              <SelectItem value="sick">{t("sick")}</SelectItem>
-              <SelectItem value="quarantine">{t("quarantine")}</SelectItem>
+              <SelectItem value="all">All Status</SelectItem>
+              <SelectItem value="active">Active</SelectItem>
+              <SelectItem value="sick">Sick</SelectItem>
+              <SelectItem value="quarantine">Quarantine</SelectItem>
             </SelectContent>
           </Select>
 
           <Select value={breedFilter} onValueChange={setBreedFilter}>
             <SelectTrigger className="w-full">
-              <SelectValue placeholder={t("all_types")} />
+              <SelectValue placeholder="All Types" />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="all">{t("all_types")}</SelectItem>
-              <SelectItem value="cow">{t("cow")}</SelectItem>
+              <SelectItem value="all">All Types</SelectItem>
+              <SelectItem value="cow">Cow</SelectItem>
             </SelectContent>
           </Select>
 
           <Select value={genderFilter} onValueChange={setGenderFilter}>
             <SelectTrigger className="w-full">
-              <SelectValue placeholder={t("all_genders")} />
+              <SelectValue placeholder="All Genders" />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="all">{t("all_genders")}</SelectItem>
-              <SelectItem value="male">{t("male")}</SelectItem>
-              <SelectItem value="female">{t("female")}</SelectItem>
+              <SelectItem value="all">All Genders</SelectItem>
+              <SelectItem value="male">Male</SelectItem>
+              <SelectItem value="female">Female</SelectItem>
             </SelectContent>
           </Select>
 
@@ -696,7 +695,7 @@ export default function LivestockInventory() {
               onClick={() => setSidebarOpen(false)}
               className="bg-green-600 hover:bg-green-700 text-white"
             >
-              {t("apply_filters")}
+              Apply Filters
             </Button>
           </div>
         </div>

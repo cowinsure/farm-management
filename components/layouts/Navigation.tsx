@@ -1,6 +1,6 @@
 "use client";
 import React, { useState } from "react";
-import { Users, Heart, DollarSign, Home } from "lucide-react";
+import { Users, Heart, DollarSign, Home, Syringe } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import { useAuth } from "@/hooks/useAuth";
@@ -8,7 +8,6 @@ import { usePathname } from "next/navigation";
 import { MdOutlineCalendarToday } from "react-icons/md";
 import { LuPin, LuPinOff } from "react-icons/lu";
 import { FaArrowTrendUp } from "react-icons/fa6";
-import { useLocalization } from "@/context/LocalizationContext";
 
 interface NavigationProps {
   activeModule: string;
@@ -16,42 +15,46 @@ interface NavigationProps {
 }
 
 const Navigation = ({ activeModule, setActiveModule }: NavigationProps) => {
-  const { t, locale, setLocale } = useLocalization();
   const { logout } = useAuth();
   const pathname = usePathname();
 
   const [pinned, setPinned] = useState(false); // 👈 New toggle state
 
   const menuItems = [
-    { id: "/", label: `${t("dashboard")}`, icon: Home, color: "text-blue-600" },
+    { id: "/", label: "Dashboard", icon: Home, color: "text-blue-600" },
     {
       id: "/livestock",
-      label: `${t("title_livestock_inventory")}`,
+      label: "Livestock Inventory",
       icon: Users,
       color: "text-green-600",
     },
     {
       id: "/health",
-      label: `${t("health_vaccination")}`,
+      label: "Health Record",
       icon: Heart,
       color: "text-red-600",
     },
-    // This page has been made. Commenting out for now
+    {
+      id: "/vaccination",
+      label: "Vaccination Schedule",
+      icon: Syringe,
+      color: "text-rose-600",
+    },
     {
       id: "/breeding",
-      label: `${t("breeding_reproduction")}`,
+      label: "Breeding & Reproduction",
       icon: FaArrowTrendUp,
       color: "text-purple-600",
     },
     {
       id: "/production",
-      label: `${t("production_tracking")}`,
+      label: "Production Tracking",
       icon: MdOutlineCalendarToday,
       color: "text-orange-600",
     },
     {
       id: "/financial",
-      label: `${t("financial_management")}`,
+      label: "Financial Management",
       icon: DollarSign,
       color: "text-yellow-600",
     },

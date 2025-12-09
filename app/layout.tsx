@@ -8,7 +8,6 @@ import { CowRegistrationProvider } from "@/context/CowRegistrationContext";
 import "animate.css";
 import { Urbanist } from "next/font/google";
 import { Toaster } from "@/components/ui/toaster";
-import { LocalizationProvider } from "@/context/LocalizationContext";
 
 export const urbanist = Urbanist({
   subsets: ["latin"],
@@ -35,12 +34,10 @@ export default function RootLayout({
         <link rel="icon" href="/favicon.ico" />
       </head>
       <body className={`${urbanist.className}`}>
-        <LocalizationProvider>
-          <CowRegistrationProvider>
-            <ClientRootLayout>{children}</ClientRootLayout>
-          </CowRegistrationProvider>
-          <Toaster  />
-        </LocalizationProvider>
+        <CowRegistrationProvider>
+          <ClientRootLayout>{children}</ClientRootLayout>
+        </CowRegistrationProvider>
+        <Toaster  />
       </body>
     </html>
   );

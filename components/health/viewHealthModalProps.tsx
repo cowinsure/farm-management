@@ -8,7 +8,6 @@ import {
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent } from "@/components/ui/card";
 import { Calendar, Heart, Thermometer, FileText } from "lucide-react";
-import { useLocalization } from "@/context/LocalizationContext";
 
 interface ViewHealthModalProps {
   open: boolean;
@@ -32,7 +31,6 @@ const ViewHealthModal = ({
 }: ViewHealthModalProps) => {
   if (!record) return null;
 
-  const { t, locale, setLocale } = useLocalization();
   const getStatusColor = (status: string) => {
     switch (status) {
       case "Healthy":
@@ -56,7 +54,7 @@ const ViewHealthModal = ({
             <div className="w-10 h-10 bg-red-100 rounded-full flex items-center justify-center">
               <Heart className="w-5 h-5 text-red-600" />
             </div>
-            {t("health_record")}
+            Health Record
           </DialogTitle>
         </DialogHeader>
 
@@ -65,7 +63,7 @@ const ViewHealthModal = ({
             <CardContent className="p-4">
               <div className="flex justify-between items-center">
                 <div>
-                  <p className="text-sm text-gray-600">{t("record_id")}</p>
+                  <p className="text-sm text-gray-600">Record ID</p>
                   <p className="font-semibold">{record.id}</p>
                 </div>
                 <Badge className={getStatusColor(record.status)}>
@@ -82,7 +80,7 @@ const ViewHealthModal = ({
                   <span className="text-green-600 text-lg">🐄</span>
                 </div>
                 <div>
-                  <p className="text-sm text-gray-600">{t("reference_id")}</p>
+                  <p className="text-sm text-gray-600">Reference ID</p>
                   <p className="font-semibold">
                     {record.animalName} ({record.animalId})
                   </p>
@@ -96,7 +94,7 @@ const ViewHealthModal = ({
                   <Heart className="w-4 h-4 text-purple-600" />
                 </div>
                 <div>
-                  <p className="text-sm text-gray-600">{t("checkup_type")}</p>
+                  <p className="text-sm text-gray-600">Checkup Type</p>
                   <p className="font-semibold">{record.checkupType}</p>
                 </div>
               </CardContent>
@@ -108,7 +106,7 @@ const ViewHealthModal = ({
                   <Calendar className="w-4 h-4 text-orange-600" />
                 </div>
                 <div>
-                  <p className="text-sm text-gray-600">{t("date")}</p>
+                  <p className="text-sm text-gray-600">Date</p>
                   <p className="font-semibold">
                     {new Date().toLocaleDateString("en-US", {
                       year: "numeric",
@@ -127,7 +125,7 @@ const ViewHealthModal = ({
                     <Thermometer className="w-4 h-4 text-blue-600" />
                   </div>
                   <div>
-                    <p className="text-sm text-gray-600">{t("temperature")}</p>
+                    <p className="text-sm text-gray-600">Temperature</p>
                     <p className="font-semibold">{record.temperature}</p>
                   </div>
                 </CardContent>
@@ -141,7 +139,7 @@ const ViewHealthModal = ({
                     <FileText className="w-4 h-4 text-gray-600" />
                   </div>
                   <div className="flex-1">
-                    <p className="text-sm text-gray-600">{t("notes")}</p>
+                    <p className="text-sm text-gray-600">Notes</p>
                     <p className="font-semibold">{record.notes}</p>
                   </div>
                 </CardContent>

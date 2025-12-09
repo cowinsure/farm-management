@@ -24,16 +24,16 @@ import Link from "next/link";
 import { useEffect, useState } from "react";
 import { MobileOverlay } from "@/components/mobile-overlay";
 import { useAuth } from "@/hooks/useAuth";
-import AuthGuard from "@/components/auth-guard";
+import { AuthGuard } from "@/components/auth-guard";
 
 import { useRouter } from "next/navigation";
 import { RecordVaccinationScheduleDialog } from "@/components/health/record-vaccination-schedule-dialog";
 import { RecordHealthIssueDialog } from "@/components/health/record-health-issue-dialog";
 import { Toaster } from "sonner";
-import { useLocalization } from "@/context/LocalizationContext";
+import "animate.css";
+import { motion } from "framer-motion";
 
 export default function Dashboard() {
-  const { t, setLocale, locale } = useLocalization();
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const { user, logout } = useAuth();
   const [dashboardSummary, setDashboardSummary] = useState<any>({});
@@ -79,9 +79,11 @@ export default function Dashboard() {
             {/* Welcome Banner */}
             <div className="bg-gradient-to-r from-[#17a34a] to-blue-600 rounded-lg p-6 mb-6 text-white ">
               <h2 className="text-2xl font-bold mb-2">
-                {t("title_Dashboard")} {user?.role || "User"}!
+                Welcome back, {user?.role || "User"}!
               </h2>
-              <p className="text-green-100">{t("sub_title_Dashboard")}</p>
+              <p className="text-green-100">
+                {"Here's what's happening on your farm today"}
+              </p>
             </div>
 
             {/* Metrics Cards */}
@@ -100,9 +102,7 @@ export default function Dashboard() {
                       <div className="text-2xl font-bold text-right text-green-600">
                         {dashboardSummary?.Total_Animals || 0}
                       </div>
-                      <div className="text-sm text-gray-600">
-                        {t("total_cattle")}
-                      </div>
+                      <div className="text-sm text-gray-600">Cattle</div>
                     </div>
                   </div>
                 </CardContent>
@@ -122,8 +122,9 @@ export default function Dashboard() {
                       <div className="text-2xl font-bold text-right text-green-600">
                         {dashboardSummary?.Health_Status || 0}%
                       </div>
-                      <div className="text-sm text-gray-600">
-                        {t("health_status")}
+                      <div className="text-sm text-gray-600 text-right">
+                        Health{" "}
+                        <span className="hidden md:inline-block">Status</span>
                       </div>
                     </div>
                   </div>
@@ -145,7 +146,7 @@ export default function Dashboard() {
                         ৳ {dashboardSummary?.Monthly_Revenue || 0}
                       </div>
                       <div className="text-sm text-gray-600">
-                        {t("monthly_revenue")}
+                        Monthly Revenue
                       </div>
                     </div>
                   </div>
@@ -156,7 +157,7 @@ export default function Dashboard() {
             {/* Quick Actions for Desktop */}
             <div className="mb-8 bg-white p-7 rounded-lg shadow-lg animate__animated animate__fadeIn hidden lg:block">
               <h3 className="text-lg font-semibold text-gray-900 mb-4">
-                {t("quick_actions")}
+                Quick Actions
               </h3>
 
               <div className="grid lg:grid-cols-4 gap-3">
@@ -164,35 +165,73 @@ export default function Dashboard() {
                   onClick={() => {
                     router.push("/livestock/add_cow");
                   }}
-                  className="bg-green-600 hover:bg-green-700 lg:h-20"
+                  className="bg-green-100 hover:bg-gray-100 w-full flex justify-between text-gray-800 h-14 rounded-full group"
                 >
-                  <Plus className="w-4 h-4 mr-2" />
-                  {t("add_animal")}
+                  <motion.div
+                    className="flex items-center gap-3"
+                    whileHover="hover"
+                  >
+                    <motion.div
+                      variants={{
+                        hover: { rotate: 360 },
+                      }}
+                      transition={{ duration: 0.5 }}
+                      className="bg-green-500 rounded-full p-2"
+                    >
+                      <Plus className="text-white w-6 h-6" />
+                    </motion.div>
+                    Add Animal
+                  </motion.div>
+
+                  <div className="bg-green-300 rounded-full text-gray-500 text-center">
+                    <ChevronRight />
+                  </div>
                 </Button>
 
                 <Button
                   onClick={() => {
                     setVaccinationDialogOpen(true);
                   }}
-                  className="bg-blue-600 hover:bg-blue-700 lg:h-20"
+                  className="bg-blue-100 hover:bg-gray-100 w-full flex justify-between text-gray-800 h-14 rounded-full  "
                 >
-                  <Calendar className="w-4 h-4 mr-2" />
-                  {t("schedule_vaccination")}
+                  <div className="flex items-center gap-3">
+                    <div className="bg-blue-500 rounded-full p-2">
+                      <Calendar className="text-white w-6 h-6 " />
+                    </div>{" "}
+                    Schedule Vaccination
+                  </div>
+                  <div className="bg-blue-300 rounded-full text-gray-500 text-center">
+                    <ChevronRight />
+                  </div>
                 </Button>
 
-                <Button className="bg-purple-600 hover:bg-purple-700 lg:h-20">
-                  <TrendingUp className="w-4 h-4 mr-2" />
-                  {t("record_production")}
+                <Button className="bg-purple-100 hover:bg-gray-100 w-full flex justify-between text-gray-800 h-14 rounded-full ">
+                  <div className="flex items-center gap-3">
+                    <div className="bg-purple-500 rounded-full p-2">
+                      <TrendingUp className="text-white w-6 h-6 " />
+                    </div>{" "}
+                    Record Production
+                  </div>
+                  <div className="bg-purple-300 rounded-full text-gray-500 text-center">
+                    <ChevronRight />
+                  </div>
                 </Button>
 
                 <Button
                   onClick={() => {
                     setRecordDialogOpen(true);
                   }}
-                  className="bg-red-600 hover:bg-red-700 lg:h-20"
+                  className="bg-red-100 hover:bg-gray-100 w-full flex justify-between text-gray-800 h-14 rounded-full  "
                 >
-                  <Plus className="w-4 h-4 mr-2" />
-                  {t("record_health_issue")}
+                  <div className="flex items-center gap-3">
+                    <div className="bg-red-500 rounded-full p-2">
+                      <Plus className="text-white w-6 h-6 " />
+                    </div>{" "}
+                    Record Health Issue
+                  </div>
+                  <div className="bg-red-300 rounded-full text-gray-500 text-center">
+                    <ChevronRight />
+                  </div>
                 </Button>
               </div>
             </div>
@@ -200,7 +239,7 @@ export default function Dashboard() {
             {/* Quick Actions for Mobile */}
             <div className="mb-8 bg-white p-4 rounded-xl shadow-lg animate__animated animate__fadeIn block lg:hidden">
               <h3 className="text-lg font-semibold text-gray-900 mb-4">
-                {t("quick_actions")}
+                Quick Actions
               </h3>
 
               <div className="flex flex-col justify-start gap-2 text-black">
@@ -214,7 +253,7 @@ export default function Dashboard() {
                     <div className="bg-green-500 rounded-full p-2">
                       <Plus className="text-white w-6 h-6 " />
                     </div>{" "}
-                    {t("add_animal")}
+                    Add Animal
                   </div>
                   <div className="bg-gray-200 rounded-full text-gray-500 text-center">
                     <ChevronRight />
@@ -231,7 +270,7 @@ export default function Dashboard() {
                     <div className="bg-blue-500 rounded-full p-2">
                       <Calendar className="text-white w-6 h-6 " />
                     </div>{" "}
-                    {t("schedule_vaccination")}
+                    Schedule Vaccination
                   </div>
                   <div className="bg-gray-200 rounded-full text-gray-500 text-center">
                     <ChevronRight />
@@ -243,7 +282,7 @@ export default function Dashboard() {
                     <div className="bg-purple-500 rounded-full p-2">
                       <TrendingUp className="text-white w-6 h-6 " />
                     </div>{" "}
-                    {t("record_production")}
+                    Record Production
                   </div>
                   <div className="bg-gray-200 rounded-full text-gray-500 text-center">
                     <ChevronRight />
@@ -260,7 +299,7 @@ export default function Dashboard() {
                     <div className="bg-red-500 rounded-full p-2">
                       <Plus className="text-white w-6 h-6 " />
                     </div>{" "}
-                    {t("record_health_issue")}
+                    Record Health Issue
                   </div>
                   <div className="bg-gray-200 rounded-full text-gray-500 text-center">
                     <ChevronRight />

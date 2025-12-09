@@ -3,7 +3,6 @@
 import DropdownField from "@/components/DropDownField";
 import InputField from "@/components/InputField";
 import { useCowRegistration } from "@/context/CowRegistrationContext";
-import { useLocalization } from "@/context/LocalizationContext";
 import SectionHeading from "@/helper/SectionHeading";
 
 import React, {
@@ -72,7 +71,6 @@ export type StepTwoRef = {
 };
 
 const StepTwo = forwardRef<StepTwoRef>((props, ref) => {
-  const { t, locale, setLocale } = useLocalization();
   const { data, updateStep } = useCowRegistration();
 
   const [breeds, setBreeds] = useState<Breed[]>([]);
@@ -235,46 +233,42 @@ const StepTwo = forwardRef<StepTwoRef>((props, ref) => {
     const newErrors: { [key: string]: string } = {};
 
     // 🐮 Basic Information
-    if (!formData.asset_type)
-      newErrors.asset_type = `${t("asset_type_required")}`;
-    if (!formData.gender) newErrors.gender = `${t("gender_required")}`;
-    if (!formData.breed) newErrors.breed = `{${t("breed_required")}}`;
-    if (!formData.color) newErrors.color = `{${t("color_required")}}`;
-    if (!formData.age_in_months)
-      newErrors.age_in_months = `{${t("age_required")}}`;
-    if (!formData.weight_kg) newErrors.weight_kg = `${t("weight_required")}`;
-    if (!formData.height) newErrors.height = `${t("height_required")}`;
+    if (!formData.asset_type) newErrors.asset_type = "Asset Type is required";
+    if (!formData.gender) newErrors.gender = "Gender is required";
+    if (!formData.breed) newErrors.breed = "Breed is required";
+    if (!formData.color) newErrors.color = "Color is required";
+    if (!formData.age_in_months) newErrors.age_in_months = "Age is required";
+    if (!formData.weight_kg) newErrors.weight_kg = "Weight is required";
+    if (!formData.height) newErrors.height = "Height is required";
 
     // 💰 Purchase Information
     if (!formData.purchase_amount)
-      newErrors.purchase_amount = `${t("purchase_amount_required")}`;
+      newErrors.purchase_amount = "Purchase amount is required";
     if (!formData.purchase_from)
-      newErrors.purchase_from = `${t("purchase_from_required")}`;
+      newErrors.purchase_from = "Purchase from is required";
     if (!formData.purchase_date)
-      newErrors.purchase_date = `${t("purchase_date_required")}`;
+      newErrors.purchase_date = "Purchase date is required";
 
     // 💉 Vaccination Information
     if (!formData.vaccination_status)
-      newErrors.vaccination_status = `${t("vaccination_status_required")}`;
+      newErrors.vaccination_status = "Vaccination status is required";
     if (!formData.last_vaccination_date)
-      newErrors.last_vaccination_date = `${t(
-        "last_vaccination_date_required"
-      )}`;
+      newErrors.last_vaccination_date = "Last vaccination date is required";
     if (!formData.deworming_status)
-      newErrors.deworming_status = `${t("deworming_status_required")}`;
+      newErrors.deworming_status = "Deworming status is required";
     if (!formData.last_deworming_date)
-      newErrors.last_deworming_date = `${t("last_deworming_date_required")}`;
+      newErrors.last_deworming_date = "Last deworming date is required";
 
     // 🧬 Health Information
     if (formData.hasDisease === "true" && !formData.health_issues)
-      newErrors.health_issues = `${t("specify_disease_name")}`;
+      newErrors.health_issues = "Please specify the disease name";
 
     // 🤰 Pregnancy Information (only for females)
     if (formData.gender === "female" && formData.isPregnant === true) {
       if (!formData.pregnancy_status)
-        newErrors.pregnancy_status = `${t("pregnancy_status_required")}`;
+        newErrors.pregnancy_status = "Pregnancy status is required";
       if (!formData.last_date_of_calving)
-        newErrors.last_date_of_calving = `${t("last_calving_date_required")}`;
+        newErrors.last_date_of_calving = "Last calving date is required";
     }
 
     setErrors(newErrors);
@@ -287,19 +281,19 @@ const StepTwo = forwardRef<StepTwoRef>((props, ref) => {
     <div className="w-full lg:w-[90%] mx-auto">
       <SectionHeading
         marginBottom="8"
-        sectionTitle={t("add_cattle_details")}
-        description={t("add_detailed_cattle_info")}
+        sectionTitle="Add Cattle Details"
+        description="Add all the informations about the cattle"
       />
 
       <div className="flex flex-col gap-5 *:p-4" data-aos="zoom-in">
         {/* Basic */}
         <div className=" rounded-lg bg-gray-50">
           <h1 className="font-bold text-xl text-green-600 mb-8 md:mb-0">
-            {t("basic_information")}
+            Basic Information
           </h1>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-x-24 gap-y-8 md:p-6">
             <DropdownField
-              label={t("asset_type")}
+              label="Asset Type"
               id="asset_type"
               name="asset_type"
               value={formData.asset_type}
@@ -310,30 +304,30 @@ const StepTwo = forwardRef<StepTwoRef>((props, ref) => {
 
             <InputField
               id="age"
-              label={t("age_month")}
+              label="Age in Month"
               name="age_in_months"
               onChange={handleInputChange}
               value={formData.age_in_months}
-              placeholder={t("enter_age")}
+              placeholder="Enter age"
               type="number"
               error={errors.age_in_months}
             />
 
             <DropdownField
-              label={t("gender")}
+              label="Gender"
               id="gender"
               name="gender"
               value={formData.gender}
               onChange={handleInputChange}
               options={[
-                { value: "male", label: `${t("male")}` },
-                { value: "female", label: `${t("female")}` },
+                { value: "male", label: "Male" },
+                { value: "female", label: "Female" },
               ]}
               error={errors.gender}
             />
 
             <DropdownField
-              label={t("cattle_breed")}
+              label="Cattle Breed"
               id="breed"
               name="breed"
               value={formData.breed}
@@ -343,7 +337,7 @@ const StepTwo = forwardRef<StepTwoRef>((props, ref) => {
             />
 
             <DropdownField
-              label={t("cattle_color")}
+              label="Cattle Color"
               id="color"
               name="color"
               value={formData.color}
@@ -354,22 +348,22 @@ const StepTwo = forwardRef<StepTwoRef>((props, ref) => {
 
             <InputField
               id="weight"
-              label={t("weight")}
+              label="Weight in Kg"
               name="weight_kg"
               onChange={handleInputChange}
               value={formData.weight_kg}
-              placeholder={t("enter_weight")}
+              placeholder="Enter weight"
               type="text"
               error={errors.weight_kg}
             />
 
             <InputField
               id="height"
-              label={t("height")}
+              label="Height in feet"
               name="height"
               onChange={handleInputChange}
               value={formData.height}
-              placeholder={t("enter_height")}
+              placeholder="Enter Height"
               type="text"
               error={errors.height}
             />
@@ -379,38 +373,38 @@ const StepTwo = forwardRef<StepTwoRef>((props, ref) => {
         {/* Purchase */}
         <div className=" rounded-lg bg-gray-50">
           <h1 className="font-bold text-xl text-green-600 mb-8 md:mb-0">
-            {t("purchase_information")}
+            Purchase Information
           </h1>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-x-24 gap-y-8 md:p-6">
             <InputField
               id="purchase_amount"
-              label={t("purchase_amount")}
+              label="Purchase Amount"
               type="text"
               name="purchase_amount"
               value={formData.purchase_amount}
               onChange={handleInputChange}
-              placeholder={t("purchase_amount")}
+              placeholder="Purchase Amount"
               error={errors.purchase_amount}
             />
             <InputField
-              label={t("purchase_from")}
+              label="Purchase From"
               type="text"
               id="purchase_from"
               name="purchase_from"
               value={formData.purchase_from}
               onChange={handleInputChange}
-              placeholder={t("purchase_from")}
+              placeholder="Purchase From"
               error={errors.purchase_from}
             />
             <div className="relative w-full">
               <InputField
-                label={t("purchase_date")}
+                label="Purchase Date"
                 type="date"
                 id="purchase_date"
                 name="purchase_date"
                 value={formData.purchase_date}
                 onChange={handleInputChange}
-                placeholder={t("purchase_date")}
+                placeholder="Purchase Date"
                 error={errors.purchase_date}
               />
               <div className="pointer-events-none absolute right-3 bottom-2.5 text-gray-400">
@@ -423,11 +417,11 @@ const StepTwo = forwardRef<StepTwoRef>((props, ref) => {
         {/* Vaccination */}
         <div className=" rounded-lg bg-gray-50">
           <h1 className="font-bold text-xl text-green-600 mb-8 md:mb-0">
-            {t("vaccination_information")}
+            Vaccination Information
           </h1>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-x-24 gap-y-8 md:p-6">
             <DropdownField
-              label={t("vaccination_status")}
+              label="Vaccination Status"
               id="vaccination_status"
               name="vaccination_status"
               value={formData.vaccination_status}
@@ -441,13 +435,13 @@ const StepTwo = forwardRef<StepTwoRef>((props, ref) => {
 
             <div className="relative w-full">
               <InputField
-                label={t("last_vaccination_date")}
+                label="Last Vaccinated Date"
                 type="date"
                 id="last_vaccination_date"
                 name="last_vaccination_date"
                 value={formData.last_vaccination_date}
                 onChange={handleInputChange}
-                placeholder={t("last_vaccination_date")}
+                placeholder="Date of Birth"
               />
               <div className="pointer-events-none absolute right-3 bottom-2.5 text-gray-400">
                 <MdOutlineCalendarToday className="text-lg" />
@@ -455,7 +449,7 @@ const StepTwo = forwardRef<StepTwoRef>((props, ref) => {
             </div>
 
             <DropdownField
-              label={t("deworming_status")}
+              label="Deworming Status"
               id="deworming_status"
               name="deworming_status"
               value={formData.deworming_status}
@@ -469,13 +463,13 @@ const StepTwo = forwardRef<StepTwoRef>((props, ref) => {
 
             <div className="relative w-full">
               <InputField
-                label={t("last_deworming_date")}
+                label="Last Deworming Date"
                 type="date"
                 id="last_deworming_date"
                 name="last_deworming_date"
                 value={formData.last_deworming_date}
                 onChange={handleInputChange}
-                placeholder={t("last_deworming_date")}
+                placeholder="Last Dewormed Date"
               />
               <div className="pointer-events-none absolute right-3 bottom-2.5 text-gray-400">
                 <MdOutlineCalendarToday className="text-lg" />
@@ -483,27 +477,27 @@ const StepTwo = forwardRef<StepTwoRef>((props, ref) => {
             </div>
 
             <DropdownField
-              label={t("has_disease")}
+              label="Has Disease?"
               id="hasDisease"
               name="hasDisease"
               value={String(formData.hasDisease)}
               onChange={handleInputChange}
               options={[
-                { value: "true", label: `${t("yes")}` },
-                { value: "false", label: `${t("no")}` },
+                { value: "true", label: "Yes" },
+                { value: "false", label: "No" },
               ]}
               error={errors.hasDisease}
             />
 
             {formData.hasDisease === "true" && (
               <InputField
-                label={t("disease_name")}
+                label="Disease Name"
                 id="diseases_name"
                 type="text"
                 name="health_issues"
                 value={formData.health_issues}
                 onChange={handleInputChange}
-                placeholder={t("enter_disease_name")}
+                placeholder="Disease Name"
                 error={errors.health_issues}
               />
             )}
@@ -511,14 +505,14 @@ const StepTwo = forwardRef<StepTwoRef>((props, ref) => {
             {formData.gender === "female" && (
               <>
                 <DropdownField
-                  label={t("is_pregnant")}
+                  label="Is Pregnant?"
                   id="isPregnant"
                   name="isPregnant"
                   value={String(formData.isPregnant)}
                   onChange={handleInputChange}
                   options={[
-                    { value: "true", label: `${t("yes")}` },
-                    { value: "false", label: `${t("no")}` },
+                    { value: "true", label: "Yes" },
+                    { value: "false", label: "No" },
                   ]}
                   error={errors.isPregnant}
                 />
@@ -526,25 +520,25 @@ const StepTwo = forwardRef<StepTwoRef>((props, ref) => {
                 {formData.isPregnant && (
                   <>
                     <InputField
-                      label={t("pregnancy_status")}
+                      label="Pregnancy Status"
                       id=""
                       type="text"
                       name="pregnancy_status"
                       value={formData.pregnancy_status}
                       onChange={handleInputChange}
-                      placeholder={t("enter_pregnancy_stage")}
+                      placeholder="Pregnancy Stage"
                       error={errors.pregnancy_status}
                     />
 
                     <div className="relative w-full">
                       <InputField
-                        label={t("last_calving_date")}
+                        label="Date of Last Calving"
                         id=""
                         type="date"
                         name="last_date_of_calving"
                         value={formData.last_date_of_calving}
                         onChange={handleInputChange}
-                        placeholder="t(enter_last_calving_date)"
+                        placeholder="Date of Last Calving"
                         error={errors.last_date_of_calving}
                       />
                       <div className="pointer-events-none absolute right-3 bottom-2.5 text-gray-400">

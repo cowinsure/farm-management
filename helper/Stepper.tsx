@@ -1,4 +1,3 @@
-import { useLocalization } from "@/context/LocalizationContext";
 import { Check } from "lucide-react";
 import React from "react";
 
@@ -13,7 +12,6 @@ export const Stepper: React.FC<StepperProps> = ({
   currentStep,
   completedSteps,
 }) => {
-  const { t } = useLocalization();
   const progressPercent =
     steps.length === 1 ? 100 : (currentStep / (steps.length - 1)) * 100;
 

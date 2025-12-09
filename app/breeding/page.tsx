@@ -1,6 +1,6 @@
 "use client";
 
-import AuthGuard from "@/components/auth-guard";
+import { AuthGuard } from "@/components/auth-guard";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import Heading from "@/components/ui/Heading";
@@ -33,11 +33,9 @@ import { BreedingStatusUpdateDialog } from "@/components/Breeding/BreedingStatus
 import { PencilIcon } from "lucide-react";
 import { BirthTrackingModal } from "@/components/Breeding/BirthTrackingModal";
 import SectionHeading from "@/helper/SectionHeading";
-import { useLocalization } from "@/context/LocalizationContext";
 import { MobileOverlayPro } from "@/components/MobileOverlayPro";
 
 const BreedingReproduction = () => {
-  const { t, locale, setLocale } = useLocalization();
   const loading = false;
   const [isBirthModalOpen, setBirthModalOpen] = useState(false);
   const [isBreedingModalOpen, setIsBreedingModalOpen] = useState(false);
@@ -101,24 +99,24 @@ const BreedingReproduction = () => {
           {/* Page Header */}
           <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-6">
             <SectionHeading
-              sectionTitle={t("breeding_reproduction")}
-              description={t("manage_reproductive_numbers")}
+              sectionTitle="Breeding & Reproduction"
+              description="Manage your farms reproductive numbers"
             />
             <div className="lg:flex flex-col sm:flex-row gap-2 sm:gap-3 w-full sm:w-auto hidden">
               <Button
                 className="bg-purple-600 hover:bg-purple-700"
                 onClick={() => setIsBreedingModalOpen(true)}
               >
-                <Heart className="w-4 h-4 mr-2" />
-                {t("record_breeding")}
+                <Heart className="w-4 h-4" />
+                Record Breeding
               </Button>
 
               <Button
                 className="bg-pink-600 hover:bg-pink-700"
                 onClick={() => setBirthModalOpen(true)}
               >
-                <TbMoodKid className="w-4 h-4 mr-2" />
-                {t("record_birth")}
+                <TbMoodKid className="w-4 h-4" />
+                Record Birth
               </Button>
             </div>
           </div>
@@ -184,17 +182,18 @@ const BreedingReproduction = () => {
                       <Heart className="w-8 h-8" />
                     </span>
 
-                  <div>
-                    <div className="text-2xl font-bold text-right text-blue-600">
-                      15
-                    </div>
-                    <div className="text-sm text-gray-600">
-                      {t("pregnant_animals")}
+                    <div>
+                      <div className="text-2xl font-bold text-right text-blue-600">
+                        15
+                      </div>
+                      <div className="text-sm text-gray-600">
+                        Pregnant{" "}
+                        <span className="hidden md:inline-flex">Animals</span>
+                      </div>
                     </div>
                   </div>
-                </div>
-              </CardContent>
-            </Card>
+                </CardContent>
+              </Card>
 
               <Card
                 className="animate__animated animate__fadeInRight"
@@ -204,17 +203,18 @@ const BreedingReproduction = () => {
                   <div className="flex items-center justify-between space-x-2">
                     <TbMoodKid className="w-10 h-10 text-pink-600" />
 
-                  <div>
-                    <div className="text-2xl font-bold text-right text-pink-600">
-                      8
-                    </div>
-                    <div className="text-sm text-gray-600">
-                      {t("expected_births")}
+                    <div>
+                      <div className="text-2xl font-bold text-right text-pink-600">
+                        8
+                      </div>
+                      <div className="text-sm text-gray-600">
+                        <span className="hidden md:inline-flex">Expected</span>{" "}
+                        Births
+                      </div>
                     </div>
                   </div>
-                </div>
-              </CardContent>
-            </Card>
+                </CardContent>
+              </Card>
 
               <Card
                 className="animate__animated animate__fadeInRight"
@@ -224,17 +224,15 @@ const BreedingReproduction = () => {
                   <div className="flex items-center justify-between space-x-2">
                     <Calendar className="w-8 h-8 text-orange-600" />
 
-                  <div>
-                    <div className="text-2xl font-bold text-right text-orange-600">
-                      23
-                    </div>
-                    <div className="text-sm text-gray-600">
-                      {t("total_births")}
+                    <div>
+                      <div className="text-2xl font-bold text-right text-orange-600">
+                        23
+                      </div>
+                      <div className="text-sm text-gray-600">Total Births</div>
                     </div>
                   </div>
-                </div>
-              </CardContent>
-            </Card>
+                </CardContent>
+              </Card>
 
               <Card
                 className="animate__animated animate__fadeInRight"
@@ -246,17 +244,15 @@ const BreedingReproduction = () => {
                       <FaPercent className="w-6 h-6 text-purple-600 font-bold" />
                     </div>
 
-                  <div>
-                    <div className="text-2xl font-bold text-right text-purple-600">
-                      89
-                    </div>
-                    <div className="text-sm text-gray-600">
-                      {t("success_rate")}
+                    <div>
+                      <div className="text-2xl font-bold text-right text-purple-600">
+                        89
+                      </div>
+                      <div className="text-sm text-gray-600">Success Rate</div>
                     </div>
                   </div>
-                </div>
-              </CardContent>
-            </Card>
+                </CardContent>
+              </Card>
             </div>
           </div>
 
@@ -264,14 +260,12 @@ const BreedingReproduction = () => {
           <div className="grid grid-cols-1 xl:grid-cols-4 gap-4 lg:gap-6">
             {/* Breeding records */}
             <div className="xl:col-span-2">
-
-              
               <Card className="animate__animated animate__fadeIn">
                 <CardHeader>
                   <div className="flex flex-col lg:flex-row items-start lg:items-center justify-between gap-2">
                     <CardTitle className="flex items-center text-lg lg:text-xl">
                       <Heart className="w-5 h-5 mr-2 text-blue-600" />
-                      {t("active_breeding_records")}
+                      Active Breeding Records
                     </CardTitle>
                     <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-4 w-full lg:w-auto">
                       <div className="flex justify-between w-full">
@@ -308,26 +302,25 @@ const BreedingReproduction = () => {
                       <div className="relative">
                         <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
                         <Input
-                          placeholder={t("search_animals")}
+                          placeholder="Search animal..."
                           onChange={(e) => console.log(e)}
                           className="pl-10 w-full sm:w-48"
                         />
                       </div>
-                      <Select>
-                        <SelectTrigger className="w-full sm:w-32">
-                          <SelectValue placeholder={t("all_status")} />
-                        </SelectTrigger>
-                        <SelectContent>
-                          <SelectItem value="all">{t("all_status")}</SelectItem>
-                          <SelectItem value="pending">
-                            {t("pending")}
-                          </SelectItem>
-                          <SelectItem value="confirmed">
-                            {t("confirmed")}
-                          </SelectItem>
-                          <SelectItem value="failed">{t("failed")}</SelectItem>
-                        </SelectContent>
-                      </Select>
+                      {/* Filter for desktop */}
+                      <div className="hidden lg:block">
+                        <Select>
+                          <SelectTrigger className="w-full sm:w-32">
+                            <SelectValue placeholder="Status" />
+                          </SelectTrigger>
+                          <SelectContent>
+                            <SelectItem value="all">All Status</SelectItem>
+                            <SelectItem value="pending">Pending</SelectItem>
+                            <SelectItem value="confirmed">Confirmed</SelectItem>
+                            <SelectItem value="failed">Failed</SelectItem>
+                          </SelectContent>
+                        </Select>
+                      </div>
                     </div>
                   </div>
                 </CardHeader>
@@ -458,33 +451,33 @@ const BreedingReproduction = () => {
                   >
                     {loading ? (
                       <div className="text-center py-8 text-gray-500">
-                        {t("loading")}...
+                        Loading...
                       </div>
                     ) : breedingRecords.length === 0 ? (
                       <div className="text-center py-8 text-gray-500">
-                        {t("no_breeding_records_found")}
+                        No breeding records found
                       </div>
                     ) : (
                       <table className="w-full animate__animated animate__fadeInUp">
                         <thead>
                           <tr className="border-b border-gray-200">
                             <th className="text-left py-3 px-2 font-medium text-gray-600 text-sm">
-                              {t("animal_id")}
+                              Animal ID
                             </th>
                             <th className="text-left py-3 px-2 font-medium text-gray-600 text-sm">
-                              {t("breeding_method")}
+                              Breeding Method
                             </th>
                             {/* <th className="text-left py-3 px-2 font-medium text-gray-600 text-sm">
                               Breeding Date
                             </th> */}
                             <th className="text-left py-3 px-2 font-medium text-gray-600 text-sm">
-                              {t("expected_date")}
+                              Expected Date
                             </th>
                             <th className="text-left py-3 px-2 font-medium text-gray-600 text-sm">
-                              {t("status")}
+                              Status
                             </th>
                             <th className="text-left py-3 px-2 font-medium text-gray-600 text-sm">
-                              {t("actions")}
+                              Actions
                             </th>
                           </tr>
                         </thead>
@@ -569,7 +562,7 @@ const BreedingReproduction = () => {
                   <div className="flex flex-col lg:flex-row items-start lg:items-center justify-between gap-2">
                     <CardTitle className="flex items-center text-lg lg:text-xl">
                       <TbMoodKid className="w-5 h-5 mr-2 text-pink-600" />
-                      {t("recent_births")}
+                      Recent Births
                     </CardTitle>
 
                     <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-4 w-full lg:w-auto">
@@ -608,24 +601,26 @@ const BreedingReproduction = () => {
                       <div className="relative">
                         <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
                         <Input
-                          placeholder={t("search_animals")}
+                          placeholder="Search animal..."
                           value={""}
                           onChange={(e) => console.log(e)}
                           className="pl-10 w-full sm:w-48"
                         />
                       </div>
-                      <Select>
-                        <SelectTrigger className="w-full sm:w-32">
-                          <SelectValue placeholder={t("all_types")} />
-                        </SelectTrigger>
-                        <SelectContent>
-                          <SelectItem value="all">{t("all_types")}</SelectItem>
-                          <SelectItem value="income">{t("income")}</SelectItem>
-                          <SelectItem value="expense">
-                            {t("expense")}
-                          </SelectItem>
-                        </SelectContent>
-                      </Select>
+
+                      {/* Desktop Dropdown */}
+                      <div className="hidden lg:block">
+                        <Select>
+                          <SelectTrigger className="w-full sm:w-32">
+                            <SelectValue placeholder="All Types" />
+                          </SelectTrigger>
+                          <SelectContent>
+                            <SelectItem value="all">All Types</SelectItem>
+                            <SelectItem value="male">Male</SelectItem>
+                            <SelectItem value="female">Female</SelectItem>
+                          </SelectContent>
+                        </Select>
+                      </div>
                     </div>
                   </div>
                 </CardHeader>
@@ -759,33 +754,33 @@ const BreedingReproduction = () => {
                   >
                     {loading ? (
                       <div className="text-center py-8 text-gray-500">
-                        {t("loading")}
+                        Loading...
                       </div>
                     ) : birthLogs.length === 0 ? (
                       <div className="text-center py-8 text-gray-500">
-                        {t("no_births_found")}
+                        No births found
                       </div>
                     ) : (
                       <table className="w-full animate__animated animate__fadeInUp">
                         <thead>
                           <tr className="border-b border-gray-200">
                             <th className="text-left py-3 px-2 font-medium text-gray-600 text-sm">
-                              {t("animal_id")}
+                              Animal
                             </th>
                             <th className="text-left py-3 px-2 font-medium text-gray-600 text-sm">
-                              {t("birth_date")}
+                              Birth Date
                             </th>
                             <th className="text-left py-3 px-2 font-medium text-gray-600 text-sm">
-                              {t("gender")}
+                              Gender
                             </th>
                             <th className="text-left py-3 px-2 font-medium text-gray-600 text-sm">
-                              {t("weight")}
+                              Weight
                             </th>
                             <th className="text-left py-3 px-2 font-medium text-gray-600 text-sm">
-                              {t("recorded_at")}
+                              Recorded At
                             </th>
                             <th className="text-left py-3 px-2 font-medium text-gray-600 text-sm">
-                              {t("actions")}
+                              Actions
                             </th>
                           </tr>
                         </thead>

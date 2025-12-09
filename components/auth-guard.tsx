@@ -1,6 +1,6 @@
 "use client"
 
-import React from "react"
+import type React from "react"
 
 import { useEffect } from "react"
 import { useRouter } from "next/navigation"
@@ -11,7 +11,7 @@ interface AuthGuardProps {
   requireAuth?: boolean
 }
 
-const AuthGuard: React.FC<AuthGuardProps> = ({ children, requireAuth = true }) => {
+export function AuthGuard({ children, requireAuth = true }: AuthGuardProps) {
   const { isAuthenticated, isLoading } = useAuth()
   const router = useRouter()
 
@@ -48,5 +48,3 @@ const AuthGuard: React.FC<AuthGuardProps> = ({ children, requireAuth = true }) =
 
   return <>{children}</>
 }
-
-export default AuthGuard

@@ -19,7 +19,7 @@ import {
 } from "@/components/ui/select";
 import { useToast } from "@/hooks/use-toast";
 import UploadVideo from "@/helper/UploadVedio";
-import { useLocalization } from "@/context/LocalizationContext";
+import VetSelection from "@/components/VetSelection";
 
 interface RecordHealthIssueDialogProps {
   open: boolean;
@@ -47,7 +47,6 @@ export function RecordHealthIssueDialog({
   onOpenChange,
   onSuccess,
 }: RecordHealthIssueDialogProps) {
-  const { t, locale, setLocale } = useLocalization();
   const { toast } = useToast();
   const [assets, setAssets] = useState<
     { id: number; name: string; reference_id: string }[]
@@ -329,20 +328,20 @@ export function RecordHealthIssueDialog({
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent>
         <DialogHeader>
-          <DialogTitle>{t("record_health_issue")}</DialogTitle>
+          <DialogTitle>Record Health Issue</DialogTitle>
         </DialogHeader>
         <div className="max-h-[70vh] overflow-y-auto pr-2">
           <form className="space-y-4" onSubmit={handleSubmit}>
             <div>
               <label className="block text-sm font-medium mb-1">
-                {t("condition")}
+                Condition
               </label>
               <Select
                 value={form.condition_id}
                 onValueChange={(v) => handleSelect("condition_id", v)}
               >
                 <SelectTrigger className="w-full">
-                  <SelectValue placeholder={t("select_condition")} />
+                  <SelectValue placeholder="Select condition" />
                 </SelectTrigger>
                 <SelectContent>
                   {conditions.map((c) => (
@@ -354,12 +353,13 @@ export function RecordHealthIssueDialog({
               </Select>
             </div>
             <div>
+              <label className="block text-sm font-medium mb-1">Severity</label>
               <Select
                 value={form.severity_id}
                 onValueChange={(v) => handleSelect("severity_id", v)}
               >
                 <SelectTrigger className="w-full">
-                  <SelectValue placeholder={t("select_severity")} />
+                  <SelectValue placeholder="Select severity" />
                 </SelectTrigger>
                 <SelectContent>
                   {severities.map((s) => (
@@ -371,9 +371,7 @@ export function RecordHealthIssueDialog({
               </Select>
             </div>
             <div>
-              <label className="block text-sm font-medium mb-1">
-                {t("symptoms")}
-              </label>
+              <label className="block text-sm font-medium mb-1">Symptoms</label>
               <Input
                 name="symptoms"
                 value={form.symptoms}
@@ -383,7 +381,7 @@ export function RecordHealthIssueDialog({
             </div>
             <div>
               <label className="block text-sm font-medium mb-1">
-                {t("treatment")}
+                Treatment
               </label>
               <Input
                 name="treatment"
@@ -394,7 +392,7 @@ export function RecordHealthIssueDialog({
             </div>
             <div>
               <label className="block text-sm font-medium mb-1">
-                {t("treatment_date")}
+                Treatment Date
               </label>
               <Input
                 type="datetime-local"
@@ -405,21 +403,13 @@ export function RecordHealthIssueDialog({
                 className="w-full border border-red-700"
               />
             </div>
+            <VetSelection
+              value={form.veterinarian}
+              onChange={(value) => handleSelect("veterinarian", value as string)}
+              label="Veterinarian"
+            />
             <div>
-              <label className="block text-sm font-medium mb-1">
-                {t("veterinarian")}
-              </label>
-              <Input
-                name="veterinarian"
-                value={form.veterinarian}
-                onChange={handleChange}
-                required
-              />
-            </div>
-            <div>
-              <label className="block text-sm font-medium mb-1">
-                {t("remarks")}
-              </label>
+              <label className="block text-sm font-medium mb-1">Remarks</label>
               <Input
                 name="remarks"
                 value={form.remarks}
@@ -427,9 +417,7 @@ export function RecordHealthIssueDialog({
               />
             </div>
             <div>
-              <label className="block text-sm font-medium mb-1">
-                {t("asset")}
-              </label>
+              <label className="block text-sm font-medium mb-1">Asset</label>
               <Select
                 value={form.asset_id}
                 onValueChange={(v) => {
@@ -442,9 +430,7 @@ export function RecordHealthIssueDialog({
               >
                 <SelectTrigger className="w-full">
                   <SelectValue
-                    placeholder={
-                      loadingAssets ? `${t("loading")}` : `${t("select_asset")}`
-                    }
+                    placeholder={loadingAssets ? "Loading..." : "Select asset"}
                   />
                 </SelectTrigger>
                 <SelectContent>
@@ -469,7 +455,7 @@ export function RecordHealthIssueDialog({
             </div> */}
             <div>
               <label className="block text-sm font-medium mb-1">
-                {t("muzzle_verification")} {t("optional")}
+                Muzzel Verification (optional)
               </label>
               <UploadVideo
                 onVideoCapture={(file) => {
@@ -486,14 +472,12 @@ export function RecordHealthIssueDialog({
                 if (selectedFile) {
                   handleVideoUpload(selectedFile); // Call the upload function when the video is captured
                 } else {
-                  alert(t("please_select_video_upload")); // Alert if no video is selected
+                  alert("Please select a video file before uploading.");
                 }
               }}
             >
               <Camera className="h-5 w-5 text-green-600" />
-              {isUploading
-                ? `${t("uploading")}`
-                : `${t("upload_muzzle_video")}`}
+              {isUploading ? "Uploading..." : "Upload Muzzle Video"}
               {/* {isUploading ? "Uploading..." : "Claim Cow"} */}
             </Button>
 
@@ -506,33 +490,29 @@ export function RecordHealthIssueDialog({
                 }`}
               >
                 <div>
-                  <span className="font-semibold">
-                    {t("selected_reference_id")}:
-                  </span>{" "}
+                  <span className="font-semibold">Selected Reference ID:</span>{" "}
                   {selectedReferenceId}
                 </div>
                 <div>
-                  <span className="font-semibold">{t("muzzle_match_id")}:</span>{" "}
+                  <span className="font-semibold">Muzzle Matched ID:</span>{" "}
                   {muzzleResponse.matched_id}
                 </div>
                 <div className="mt-1 font-medium">
                   {selectedReferenceId === muzzleResponse.matched_id
-                    ? `✅ ${t("asset_match")}`
-                    : `❌ ${t("asset_not_match")}`}
+                    ? "✅ Asset matched!"
+                    : "❌ Asset does not match!"}
                 </div>
               </div>
             )}
 
             <div>
-              <label className="block text-sm font-medium mb-1">
-                {t("status")}
-              </label>
+              <label className="block text-sm font-medium mb-1">Status</label>
               <Select
                 value={form.current_status_id}
                 onValueChange={(v) => handleSelect("current_status_id", v)}
               >
                 <SelectTrigger className="w-full">
-                  <SelectValue placeholder={t("select_asset")} />
+                  <SelectValue placeholder="Select status" />
                 </SelectTrigger>
                 <SelectContent>
                   {statuses.map((s) => (
@@ -545,11 +525,11 @@ export function RecordHealthIssueDialog({
             </div>
             <DialogFooter>
               <Button type="submit" disabled={submitting} className="w-full">
-                {submitting ? `${t("submitting")}` : `${t("submit")}`}
+                {submitting ? "Submitting..." : "Submit"}
               </Button>
               <DialogClose asChild>
                 <Button type="button" variant="outline" className="w-full">
-                  {t("cancel")}
+                  Cancel
                 </Button>
               </DialogClose>
             </DialogFooter>

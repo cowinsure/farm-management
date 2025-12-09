@@ -18,7 +18,6 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { useToast } from "@/hooks/use-toast";
-import { useLocalization } from "@/context/LocalizationContext";
 
 interface BirthTrackingModalProps {
   open: boolean;
@@ -28,19 +27,19 @@ interface BirthTrackingModalProps {
 
 interface FormDataProps {
   asset_id: string;
-
+ 
   birthdate: string;
   expecting_date: string;
   gender?: string;
   birth_weight?: string;
 }
 
+
 export function BirthTrackingModal({
   open,
   onOpenChange,
   onSuccess,
 }: BirthTrackingModalProps) {
-  const { t, locale, setLocale } = useLocalization();
   const { toast } = useToast();
   const [submitting, setSubmitting] = useState(false);
   const [isAnimals, setAnimals] = useState<any[]>([]);
@@ -140,10 +139,7 @@ export function BirthTrackingModal({
         if (!Array.isArray(existing)) existing = [];
       } catch (parseErr) {
         // If parsing fails, reset to empty array to avoid blocking saves
-        console.warn(
-          "Failed to parse birthlogs, resetting to empty array",
-          parseErr
-        );
+        console.warn("Failed to parse birthlogs, resetting to empty array", parseErr);
         existing = [];
       }
 
@@ -158,9 +154,7 @@ export function BirthTrackingModal({
       localStorage.setItem("birthlogs", JSON.stringify(newLogs));
 
       // Dispatch a custom event with detail so other parts can react and receive the new entry
-      window.dispatchEvent(
-        new CustomEvent("birthLogUpdated", { detail: newLog })
-      );
+      window.dispatchEvent(new CustomEvent("birthLogUpdated", { detail: newLog }));
 
       // Clear form state after successful save
       setFormData({
@@ -195,7 +189,7 @@ export function BirthTrackingModal({
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent>
         <DialogHeader>
-          <DialogTitle>{t("record_birth")}</DialogTitle>
+          <DialogTitle>Record Birth</DialogTitle>
         </DialogHeader>
         <div className="max-h-[70vh] overflow-y-auto pr-2">
           <form className="space-y-8" onSubmit={handleSubmit}>
@@ -203,7 +197,7 @@ export function BirthTrackingModal({
               {/* Animal ID */}
               <div>
                 <label className="block text-sm font-medium mb-1">
-                  {t("animal_id")}
+                  Animal ID
                 </label>
                 <Select
                   value={formData.asset_id?.toString() || ""}
@@ -212,7 +206,7 @@ export function BirthTrackingModal({
                   }
                 >
                   <SelectTrigger className="w-full">
-                    <SelectValue placeholder={t("select_cattle")}>
+                    <SelectValue placeholder="Select Cattle">
                       {selectedCattle?.reference_id}
                     </SelectValue>
                   </SelectTrigger>
@@ -233,11 +227,11 @@ export function BirthTrackingModal({
                 </Select>
               </div>
 
+             
+
               {/* Birth Date */}
               <div>
-                <label className="block text-sm font-medium mb-1">
-                  {t("birth_date")}
-                </label>
+                <label className="block text-sm font-medium mb-1">Birth Date</label>
                 <Input
                   type="date"
                   className="w-full"
@@ -249,29 +243,25 @@ export function BirthTrackingModal({
 
               {/* Gender */}
               <div>
-                <label className="block text-sm font-medium mb-1">
-                  {t("gender")}
-                </label>
+                <label className="block text-sm font-medium mb-1">Gender</label>
                 <Select
                   value={formData.gender}
                   onValueChange={(v) => handleSelectChange("gender", String(v))}
                 >
                   <SelectTrigger className="w-full">
-                    <SelectValue placeholder={t("select_gender")} />
+                    <SelectValue placeholder="Select gender" />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="Male">{t("male")}</SelectItem>
-                    <SelectItem value="Female">{t("female")}</SelectItem>
-                    <SelectItem value="Unknown">{t("unknown")}</SelectItem>
+                    <SelectItem value="Male">Male</SelectItem>
+                    <SelectItem value="Female">Female</SelectItem>
+                    <SelectItem value="Unknown">Unknown</SelectItem>
                   </SelectContent>
                 </Select>
               </div>
 
               {/* Birth Weight (span full width) */}
               <div className="col-span-2">
-                <label className="block text-sm font-medium mb-1">
-                  {t("birth_weight")}
-                </label>
+                <label className="block text-sm font-medium mb-1">Birth Weight</label>
                 <Input
                   type="text"
                   placeholder="e.g., 35 kg"
@@ -281,13 +271,16 @@ export function BirthTrackingModal({
                   onChange={handleInputChange}
                 />
               </div>
+             
             </div>
+
+
 
             {/* Submit and Cancel Buttons */}
             <DialogFooter className="">
               <DialogClose asChild>
                 <Button type="button" variant="outline" className="w-[20%]">
-                  {t("cancel")}
+                  Cancel
                 </Button>
               </DialogClose>
               <Button
@@ -295,7 +288,7 @@ export function BirthTrackingModal({
                 disabled={submitting}
                 className="bg-purple-600 text-white w-[40%]"
               >
-                {submitting ? `${t("submitting")}` : `${t("record")}`}
+                {submitting ? "Submitting" : "Record"}
               </Button>
             </DialogFooter>
           </form>

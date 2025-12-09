@@ -1,13 +1,23 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import {
+  Bell,
+  DollarSign,
   Edit,
   Eye,
+  Heart,
+  Home,
+  Menu,
+  Plus,
   Search,
+  Settings,
   CreditCard,
   TrendingUp,
   Trash2,
+  Users,
+  Zap,
+  LogOut,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -20,18 +30,20 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Badge } from "@/components/ui/badge";
+import { Progress } from "@/components/ui/progress";
+import Link from "next/link";
+import { MobileOverlay } from "@/components/mobile-overlay";
 import { useAuth } from "@/hooks/useAuth";
-import AuthGuard from "@/components/auth-guard";
+import { AuthGuard } from "@/components/auth-guard";
 import ViewTransactionModal from "@/components/Finance/modal/ViewTransactionModal";
 import FinancialModal from "@/components/Finance/modal/FinancialModal";
+import { Span } from "next/dist/trace";
 import { GrMoney } from "react-icons/gr";
 import { FaPercent } from "react-icons/fa";
 import Heading from "@/components/ui/Heading";
-import { useLocalization } from "@/context/LocalizationContext";
 import SectionHeading from "@/helper/SectionHeading";
 
 export default function FinancialManagement() {
-  const { t, setLocale, locale } = useLocalization();
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
   const [typeFilter, setTypeFilter] = useState("all");
@@ -135,13 +147,13 @@ export default function FinancialManagement() {
       case "income":
         return (
           <Badge className="bg-green-100 text-green-800 hover:bg-green-100">
-            {t("income")}
+            Income
           </Badge>
         );
       case "expense":
         return (
           <Badge className="bg-red-100 text-red-800 hover:bg-red-100">
-            {t("expense")}
+            Expense
           </Badge>
         );
       default:
@@ -211,14 +223,11 @@ export default function FinancialManagement() {
                       Click to add details
                     </p>
                   </div>
-                  <div className="flex items-center gap-2">
+                  <div className="flex items-center gap-2 *:w-[50%]">
                     {/* Btn for mobile */}
-                    <div className="w-[50%]">
-                      <FinancialModal type="income" />
-                    </div>
-                    <div className="w-[50%]">
-                      <FinancialModal type="expense" />
-                    </div>
+
+                    <FinancialModal type="income" />
+                    <FinancialModal type="expense" />
                   </div>
                 </div>
               </div>
@@ -228,7 +237,7 @@ export default function FinancialManagement() {
           {/* Summary Cards */}
           <div className="mt-6 lg:mt-0 mb-6 lg:mb-8 border lg:border-none rounded-lg lg:rounded-none p-4 lg:p-0 bg-green-50 lg:bg-transparent">
             <Heading heading="Quick Stats" />
-            <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 lg:gap-6 mb-8">
+            <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 lg:gap-6 lg:mb-8">
               <Card
                 className="animate__animated animate__fadeInRight"
                 style={{ animationDelay: "0s" }}
@@ -239,21 +248,22 @@ export default function FinancialManagement() {
                       ৳
                     </span>
 
-                  <div>
-                    <div className="text-2xl font-bold text-green-600">
-                      {summary &&
-                      summary["Monthly Revenue"] !== undefined &&
-                      summary["Monthly Revenue"] !== null
-                        ? `৳${summary["Monthly Revenue"].toLocaleString()}`
-                        : "-"}
-                    </div>
-                    <div className="text-sm text-gray-600">
-                      {t("monthly_revenue")}
+                    <div>
+                      <div className="text-2xl font-bold text-green-600">
+                        {summary &&
+                        summary["Monthly Revenue"] !== undefined &&
+                        summary["Monthly Revenue"] !== null
+                          ? `${summary["Monthly Revenue"].toLocaleString()}`
+                          : "-"}
+                      </div>
+                      <div className="text-sm text-gray-600 text-right">
+                        <span className="hidden md:inline-flex">Monthly</span>{" "}
+                        Revenue
+                      </div>
                     </div>
                   </div>
-                </div>
-              </CardContent>
-            </Card>
+                </CardContent>
+              </Card>
 
               <Card
                 className="animate__animated animate__fadeInRight"
@@ -263,21 +273,22 @@ export default function FinancialManagement() {
                   <div className="flex items-center justify-between space-x-2">
                     <CreditCard className="w-8 h-8 text-red-600" />
 
-                  <div>
-                    <div className="text-2xl font-bold text-red-600">
-                      {summary &&
-                      summary["Monthly Expense"] !== undefined &&
-                      summary["Monthly Expense"] !== null
-                        ? `৳${summary["Monthly Expense"].toLocaleString()}`
-                        : "-"}
-                    </div>
-                    <div className="text-sm text-gray-600">
-                      {t("monthly_expense")}
+                    <div>
+                      <div className="text-2xl font-bold text-red-600">
+                        {summary &&
+                        summary["Monthly Expense"] !== undefined &&
+                        summary["Monthly Expense"] !== null
+                          ? `${summary["Monthly Expense"].toLocaleString()}`
+                          : "-"}
+                      </div>
+                      <div className="text-sm text-gray-600">
+                        <span className="hidden md:inline-flex">Monthly</span>{" "}
+                        Expenses
+                      </div>
                     </div>
                   </div>
-                </div>
-              </CardContent>
-            </Card>
+                </CardContent>
+              </Card>
 
               <Card
                 className="animate__animated animate__fadeInRight"
@@ -287,21 +298,21 @@ export default function FinancialManagement() {
                   <div className="flex items-center justify-between space-x-2">
                     <GrMoney className="w-8 h-8 text-blue-600" />
 
-                  <div>
-                    <div className="text-2xl font-bold text-blue-600">
-                      {summary &&
-                      summary["Net Profit"] !== undefined &&
-                      summary["Net Profit"] !== null
-                        ? `৳${summary["Net Profit"].toLocaleString()}`
-                        : "-"}
-                    </div>
-                    <div className="text-sm text-gray-600">
-                      {t("net_profit")}
+                    <div>
+                      <div className="text-2xl font-bold text-blue-600">
+                        {summary &&
+                        summary["Net Profit"] !== undefined &&
+                        summary["Net Profit"] !== null
+                          ? `${summary["Net Profit"].toLocaleString()}`
+                          : "-"}
+                      </div>
+                      <div className="text-sm text-gray-600 text-right">
+                        Net Profit
+                      </div>
                     </div>
                   </div>
-                </div>
-              </CardContent>
-            </Card>
+                </CardContent>
+              </Card>
 
               <Card
                 className="animate__animated animate__fadeInRight"
@@ -313,26 +324,24 @@ export default function FinancialManagement() {
                       <FaPercent className="w-6 h-6 text-purple-600 font-bold" />
                     </div>
 
-                  <div>
-                    <div className="text-2xl font-bold text-purple-600">
-                      {summary &&
-                      summary["Profit Margin"] !== undefined &&
-                      summary["Profit Margin"] !== null ? (
-                        <div>
-                          {summary["Profit Margin"]}
-                          <small className="text-xs">%</small>
-                        </div>
-                      ) : (
-                        "-"
-                      )}
-                    </div>
-                    <div className="text-sm text-gray-600">
-                      {t("profit_margin")}
+                    <div>
+                      <div className="text-2xl font-bold text-purple-600 text-right">
+                        {summary &&
+                        summary["Profit Margin"] !== undefined &&
+                        summary["Profit Margin"] !== null ? (
+                          <div>
+                            {summary["Profit Margin"]}
+                            {/* <small className="text-xs">%</small> */}
+                          </div>
+                        ) : (
+                          "-"
+                        )}
+                      </div>
+                      <div className="text-sm text-gray-600">Profit Margin</div>
                     </div>
                   </div>
-                </div>
-              </CardContent>
-            </Card>
+                </CardContent>
+              </Card>
             </div>
           </div>
 
@@ -345,13 +354,13 @@ export default function FinancialManagement() {
                   <div className="flex flex-col lg:flex-row items-start lg:items-center justify-between gap-4">
                     <CardTitle className="flex items-center text-lg lg:text-xl">
                       <TrendingUp className="w-5 h-5 mr-2" />
-                      {t("recent_transactions")}
+                      Recent Transactions
                     </CardTitle>
                     <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2 w-full lg:w-auto">
                       <div className="relative">
                         <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
                         <Input
-                          placeholder={t("search_transactions")}
+                          placeholder="Search transactions..."
                           value={searchTerm}
                           onChange={(e) => setSearchTerm(e.target.value)}
                           className="pl-10 w-full sm:w-48"
@@ -362,11 +371,9 @@ export default function FinancialManagement() {
                           <SelectValue placeholder="All Types" />
                         </SelectTrigger>
                         <SelectContent>
-                          <SelectItem value="all">{t("all_types")}</SelectItem>
-                          <SelectItem value="income">{t("income")}</SelectItem>
-                          <SelectItem value="expense">
-                            {t("expense")}
-                          </SelectItem>
+                          <SelectItem value="all">All Types</SelectItem>
+                          <SelectItem value="income">Income</SelectItem>
+                          <SelectItem value="expense">Expense</SelectItem>
                         </SelectContent>
                       </Select>
                     </div>
@@ -377,11 +384,11 @@ export default function FinancialManagement() {
                   <div className="lg:hidden space-y-4">
                     {loading ? (
                       <div className="text-center py-8 text-gray-500">
-                        {t("loading")}
+                        Loading...
                       </div>
                     ) : filteredTransactions.length === 0 ? (
                       <div className="text-center py-8 text-gray-500">
-                        {t("no_transactions")}
+                        No transactions found.
                       </div>
                     ) : (
                       filteredTransactions.map((transaction) => (
@@ -452,33 +459,33 @@ export default function FinancialManagement() {
                   >
                     {loading ? (
                       <div className="text-center py-8 text-gray-500">
-                        {t("loading")}
+                        Loading...
                       </div>
                     ) : filteredTransactions.length === 0 ? (
                       <div className="text-center py-8 text-gray-500">
-                        {t("no_transactions")}
+                        No transactions found.
                       </div>
                     ) : (
                       <table className="w-full animate__animated animate__fadeInUp">
                         <thead>
                           <tr className="border-b border-gray-200">
                             <th className="text-left py-3 px-2 font-medium text-gray-600 text-sm">
-                              {t("date")}
+                              Date
                             </th>
                             <th className="text-left py-3 px-2 font-medium text-gray-600 text-sm">
-                              {t("type")}
+                              Type
                             </th>
                             <th className="text-left py-3 px-2 font-medium text-gray-600 text-sm">
-                              {t("category")}
+                              Category
                             </th>
                             <th className="text-left py-3 px-2 font-medium text-gray-600 text-sm">
-                              {t("amount")}
+                              Amount
                             </th>
                             <th className="text-left py-3 px-2 font-medium text-gray-600 text-sm">
-                              {t("description")}
+                              Description
                             </th>
                             <th className="text-left py-3 px-2 font-medium text-gray-600 text-sm">
-                              {t("actions")}
+                              Actions
                             </th>
                           </tr>
                         </thead>
@@ -555,7 +562,7 @@ export default function FinancialManagement() {
                       disabled={page === 1 || loading}
                       variant="outline"
                     >
-                      {t("previous")}
+                      Previous
                     </Button>
                     <Button
                       onClick={() => setPage((p) => p + 1)}
@@ -564,7 +571,7 @@ export default function FinancialManagement() {
                       }
                       variant="outline"
                     >
-                      {t("next")}
+                      Next
                     </Button>
                   </div>
                 </CardContent>
@@ -588,7 +595,7 @@ export default function FinancialManagement() {
                 <CardHeader>
                   <CardTitle className="flex items-center text-lg lg:text-xl">
                     <CreditCard className="w-5 h-5 mr-2 text-red-600" />
-                    {t("expense_breakdown")}
+                    Expense Breakdown
                   </CardTitle>
                 </CardHeader>
                 <CardContent>
@@ -618,15 +625,13 @@ export default function FinancialManagement() {
                       ))
                     ) : (
                       <div className="text-gray-500 text-center py-8">
-                        {t("no_expense_breakdown")}
+                        No expense breakdown data available.
                       </div>
                     )}
                   </div>
                   <div className="mt-4 p-3 bg-gray-50 rounded-lg">
                     <div className="flex justify-between items-center">
-                      <span className="font-medium">
-                        {t("total_expenses")}:
-                      </span>
+                      <span className="font-medium">Total Expenses:</span>
                       <span className="text-lg font-bold text-red-600">
                         {expenseSummary &&
                         expenseSummary.Total_Expenses !== undefined &&

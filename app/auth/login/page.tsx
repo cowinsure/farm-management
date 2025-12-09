@@ -11,7 +11,7 @@ import { Eye, EyeOff, Phone, Lock } from "lucide-react"
 import Link from "next/link"
 import { useRouter } from "next/navigation"
 import { authService, ApiError, type LoginRequest } from "@/lib/api/auth"
-import AuthGuard from "@/components/auth-guard"
+import { AuthGuard } from "@/components/auth-guard"
 
 export default function LoginPage() {
   const [phoneNumber, setPhoneNumber] = useState("")
@@ -109,7 +109,7 @@ export default function LoginPage() {
             <div className="w-16 h-16 bg-green-600 rounded-xl flex items-center justify-center mx-auto mb-4">
               <span className="text-white font-bold text-xl">🐄</span>
             </div>
-            <h1 className="text-2xl font-bold text-gray-900">LivestockPro ERP dashboards</h1>
+            <h1 className="text-2xl font-bold text-gray-900">LivestockPro ERP</h1>
             <p className="text-gray-600 mt-2">Sign in to your account</p>
           </div>
 

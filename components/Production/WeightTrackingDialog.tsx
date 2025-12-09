@@ -18,7 +18,7 @@ import {
 import { Textarea } from "@/components/ui/textarea";
 import { useState, useEffect } from "react";
 import { useToast } from "@/hooks/use-toast";
-
+import { useLocalization } from "@/context/LocalizationContext";
 
 const animalTypes = ["Cow", "Bull", "Calf", "Heifer", "Steer"];
 

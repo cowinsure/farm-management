@@ -124,6 +124,7 @@
   "active_breeding_records": "Active Breeding Records",
   "no_breeding_records_found": "No breeding records found.",
   "animal_id": "Animal ID",
+  "mother_id": "Select Mother",
   "breeding_method": "Breeding Method",
   "expected_date": "Expected Date",
   "recent_births": "Recent Births",

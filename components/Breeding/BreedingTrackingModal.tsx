@@ -28,12 +28,16 @@ interface BreedingTrackingModalModalProps {
 }
 
 interface FormDataProps {
-  asset_id: string;
-  production_type_id: string;
-  quantity: string;
-  date: string;
-  expecting_date: string;
-}
+   asset_id: string;
+   production_type_id: string;
+   quantity: string;
+   date: string;
+   expecting_date: string;
+   breed_name?: string;
+   purity_percentage?: string;
+   sperm_address?: string;
+   ai_remarks?: string;
+ }
 
 export function BreedingTrackingModal({
   open,
@@ -57,7 +61,6 @@ export function BreedingTrackingModal({
     date: "",
     expecting_date: "",
   });
-
 
   // breedingMethods is static (no fetch required)
 
@@ -89,6 +92,12 @@ export function BreedingTrackingModal({
       date: formData.date,
       expecting_date: formData.expecting_date,
       asset_id: formData.asset_id,
+      ...(formData.production_type_id === "ai" && {
+        breed_name: formData.breed_name,
+        purity_percentage: formData.purity_percentage,
+        sperm_address: formData.sperm_address,
+        ai_remarks: formData.ai_remarks,
+      }),
     };
 
     // Save to localStorage immediately for development/offline purposes
@@ -102,13 +111,17 @@ export function BreedingTrackingModal({
       window.dispatchEvent(new Event("breedingLogUpdated"));
 
       // Clear form state after successful save
-      setFormData({
-        asset_id: "",
-        production_type_id: "",
-        quantity: "",
-        date: "",
-        expecting_date: "",
-      });
+       setFormData({
+         asset_id: "",
+         production_type_id: "",
+         quantity: "",
+         date: "",
+         expecting_date: "",
+         breed_name: "",
+         purity_percentage: "",
+         sperm_address: "",
+         ai_remarks: "",
+       });
 
       // Show success toast for every submission
       toast({
@@ -132,26 +145,24 @@ export function BreedingTrackingModal({
     // Continue to submit to server in background; report API errors if they occur
   };
 
-
   const selectedProductionType = breedingMethods.find(
     (product) => product.id === formData.production_type_id
   );
-
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent>
         <DialogHeader>
-          <DialogTitle>{t("record_production")}</DialogTitle>
+          <DialogTitle>{t("record_breeding")}</DialogTitle>
         </DialogHeader>
         <div className="max-h-[70vh] overflow-y-auto pr-2">
           <form className="space-y-8" onSubmit={handleSubmit}>
-            <div className="grid grid-cols-2 gap-5">
+            <div className="grid grid-cols-1 gap-5">
               {/* Animal ID */}
               <AssetSelection
                 value={formData.asset_id}
                 onChange={(value) => handleSelectChange("asset_id", value)}
-                label={t("animal_id")}
+                label={t("mother_id")}
               />
 
               {/* Breeding Method */}
@@ -180,17 +191,6 @@ export function BreedingTrackingModal({
                 </Select>
               </div>
 
-              {/* Breeding Date */}
-              {/* <div>
-                <label className="block text-sm font-medium mb-1">Breeding Date</label>
-                <Input
-                  type="date"
-                  className="w-full"
-                  name="date"
-                  value={formData.date}
-                  onChange={handleInputChange}
-                />
-              </div> */}
               {/* Expecting Date */}
               <div>
                 <label className="block text-sm font-medium mb-1">
@@ -206,27 +206,77 @@ export function BreedingTrackingModal({
               </div>
             </div>
 
-            {/* Quality Grade */}
-            {/* <div>
-              <label className="block text-sm font-medium mb-1">
-                Quality Grade
-              </label>
-              <Select
-                value={formData.qualityGrade}
-                onValueChange={(value) =>
-                  handleSelectChange("qualityGrade", value)
-                }
-              >
-                <SelectTrigger className="w-full">
-                  <SelectValue placeholder="Select quality" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="A">A</SelectItem>
-                  <SelectItem value="B">B</SelectItem>
-                  <SelectItem value="C">C</SelectItem>
-                </SelectContent>
-              </Select>
-            </div> */}
+            {/* Artificial Insemination Fields */}
+            {formData.production_type_id === "ai" && (
+              <div className="mt-6 p-4 bg-gray-50 border border-gray-200 rounded-lg transition-all duration-300 ease-in-out">
+                <h3 className="text-lg font-medium mb-4 text-gray-800">
+                  Artificial Insemination Details
+                </h3>
+                <div className="grid grid-cols-1 gap-4">
+                  {/* Breed Name */}
+                  <div>
+                    <label className="block text-sm font-medium mb-1">
+                      Breed Name
+                    </label>
+                    <Input
+                      type="text"
+                      className="w-full"
+                      name="breed_name"
+                      value={formData.breed_name || ""}
+                      onChange={handleInputChange}
+                      placeholder="Enter breed name"
+                    />
+                  </div>
+
+                  {/* Purity Percentage */}
+                  <div>
+                    <label className="block text-sm font-medium mb-1">
+                      Purity Percentage (%)
+                    </label>
+                    <Input
+                      type="number"
+                      className="w-full"
+                      name="purity_percentage"
+                      value={formData.purity_percentage || ""}
+                      onChange={handleInputChange}
+                      placeholder="Enter purity percentage"
+                      min="0"
+                      max="100"
+                    />
+                  </div>
+
+                  {/* Sperm Address */}
+                  <div>
+                    <label className="block text-sm font-medium mb-1">
+                      Sperm Address
+                    </label>
+                    <Input
+                      type="text"
+                      className="w-full"
+                      name="sperm_address"
+                      value={formData.sperm_address || ""}
+                      onChange={handleInputChange}
+                      placeholder="Enter sperm address"
+                    />
+                  </div>
+
+                  {/* Remarks */}
+                  <div>
+                    <label className="block text-sm font-medium mb-1">
+                      Remarks
+                    </label>
+                    <Input
+                      type="text"
+                      className="w-full"
+                      name="ai_remarks"
+                      value={formData.ai_remarks || ""}
+                      onChange={handleInputChange}
+                      placeholder="Enter remarks"
+                    />
+                  </div>
+                </div>
+              </div>
+            )}
 
             {/* Submit and Cancel Buttons */}
             <DialogFooter className="">

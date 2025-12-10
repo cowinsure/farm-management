@@ -299,6 +299,21 @@ export function RecordHealthIssueDialog({
         </DialogHeader>
         <div className="max-h-[70vh] overflow-y-auto pr-2">
           <form className="space-y-4" onSubmit={handleSubmit}>
+            <div>
+              {/* Select asset */}
+              <AssetSelection
+                value={form.asset_id}
+                onChange={(value) => handleSelect("asset_id", value)}
+                onAssetSelect={(asset) => {
+                  setSelectedAnimalId(asset ? String(asset.id) : null);
+                  setSelectedReferenceId(asset ? asset.reference_id : null);
+                }}
+                label={t("asset")}
+                showQrScan={true}
+                showMuzzleSearch={true}
+              />
+            </div>
+
             {/* Condition */}
             <div>
               <label className="block text-sm font-medium mb-1">
@@ -402,16 +417,6 @@ export function RecordHealthIssueDialog({
               />
             </div>
 
-            {/* Select asset */}
-            <AssetSelection
-              value={form.asset_id}
-              onChange={(value) => handleSelect("asset_id", value)}
-              onAssetSelect={(asset) => {
-                setSelectedAnimalId(asset ? String(asset.id) : null);
-                setSelectedReferenceId(asset ? asset.reference_id : null);
-              }}
-              label={t("asset")}
-            />
             {/* <div>
               <label className="block text-sm font-medium mb-1">Muzzel Verification</label>
               <div className="flex flex-row relative">
@@ -423,68 +428,6 @@ export function RecordHealthIssueDialog({
               </button>
               </div>
             </div> */}
-
-            {/* Muzzle verfication */}
-            <div>
-              <div>
-                <label className="block text-sm font-medium mb-1">
-                  {t("muzzle_verification")} {t("optional")}
-                </label>
-                <UploadVideo
-                  onVideoCapture={(file) => {
-                    console.log("Captured video file:", file);
-                    setSelectedFile(file);
-                  }}
-                />
-              </div>
-
-              <Button
-                type="button"
-                variant="outline"
-                className="text-green-700 w-full flex items-center gap-2 border border-green-700"
-                onClick={() => {
-                  if (selectedFile) {
-                    handleVideoUpload(selectedFile); // Call the upload function when the video is captured
-                  } else {
-                    alert(t("please_select_video_upload")); // Alert if no video is selected
-                  }
-                }}
-              >
-                <Camera className="h-5 w-5 text-green-600" />
-                {isUploading
-                  ? `${t("uploading")}`
-                  : `${t("upload_muzzle_video")}`}
-                {/* {isUploading ? "Uploading..." : "Claim Cow"} */}
-              </Button>
-
-              {selectedReferenceId && muzzleResponse && (
-                <div
-                  className={`p-3 rounded mb-2 flex flex-col items-start ${
-                    selectedReferenceId === muzzleResponse.matched_id
-                      ? "bg-green-100 border border-green-400 text-green-700"
-                      : "bg-red-100 border border-red-400 text-red-700"
-                  }`}
-                >
-                  <div>
-                    <span className="font-semibold">
-                      {t("selected_reference_id")}:
-                    </span>{" "}
-                    {selectedReferenceId}
-                  </div>
-                  <div>
-                    <span className="font-semibold">
-                      {t("muzzle_match_id")}:
-                    </span>{" "}
-                    {muzzleResponse.matched_id}
-                  </div>
-                  <div className="mt-1 font-medium">
-                    {selectedReferenceId === muzzleResponse.matched_id
-                      ? `✅ ${t("asset_match")}`
-                      : `❌ ${t("asset_not_match")}`}
-                  </div>
-                </div>
-              )}
-            </div>
 
             {/* Status */}
             <div>

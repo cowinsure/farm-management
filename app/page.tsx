@@ -30,6 +30,7 @@ import { useRouter } from "next/navigation";
 import { RecordVaccinationScheduleDialog } from "@/components/health/record-vaccination-schedule-dialog";
 import { RecordHealthIssueDialog } from "@/components/health/record-health-issue-dialog";
 import { Toaster } from "sonner";
+import { useLocalization } from "@/context/LocalizationContext";
 import "animate.css";
 import { motion } from "framer-motion";
 
@@ -180,7 +181,7 @@ export default function Dashboard() {
                     >
                       <Plus className="text-white w-6 h-6" />
                     </motion.div>
-                    Add Animal
+                    {t("add_animal")}
                   </motion.div>
 
                   <div className="bg-green-300 rounded-full text-gray-500 text-center">
@@ -198,7 +199,7 @@ export default function Dashboard() {
                     <div className="bg-blue-500 rounded-full p-2">
                       <Calendar className="text-white w-6 h-6 " />
                     </div>{" "}
-                    Schedule Vaccination
+                    {t("schedule_vaccination")}
                   </div>
                   <div className="bg-blue-300 rounded-full text-gray-500 text-center">
                     <ChevronRight />
@@ -210,7 +211,7 @@ export default function Dashboard() {
                     <div className="bg-purple-500 rounded-full p-2">
                       <TrendingUp className="text-white w-6 h-6 " />
                     </div>{" "}
-                    Record Production
+                    {t("record_production")}
                   </div>
                   <div className="bg-purple-300 rounded-full text-gray-500 text-center">
                     <ChevronRight />
@@ -227,7 +228,7 @@ export default function Dashboard() {
                     <div className="bg-red-500 rounded-full p-2">
                       <Plus className="text-white w-6 h-6 " />
                     </div>{" "}
-                    Record Health Issue
+                    {t("record_health_issue")}
                   </div>
                   <div className="bg-red-300 rounded-full text-gray-500 text-center">
                     <ChevronRight />

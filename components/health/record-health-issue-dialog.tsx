@@ -19,6 +19,7 @@ import {
 } from "@/components/ui/select";
 import { useToast } from "@/hooks/use-toast";
 import UploadVideo from "@/helper/UploadVedio";
+import { useLocalization } from "@/context/LocalizationContext";
 import VetSelection from "@/components/VetSelection";
 
 interface RecordHealthIssueDialogProps {

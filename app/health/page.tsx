@@ -69,6 +69,7 @@ export interface HealthRecord {
 // }
 
 export default function HealthRecords() {
+  const { t, locale, setLocale } = useLocalization();
   const [healthSearch, setHealthSearch] = useState("");
   const [healthFilter, setHealthFilter] = useState("all");
   const [sidebarOpen, setSidebarOpen] = useState(false);
@@ -320,19 +321,19 @@ shadow-none w-full"
           <div className="grid grid-cols-1 gap-4 lg:gap-6">
             {/* Health Records */}
             <div>
-              <Card className="">
+              <Card>
                 <CardHeader>
                   <div className="flex flex-col lg:flex-row items-start lg:items-center justify-between gap-4">
                     <CardTitle className="flex items-center text-lg lg:text-xl">
                       <Heart className="w-5 h-5 mr-2 text-red-600" />
-                      Health Records
+                      {t("health_records")}
                     </CardTitle>
 
                     <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2 w-full lg:w-auto">
                       <div className="relative">
                         <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
                         <Input
-                          placeholder="Search health..."
+                          placeholder={t("search_health_records")}
                           value={healthSearch}
                           onChange={(e) => setHealthSearch(e.target.value)}
                           className="pl-10 w-full sm:w-48"
@@ -345,15 +346,21 @@ shadow-none w-full"
                           onValueChange={setHealthFilter}
                         >
                           <SelectTrigger className="w-full sm:w-28">
-                            <SelectValue placeholder="All Status" />
+                            <SelectValue placeholder={t("all_status")} />
                           </SelectTrigger>
                           <SelectContent>
-                            <SelectItem value="all">All Status</SelectItem>
-                            <SelectItem value="healthy">Healthy</SelectItem>
-                            <SelectItem value="under treatment">
-                              Under Treatment
+                            <SelectItem value="all">
+                              {t("all_status")}
                             </SelectItem>
-                            <SelectItem value="complete">Complete</SelectItem>
+                            <SelectItem value="healthy">
+                              {t("healthy")}
+                            </SelectItem>
+                            <SelectItem value={t("under_treatment")}>
+                              {t("under_treatment")}
+                            </SelectItem>
+                            <SelectItem value="complete">
+                              {t("complete")}
+                            </SelectItem>
                           </SelectContent>
                         </Select>
                         <Button size="sm" variant="outline">
@@ -471,19 +478,19 @@ shadow-none w-full"
                         <thead>
                           <tr className="border-b border-gray-200">
                             <th className="text-left py-3 px-2 font-medium text-gray-600 text-sm">
-                              Reference ID
+                              {t("reference_id")}
                             </th>
                             <th className="text-left py-3 px-2 font-medium text-gray-600 text-sm">
-                              Type
+                              {t("type")}
                             </th>
                             <th className="text-left py-3 px-2 font-medium text-gray-600 text-sm">
-                              Date
+                              {t("date")}
                             </th>
                             <th className="text-left py-3 px-2 font-medium text-gray-600 text-sm">
-                              Status
+                              {t("status")}
                             </th>
                             <th className="text-left py-3 px-2 font-medium text-gray-600 text-sm">
-                              Actions
+                              {t("actions")}
                             </th>
                           </tr>
                         </thead>
@@ -558,11 +565,11 @@ shadow-none w-full"
                       onClick={() => setCurrentPage((p) => Math.max(1, p - 1))}
                       disabled={currentPage === 1}
                     >
-                      Prev
+                      {t("previous")}
                     </Button>
 
                     <span className="text-sm">
-                      Page {currentPage} of{" "}
+                      {t("page")} {currentPage} {t("of")}{" "}
                       {Math.ceil(totalRecords / pageSize) || 1}
                     </span>
 
@@ -572,7 +579,7 @@ shadow-none w-full"
                       onClick={() => setCurrentPage((p) => p + 1)}
                       disabled={currentPage * pageSize >= totalRecords}
                     >
-                      Next
+                      {t("next")}
                     </Button>
                   </div>
                 </CardContent>

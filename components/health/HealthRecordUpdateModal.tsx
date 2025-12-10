@@ -15,6 +15,7 @@ import { Input } from "../ui/input"; // Add if you use custom styled input
 import { Button } from "../ui/button";
 import { IoCheckmarkCircle } from "react-icons/io5";
 import { toast } from "sonner";
+import VetSelection from "../VetSelection";
 
 interface HealthRecordModalProps {
   closeModal: () => void;
@@ -38,6 +39,7 @@ const HealthRecordUpdateModal = ({
     data.status_name || ""
   );
   const [remarks, setRemarks] = useState<string>(data.remarks || "");
+  const [selectedVet, setSelectedVet] = useState<string>("");
 
   // Fetch all health statuses
   useEffect(() => {
@@ -219,6 +221,16 @@ const HealthRecordUpdateModal = ({
                 ))}
               </SelectContent>
             </Select>
+          </div>
+
+          {/* Vet Selection */}
+          <div className="flex flex-col gap-2">
+            <VetSelection
+              value={selectedVet}
+              onChange={(value) => setSelectedVet(value as string)}
+              label="Select Veterinarian"
+              placeholder="Select vet..."
+            />
           </div>
 
           {/* Remarks Input */}

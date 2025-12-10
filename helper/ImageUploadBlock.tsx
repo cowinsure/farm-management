@@ -7,7 +7,7 @@ import PhotoCaptureModal from "./PhotoCaptureModal";
 interface ImageUploadBlockProps {
   imageFile?: File | null;
   onCapture: (file: File | null) => void;
-  title: string;
+  title?: string;
   fieldKey: string;
 }
 
@@ -44,7 +44,7 @@ export const ImageUploadBlock: React.FC<ImageUploadBlockProps> = ({
         ) : (
           <PhotoCaptureModal
             onPhotoCapture={(file) => onCapture(file)}
-            triggerText={`Capture ${title}`}
+            // triggerText={`Capture ${title}`}
             title={`Take ${title}`}
           />
         )}

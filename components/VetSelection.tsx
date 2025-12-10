@@ -51,7 +51,7 @@ const VetSelection: React.FC<VetSelectionProps> = ({
           </SelectTrigger>
           <SelectContent>
             {dummyVets.map((vet) => (
-              <SelectItem key={vet.id} value={vet.id}>
+              <SelectItem key={vet.id} value={vet.name}>
                 {vet.name}
               </SelectItem>
             ))}

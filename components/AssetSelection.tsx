@@ -170,7 +170,7 @@ const AssetSelection: React.FC<AssetSelectionProps> = ({
   };
 
   return (
-    <div>
+    <div className="bg-gray-100 p-2 rounded-md">
       <div>
         <label className="block text-sm font-medium mb-1">{label}</label>
         <Select
@@ -216,7 +216,7 @@ const AssetSelection: React.FC<AssetSelectionProps> = ({
       </div>
       {(showQrScan || showMuzzleSearch) && (
         <div className="flex items-center gap-2 mt-2">
-          <small>or select with:</small>
+          <small className="text-gray-500">or select with:</small>
           {showQrScan && (
             <Button
               type="button"

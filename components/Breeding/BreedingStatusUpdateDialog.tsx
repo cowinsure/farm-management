@@ -18,6 +18,8 @@ import {
 } from "@/components/ui/select";
 import { useState } from "react";
 import { useLocalization } from "@/context/LocalizationContext";
+import VetSelection from "@/components/VetSelection";
+import { ImageUploadBlock } from "@/helper/ImageUploadBlock";
 
 interface BreedingStatusUpdateDialogProps {
   open: boolean;
@@ -37,6 +39,7 @@ export function BreedingStatusUpdateDialog({
   const [expectedCalvingDate, setExpectedCalvingDate] = useState("");
   const [veterinarian, setVeterinarian] = useState("");
   const [notes, setNotes] = useState("");
+  const [attachments, setAttachments] = useState<File | null>(null);
 
   const handleSubmit = () => {
     const updatedRecord = {
@@ -47,6 +50,7 @@ export function BreedingStatusUpdateDialog({
       expectedCalvingDate,
       veterinarian,
       notes,
+      attachments,
       updatedAt: new Date().toISOString(),
     };
 
@@ -103,6 +107,41 @@ export function BreedingStatusUpdateDialog({
             </Select>
           </div>
 
+          {status !== "Pregnancy Confirmed" && (
+            <>
+              <div className="space-y-2">
+                <VetSelection
+                  value={veterinarian}
+                  onChange={(value) => setVeterinarian(value as string)}
+                  label={t("veterinarian")}
+                  placeholder="Select Veterinarian"
+                />
+              </div>
+
+              <div className="space-y-2">
+                <label className="text-sm font-medium">
+                  {t("Attachments")} (optional)
+                </label>
+                <ImageUploadBlock
+                  imageFile={attachments}
+                  onCapture={setAttachments}
+                  title="Upload Attachment"
+                  fieldKey="attachment"
+                />
+              </div>
+              <div className="space-y-2">
+                <label className="text-sm font-medium">{t("notes")}</label>
+                <textarea
+                  className="w-full border rounded p-2 text-sm"
+                  rows={3}
+                  value={notes}
+                  onChange={(e) => setNotes(e.target.value)}
+                  placeholder={t("additional_observations")}
+                />
+              </div>
+            </>
+          )}
+
           {status === "Pregnancy Confirmed" && (
             <>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -151,17 +190,26 @@ export function BreedingStatusUpdateDialog({
                   />
                 </div>
                 <div>
-                  <label className="text-sm font-medium">
-                    {t("veterinarian")}
-                  </label>
-                  <Input
-                    type="text"
+                  <VetSelection
                     value={veterinarian}
-                    onChange={(e) => setVeterinarian(e.target.value)}
-                    placeholder="Dr. Smith"
+                    onChange={(value) => setVeterinarian(value as string)}
+                    label={t("veterinarian")}
+                    placeholder="Select Veterinarian"
                   />
                 </div>
               </div>
+              <div className="space-y-2">
+                <label className="text-sm font-medium">
+                  {t("Attachments")} (optional)
+                </label>
+                <ImageUploadBlock
+                  imageFile={attachments}
+                  onCapture={setAttachments}
+                  title="Upload Attachment"
+                  fieldKey="attachment"
+                />
+              </div>
+
               <div className="mt-4">
                 <label className="text-sm font-medium">{t("notes")}</label>
                 <textarea

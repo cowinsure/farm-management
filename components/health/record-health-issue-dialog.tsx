@@ -21,6 +21,7 @@ import { useToast } from "@/hooks/use-toast";
 import UploadVideo from "@/helper/UploadVedio";
 import { useLocalization } from "@/context/LocalizationContext";
 import VetSelection from "@/components/VetSelection";
+import AssetSelection from "@/components/AssetSelection";
 
 interface RecordHealthIssueDialogProps {
   open: boolean;
@@ -50,10 +51,6 @@ export function RecordHealthIssueDialog({
 }: RecordHealthIssueDialogProps) {
   const { t, locale, setLocale } = useLocalization();
   const { toast } = useToast();
-  const [assets, setAssets] = useState<
-    { id: number; name: string; reference_id: string }[]
-  >([]);
-  const [loadingAssets, setLoadingAssets] = useState(false);
   const [isMuzzelModalOpen, setIsMuzzelModalOpen] = useState(false);
   const [muzzleResponse, setMuzzleResponse] = useState<MuzzleResponse | null>(
     null
@@ -164,38 +161,6 @@ export function RecordHealthIssueDialog({
       setIsUploading(false);
     }
   };
-
-  // Fetch assets when dialog opens
-  useEffect(() => {
-    if (open) {
-      setLoadingAssets(true);
-      const token =
-        typeof window !== "undefined"
-          ? localStorage.getItem("access_token")
-          : null;
-      fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/lms/assets-service`, {
-        headers: {
-          ...(token ? { Authorization: `Bearer ${token}` } : {}),
-        },
-      })
-        .then((res) => res.json())
-        .then((data) => {
-          console.log("Assets data:", data);
-
-          // Assume data.list or data.data.list
-          const list = data?.data?.list || data?.list || [];
-          setAssets(
-            list.map((a: any) => ({
-              id: a.id,
-              name: a.name || a.asset_ref_id || `Asset ${a.id}`,
-              reference_id: a.reference_id,
-            }))
-          );
-        })
-        .catch(() => setAssets([]))
-        .finally(() => setLoadingAssets(false));
-    }
-  }, [open]);
 
   // Fetch medical conditions when dialog opens
   useEffect(() => {
@@ -334,6 +299,7 @@ export function RecordHealthIssueDialog({
         </DialogHeader>
         <div className="max-h-[70vh] overflow-y-auto pr-2">
           <form className="space-y-4" onSubmit={handleSubmit}>
+            {/* Condition */}
             <div>
               <label className="block text-sm font-medium mb-1">
                 {t("condition")}
@@ -354,6 +320,8 @@ export function RecordHealthIssueDialog({
                 </SelectContent>
               </Select>
             </div>
+
+            {/* Severity */}
             <div>
               <Select
                 value={form.severity_id}
@@ -371,6 +339,8 @@ export function RecordHealthIssueDialog({
                 </SelectContent>
               </Select>
             </div>
+
+            {/* Symptomps */}
             <div>
               <label className="block text-sm font-medium mb-1">
                 {t("symptoms")}
@@ -382,6 +352,8 @@ export function RecordHealthIssueDialog({
                 required
               />
             </div>
+
+            {/* Treatment */}
             <div>
               <label className="block text-sm font-medium mb-1">
                 {t("treatment")}
@@ -393,6 +365,8 @@ export function RecordHealthIssueDialog({
                 required
               />
             </div>
+
+            {/* Treatment date */}
             <div>
               <label className="block text-sm font-medium mb-1">
                 {t("treatment_date")}
@@ -406,11 +380,17 @@ export function RecordHealthIssueDialog({
                 className="w-full border border-red-700"
               />
             </div>
+
+            {/* Vet selection */}
             <VetSelection
               value={form.veterinarian}
-              onChange={(value) => handleSelect("veterinarian", value as string)}
+              onChange={(value) =>
+                handleSelect("veterinarian", value as string)
+              }
               label="Veterinarian"
             />
+
+            {/* Remarks */}
             <div>
               <label className="block text-sm font-medium mb-1">
                 {t("remarks")}
@@ -421,36 +401,17 @@ export function RecordHealthIssueDialog({
                 onChange={handleChange}
               />
             </div>
-            <div>
-              <label className="block text-sm font-medium mb-1">
-                {t("asset")}
-              </label>
-              <Select
-                value={form.asset_id}
-                onValueChange={(v) => {
-                  handleSelect("asset_id", v);
-                  setSelectedAnimalId(v);
-                  const animal = assets.find((a) => String(a.id) === v);
-                  setSelectedReferenceId(animal ? animal.reference_id : null);
-                }}
-                disabled={loadingAssets}
-              >
-                <SelectTrigger className="w-full">
-                  <SelectValue
-                    placeholder={
-                      loadingAssets ? `${t("loading")}` : `${t("select_asset")}`
-                    }
-                  />
-                </SelectTrigger>
-                <SelectContent>
-                  {assets.map((a) => (
-                    <SelectItem key={a.id} value={String(a.id)}>
-                      {a.reference_id}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-            </div>
+
+            {/* Select asset */}
+            <AssetSelection
+              value={form.asset_id}
+              onChange={(value) => handleSelect("asset_id", value)}
+              onAssetSelect={(asset) => {
+                setSelectedAnimalId(asset ? String(asset.id) : null);
+                setSelectedReferenceId(asset ? asset.reference_id : null);
+              }}
+              label={t("asset")}
+            />
             {/* <div>
               <label className="block text-sm font-medium mb-1">Muzzel Verification</label>
               <div className="flex flex-row relative">
@@ -462,62 +423,70 @@ export function RecordHealthIssueDialog({
               </button>
               </div>
             </div> */}
+
+            {/* Muzzle verfication */}
             <div>
-              <label className="block text-sm font-medium mb-1">
-                {t("muzzle_verification")} {t("optional")}
-              </label>
-              <UploadVideo
-                onVideoCapture={(file) => {
-                  console.log("Captured video file:", file);
-                  setSelectedFile(file);
-                }}
-              />
-            </div>
-            <Button
-              type="button"
-              variant="outline"
-              className="text-green-700 w-full flex items-center gap-2 border border-green-700"
-              onClick={() => {
-                if (selectedFile) {
-                  handleVideoUpload(selectedFile); // Call the upload function when the video is captured
-                } else {
-                  alert(t("please_select_video_upload")); // Alert if no video is selected
-                }
-              }}
-            >
-              <Camera className="h-5 w-5 text-green-600" />
-              {isUploading
-                ? `${t("uploading")}`
-                : `${t("upload_muzzle_video")}`}
-              {/* {isUploading ? "Uploading..." : "Claim Cow"} */}
-            </Button>
-
-            {selectedReferenceId && muzzleResponse && (
-              <div
-                className={`p-3 rounded mb-2 flex flex-col items-start ${
-                  selectedReferenceId === muzzleResponse.matched_id
-                    ? "bg-green-100 border border-green-400 text-green-700"
-                    : "bg-red-100 border border-red-400 text-red-700"
-                }`}
-              >
-                <div>
-                  <span className="font-semibold">
-                    {t("selected_reference_id")}:
-                  </span>{" "}
-                  {selectedReferenceId}
-                </div>
-                <div>
-                  <span className="font-semibold">{t("muzzle_match_id")}:</span>{" "}
-                  {muzzleResponse.matched_id}
-                </div>
-                <div className="mt-1 font-medium">
-                  {selectedReferenceId === muzzleResponse.matched_id
-                    ? `✅ ${t("asset_match")}`
-                    : `❌ ${t("asset_not_match")}`}
-                </div>
+              <div>
+                <label className="block text-sm font-medium mb-1">
+                  {t("muzzle_verification")} {t("optional")}
+                </label>
+                <UploadVideo
+                  onVideoCapture={(file) => {
+                    console.log("Captured video file:", file);
+                    setSelectedFile(file);
+                  }}
+                />
               </div>
-            )}
 
+              <Button
+                type="button"
+                variant="outline"
+                className="text-green-700 w-full flex items-center gap-2 border border-green-700"
+                onClick={() => {
+                  if (selectedFile) {
+                    handleVideoUpload(selectedFile); // Call the upload function when the video is captured
+                  } else {
+                    alert(t("please_select_video_upload")); // Alert if no video is selected
+                  }
+                }}
+              >
+                <Camera className="h-5 w-5 text-green-600" />
+                {isUploading
+                  ? `${t("uploading")}`
+                  : `${t("upload_muzzle_video")}`}
+                {/* {isUploading ? "Uploading..." : "Claim Cow"} */}
+              </Button>
+
+              {selectedReferenceId && muzzleResponse && (
+                <div
+                  className={`p-3 rounded mb-2 flex flex-col items-start ${
+                    selectedReferenceId === muzzleResponse.matched_id
+                      ? "bg-green-100 border border-green-400 text-green-700"
+                      : "bg-red-100 border border-red-400 text-red-700"
+                  }`}
+                >
+                  <div>
+                    <span className="font-semibold">
+                      {t("selected_reference_id")}:
+                    </span>{" "}
+                    {selectedReferenceId}
+                  </div>
+                  <div>
+                    <span className="font-semibold">
+                      {t("muzzle_match_id")}:
+                    </span>{" "}
+                    {muzzleResponse.matched_id}
+                  </div>
+                  <div className="mt-1 font-medium">
+                    {selectedReferenceId === muzzleResponse.matched_id
+                      ? `✅ ${t("asset_match")}`
+                      : `❌ ${t("asset_not_match")}`}
+                  </div>
+                </div>
+              )}
+            </div>
+
+            {/* Status */}
             <div>
               <label className="block text-sm font-medium mb-1">
                 {t("status")}
@@ -538,6 +507,7 @@ export function RecordHealthIssueDialog({
                 </SelectContent>
               </Select>
             </div>
+
             <DialogFooter>
               <Button type="submit" disabled={submitting} className="w-full">
                 {submitting ? `${t("submitting")}` : `${t("submit")}`}

@@ -12,7 +12,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Badge } from "@/components/ui/badge";
-import { AuthGuard } from "@/components/auth-guard";
+import AuthGuard from "@/components/auth-guard";
 import { RecordVaccinationScheduleDialog } from "@/components/health/record-vaccination-schedule-dialog";
 import ViewVaccinationModal from "@/components/health/viewVaccinationModalProps";
 import Heading from "@/components/ui/Heading";

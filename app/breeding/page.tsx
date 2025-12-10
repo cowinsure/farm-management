@@ -275,11 +275,6 @@ const BreedingReproduction = () => {
                     </CardTitle>
                     <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-4 w-full lg:w-auto">
                       <div className="flex justify-between w-full">
-                        <p className="text-sm text-gray-600">
-                          {/* Showing {filteredAnimals ? filteredAnimals.length : 0}{" "}
-                          of {total} animals */}
-                          See all the records here
-                        </p>
 
                         {/* Filter btn for mobile devices */}
                         <div className="">
@@ -575,9 +570,9 @@ const BreedingReproduction = () => {
                     <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-4 w-full lg:w-auto">
                       {/* Left: Info text + Mobile Filter Button */}
                       <div className="flex justify-between w-full">
-                        <p className="text-sm text-gray-600">
+                        {/* <p className="text-sm text-gray-600">
                           See all the records here
-                        </p>
+                        </p> */}
 
                         {/* Filter button for mobile */}
                         <div className="">

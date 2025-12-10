@@ -19,6 +19,7 @@ import {
 } from "@/components/ui/select";
 import { useToast } from "@/hooks/use-toast";
 import { useLocalization } from "@/context/LocalizationContext";
+import AssetSelection from "@/components/AssetSelection";
 
 interface BreedingTrackingModalModalProps {
   open: boolean;
@@ -42,7 +43,6 @@ export function BreedingTrackingModal({
   const { t, locale, setLocale } = useLocalization();
   const { toast } = useToast();
   const [submitting, setSubmitting] = useState(false);
-  const [isAnimals, setAnimals] = useState<any[]>([]);
   // Static breeding methods (replaces production types)
   const breedingMethods = [
     { id: "natural", name: `${t("natural")}` },
@@ -58,35 +58,6 @@ export function BreedingTrackingModal({
     expecting_date: "",
   });
 
-  //   useEffect for get asset list
-  useEffect(() => {
-    const token =
-      typeof window !== "undefined"
-        ? localStorage.getItem("access_token")
-        : null;
-    fetch(
-      `${process.env.NEXT_PUBLIC_API_BASE_URL}/lms/assets-service?start_record=1&page_size=10`,
-      {
-        headers: {
-          ...(token ? { Authorization: `Bearer ${token}` } : {}),
-        },
-      }
-    )
-      .then(async (res: Response) => {
-        if (!res.ok) {
-          const text = await res.text();
-          console.log(text);
-          throw new Error(text || `HTTP ${res.status}`);
-        }
-        return res.json();
-      })
-      .then((data: any) => {
-        setAnimals(data.data.list);
-      })
-      .catch((err: any) => {
-        console.error("Fetch error:", err);
-      });
-  }, []);
 
   // breedingMethods is static (no fetch required)
 
@@ -161,15 +132,11 @@ export function BreedingTrackingModal({
     // Continue to submit to server in background; report API errors if they occur
   };
 
-  const selectedCattle = isAnimals?.find(
-    (animal) => String(animal.id) === formData.asset_id
-  );
 
   const selectedProductionType = breedingMethods.find(
     (product) => product.id === formData.production_type_id
   );
 
-  console.log(isAnimals);
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
@@ -181,40 +148,11 @@ export function BreedingTrackingModal({
           <form className="space-y-8" onSubmit={handleSubmit}>
             <div className="grid grid-cols-2 gap-5">
               {/* Animal ID */}
-              <div>
-                <label className="block text-sm font-medium mb-1">
-                  {t("animal_id")}
-                </label>
-                <Select
-                  value={formData.asset_id?.toString() || ""}
-                  onValueChange={(value) =>
-                    handleSelectChange("asset_id", String(value))
-                  }
-                >
-                  <SelectTrigger className="w-full">
-                    <SelectValue placeholder={t("select_cattle")}>
-                      {selectedCattle?.reference_id}
-                    </SelectValue>
-                  </SelectTrigger>
-                  <SelectContent>
-                    {isAnimals?.map((animal) => (
-                      <SelectItem
-                        value={animal.reference_id.toString()}
-                        key={animal.id}
-                      >
-                        <div className="flex items-center gap-2 cursor-pointer">
-                          <img
-                            src={"/placeholder.png"}
-                            alt=""
-                            className="w-10 h-10 rounded-full"
-                          />
-                          {animal.reference_id}
-                        </div>
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-              </div>
+              <AssetSelection
+                value={formData.asset_id}
+                onChange={(value) => handleSelectChange("asset_id", value)}
+                label={t("animal_id")}
+              />
 
               {/* Breeding Method */}
               <div>

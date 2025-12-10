@@ -26,7 +26,7 @@ import Link from "next/link";
 import { MobileOverlay } from "@/components/mobile-overlay";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/hooks/useAuth";
-import { AuthGuard } from "@/components/auth-guard";
+import AuthGuard from "@/components/auth-guard";
 import { useEffect } from "react";
 import { RecordHealthIssueDialog } from "@/components/health/record-health-issue-dialog";
 import ViewHealthModal from "@/components/health/viewHealthModalProps";

@@ -20,6 +20,7 @@ import { useToast } from "@/hooks/use-toast";
 import UploadVideo from "@/helper/UploadVedio";
 import { Camera } from "lucide-react";
 import { useLocalization } from "@/context/LocalizationContext";
+import AssetSelection from "@/components/AssetSelection";
 
 interface RecordVaccinationScheduleDialogProps {
   open: boolean;
@@ -50,10 +51,6 @@ export function RecordVaccinationScheduleDialog({
 }: RecordVaccinationScheduleDialogProps) {
   const { t, locale, setLocale } = useLocalization();
   const { toast } = useToast();
-  const [assets, setAssets] = useState<
-    { id: number; name: string; reference_id: string }[]
-  >([]);
-  const [loadingAssets, setLoadingAssets] = useState(false);
   const [selectedReferenceId, setSelectedReferenceId] = useState<string | null>(
     null
   );
@@ -96,34 +93,6 @@ export function RecordVaccinationScheduleDialog({
     }
   }, [open]);
 
-  // Fetch assets when dialog opens
-  useEffect(() => {
-    if (open) {
-      setLoadingAssets(true);
-      const token =
-        typeof window !== "undefined"
-          ? localStorage.getItem("access_token")
-          : null;
-      fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/lms/assets-service`, {
-        headers: {
-          ...(token ? { Authorization: `Bearer ${token}` } : {}),
-        },
-      })
-        .then((res) => res.json())
-        .then((data) => {
-          const list = data?.data?.list || data?.list || [];
-          setAssets(
-            list.map((a: any) => ({
-              id: a.id,
-              name: a.name || a.asset_ref_id || `Asset ${a.id}`,
-              reference_id: a.reference_id,
-            }))
-          );
-        })
-        .catch(() => setAssets([]))
-        .finally(() => setLoadingAssets(false));
-    }
-  }, [open]);
 
   // Handle input changes
   const handleChange = (
@@ -276,37 +245,14 @@ export function RecordVaccinationScheduleDialog({
         </DialogHeader>
         <div className="max-h-[70vh] overflow-y-auto pr-2">
           <form className="space-y-4" onSubmit={handleSubmit}>
-            <div>
-              <label className="block text-sm font-medium mb-1">
-                {t("cattle")}
-              </label>
-              <Select
-                value={form.asset_id}
-                onValueChange={(v) => {
-                  handleSelect("asset_id", v);
-                  const animal = assets.find((a) => String(a.id) === v);
-                  setSelectedReferenceId(animal ? animal.reference_id : null);
-                }}
-                disabled={loadingAssets}
-              >
-                <SelectTrigger className="w-full">
-                  <SelectValue
-                    placeholder={
-                      loadingAssets
-                        ? `${t("loading")}`
-                        : `${t("select_cattle_id")}`
-                    }
-                  />
-                </SelectTrigger>
-                <SelectContent>
-                  {assets.map((a) => (
-                    <SelectItem key={a.id} value={String(a.id)}>
-                      {a.reference_id}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-            </div>
+            <AssetSelection
+              value={form.asset_id}
+              onChange={(value) => handleSelect("asset_id", value)}
+              onAssetSelect={(asset) => {
+                setSelectedReferenceId(asset ? asset.reference_id : null);
+              }}
+              label={t("cattle")}
+            />
             <div>
               <label className="block text-sm font-medium mb-1">
                 {t("muzzle_verification")} ({t("optional")})

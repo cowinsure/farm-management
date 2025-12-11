@@ -170,7 +170,7 @@ const AssetSelection: React.FC<AssetSelectionProps> = ({
   };
 
   return (
-    <div className="bg-gray-100 p-2 rounded-md">
+    <div className="bg-gray-50 p-2 rounded-md">
       <div>
         <label className="block text-sm font-medium mb-1">{label}</label>
         <Select
